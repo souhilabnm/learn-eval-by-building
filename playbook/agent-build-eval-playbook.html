@@ -1,0 +1,1191 @@
+<title>Agent Build and Eval Playbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: header with a two-page switch; page 1 is the general playbook, page 2 is the Recipe Chatbot worked example. */
+:root{
+  --bg:#F2F5F7; --surface:#FFFFFF; --fg:#13202B; --muted:#51616F; --line:#D5DDE3;
+  --accent:#0B7A85; --accent-soft:#DCF0F2; --warn:#A8460C; --warn-soft:#FBE9DC;
+  --ok:#1C7A44; --ok-soft:#DDF1E4;
+  --f-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-body:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E161D; --surface:#16212A; --fg:#E6EDF2; --muted:#9AAAB7; --line:#2B3A46;
+  --accent:#4FC3CF; --accent-soft:#12343A; --warn:#F0A06A; --warn-soft:#3A2415;
+  --ok:#6FD39A; --ok-soft:#16331F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E161D; --surface:#16212A; --fg:#E6EDF2; --muted:#9AAAB7; --line:#2B3A46;
+  --accent:#4FC3CF; --accent-soft:#12343A; --warn:#F0A06A; --warn-soft:#3A2415;
+  --ok:#6FD39A; --ok-soft:#16331F; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 15px/1.55 var(--f-body);
+  padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+main{display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,5vw,40px);letter-spacing:-.01em}
+h2{font-size:22px}
+p{margin:0}
+.lede{color:var(--muted);max-width:65ch;margin-top:10px}
+.eyebrow{font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+section{display:flex;flex-direction:column;gap:14px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{font:500 14px var(--f-body);color:var(--fg);background:var(--surface);border:1px solid var(--line);
+  padding:9px 14px;border-radius:6px;cursor:pointer}
+.tab[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+:root[data-theme="dark"] .tab[aria-pressed="true"]{color:#06161A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tab[aria-pressed="true"]{color:#06161A}}
+.pagenav{margin-top:18px}
+.pagenav .tab{padding:11px 16px;font-weight:600}
+.scen{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.box .k{font:500 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.box ul,.box ol{margin:0;padding-left:20px}
+.box li+li{margin-top:4px}
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto}
+.diagram svg{display:block;min-width:640px;width:100%;height:auto}
+.diagram text{font-family:var(--f-body);fill:var(--fg)}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.stage summary{cursor:pointer;list-style:none;display:flex;gap:12px;align-items:baseline;padding:14px 16px}
+.stage summary::-webkit-details-marker{display:none}
+.stage .n{font:500 13px var(--f-mono);color:var(--accent);flex:none;width:2.2em}
+.stage .t{font:600 16px var(--f-display);flex:1;min-width:0}
+.stage .chev{color:var(--muted);transition:transform .15s}
+.stage[open] .chev{transform:rotate(90deg)}
+.stage .body{padding:0 16px 16px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.stage .col{min-width:0}
+.stage .k{font:500 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.stage ul,.stage ol{margin:0;padding-left:18px}
+.stage li+li{margin-top:3px}
+.tag{display:inline-block;font:500 12px var(--f-mono);padding:2px 8px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
+.tag.hw{background:var(--ok-soft);color:var(--ok)}
+.scn{grid-column:1/-1;background:var(--warn-soft);border-radius:6px;padding:10px 12px}
+.scn .k{color:var(--warn)}
+code{font:400 13px var(--f-mono);background:var(--bg);padding:1px 5px;border-radius:3px}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.check{display:flex;flex-direction:column;gap:8px}
+.check label{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;cursor:pointer}
+.check input{margin-top:4px;accent-color:var(--accent)}
+.prog{font:500 13px var(--f-mono);color:var(--muted)}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+.small{font-size:13px;color:var(--muted)}
+.how{grid-column:1/-1;border-top:1px dashed var(--line);padding-top:10px}
+.how ol{margin:0;padding-left:20px}
+.how li+li{margin-top:4px}
+.loc{list-style:none;padding:0!important}
+.loc li+li{margin-top:8px}
+.ex{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:10px 0 0;
+  font:400 13px/1.5 var(--f-mono);white-space:pre-wrap;overflow-x:auto;position:relative;padding-right:44px}
+.copy{position:absolute;top:6px;right:6px;width:30px;height:30px;display:grid;place-items:center;
+  background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:6px;cursor:pointer;padding:0}
+.copy:hover{color:var(--accent);border-color:var(--accent)}
+.copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.copy.done{color:var(--ok);border-color:var(--ok)}
+.term{border-bottom:1.5px dotted var(--accent);cursor:help}
+.term:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+#tip{position:fixed;z-index:50;max-width:min(300px,calc(100vw - 24px));background:var(--fg);color:var(--bg);
+  font:400 13px/1.45 var(--f-body);padding:9px 11px;border-radius:6px;pointer-events:none;opacity:0;transition:opacity .1s;
+  box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#tip.on{opacity:1}
+#tip b{display:block;font:600 12px var(--f-mono);letter-spacing:.04em;margin-bottom:2px}
+.gl{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.gl .box b{font:600 14px var(--f-display)}
+.gl .box p{font-size:14px;margin-top:2px}
+.node{cursor:pointer}
+.node rect{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.node.sel rect{stroke:var(--accent);stroke-width:3;fill:var(--accent-soft)}
+.node:focus{outline:none}
+.node:focus-visible rect{stroke:var(--accent);stroke-width:3}
+.flowcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.flowcols .k{font:500 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.seq text{font-size:12px}
+.seq .lane text{font-weight:600}
+.hwgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.mapwrap{overflow-x:auto;margin:8px 0}
+.map{border-collapse:collapse;width:100%;min-width:520px;font-size:13.5px;line-height:1.45}
+.map th,.map td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.map th{background:var(--bg);font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.map td:first-child{font-weight:600;white-space:nowrap}
+.sub{display:flex;flex-direction:column;gap:28px}
+.sub[hidden]{display:none}
+a{color:var(--accent);overflow-wrap:anywhere}
+.subnav{border-bottom:1px solid var(--line);padding-bottom:12px}
+.chip{display:inline-block;font:500 11.5px var(--f-mono);padding:2px 9px;border-radius:999px;white-space:nowrap;border:1px solid transparent}
+.chip.same{background:var(--ok-soft);color:var(--ok)}
+.chip.edit{background:var(--accent-soft);color:var(--accent)}
+.chip.new{background:var(--warn-soft);color:var(--warn)}
+.chip.course{background:var(--bg);color:var(--muted);border-color:var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.legend span.small{margin-left:6px}
+.fgroup{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.fgroup h3{font-size:17px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fgroup > p{margin-top:4px;color:var(--muted);font-size:14px}
+.frow{display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr);gap:4px 16px;padding:10px 0 0;margin-top:10px;border-top:1px solid var(--line)}
+.frow .fname{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
+.frow .fname code{overflow-wrap:anywhere}
+.frow .chg{margin-top:4px;font-size:14px}
+.frow .chg b{color:var(--muted);font-weight:600}
+@media (max-width:600px){.frow{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Reusable playbook</div>
+    <h1>Build an AI agent, then prove it works</h1>
+    <p class="lede">Page 1 is the general method that fits any agent. Page 2 applies it to a real project, the Recipe Chatbot from your course.</p>
+    <div class="tabs pagenav" id="pagenav" role="group" aria-label="Page">
+      <button class="tab" type="button" data-page="general" aria-pressed="true">1. General playbook</button>
+      <button class="tab" type="button" data-page="recipe-chatbot" aria-pressed="false">2. Real use case: Recipe Chatbot</button>
+    </div>
+  </header>
+
+  <!-- ============ PAGE 1: GENERAL ============ -->
+  <main id="p-general">
+    <section>
+      <h2>Pick your kind of agent</h2>
+      <div class="tabs" id="tabs" role="group" aria-label="Scenario"></div>
+      <div class="scen" id="scen"></div>
+      <p class="small">Real agents often combine several of these. Evaluate each capability on its own, then evaluate the whole.</p>
+    </section>
+
+    <section>
+      <h2>The loop</h2>
+      <p class="small">You never finish. Production traces feed the next round of error analysis.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 760 250" role="img" aria-label="Loop: define, build, test inputs, collect traces, error analysis, golden set, create evals, improve, monitor, back to traces">
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+          <g stroke="var(--line)" stroke-width="1.5">
+            <rect x="10" y="30" width="120" height="54" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
+            <rect x="160" y="30" width="120" height="54" rx="6" fill="var(--surface)"/>
+            <rect x="310" y="30" width="120" height="54" rx="6" fill="var(--surface)"/>
+            <rect x="460" y="30" width="130" height="54" rx="6" fill="var(--warn-soft)" stroke="var(--warn)"/>
+            <rect x="620" y="30" width="130" height="54" rx="6" fill="var(--surface)"/>
+            <rect x="620" y="150" width="130" height="54" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
+            <rect x="460" y="150" width="130" height="54" rx="6" fill="var(--surface)"/>
+            <rect x="310" y="150" width="120" height="54" rx="6" fill="var(--ok-soft)" stroke="var(--ok)"/>
+            <rect x="160" y="150" width="120" height="54" rx="6" fill="var(--surface)"/>
+          </g>
+          <g font-size="14" font-weight="600" text-anchor="middle">
+            <text x="70" y="62">Define</text>
+            <text x="220" y="62">Build v0</text>
+            <text x="370" y="62">Test inputs</text>
+            <text x="525" y="62">Collect traces</text>
+            <text x="685" y="55">Error</text><text x="685" y="73">analysis</text>
+            <text x="685" y="175">Golden set</text><text x="685" y="193">(label by hand)</text>
+            <text x="525" y="175">Create</text><text x="525" y="193">evals</text>
+            <text x="370" y="175">Improve</text><text x="370" y="193">and re-run</text>
+            <text x="220" y="182">Monitor</text>
+          </g>
+          <g stroke="var(--muted)" stroke-width="1.8" fill="none" marker-end="url(#ah)">
+            <path d="M130 57H158"/><path d="M280 57H308"/><path d="M430 57H458"/><path d="M590 57H618"/>
+            <path d="M685 84V148"/><path d="M620 177H592"/><path d="M460 177H432"/><path d="M310 177H282"/>
+            <path d="M220 150V110H525V86" stroke-dasharray="5 4"/>
+          </g>
+          <text x="380" y="232" font-size="12" text-anchor="middle" style="fill:var(--muted)">dashed: new production traces start the next round</text>
+        </svg>
+      </div>
+    </section>
+
+    <section>
+      <h2>How an agent runs in reality</h2>
+      <p class="small">One request travels left to right. The trace log records every hop. Click a box to see what happens there, what to record, and what can go wrong.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 760 320" role="group" aria-label="Runtime flow: user request, input guardrails, agent, output guardrails, reply, with tools below the agent, a trace log under everything, and evals reading the traces">
+          <defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+          <g stroke="var(--muted)" stroke-width="1.8" fill="none" marker-end="url(#ah3)">
+            <path d="M130 68H158"/><path d="M280 68H308"/><path d="M430 68H458"/><path d="M580 68H608"/>
+            <path d="M360 98V128"/><path d="M380 128V98"/>
+            <path d="M370 254V270"/>
+          </g>
+          <g stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="2 4" fill="none">
+            <path d="M70 96V214"/><path d="M220 96V214"/><path d="M520 96V214"/><path d="M670 96V214"/><path d="M370 178V214"/>
+          </g>
+          <g class="node" data-node="user" tabindex="0" role="button" aria-label="User request"><rect x="10" y="40" width="120" height="56" rx="6"/><text x="70" y="64" text-anchor="middle" font-size="13" font-weight="600">User</text><text x="70" y="82" text-anchor="middle" font-size="13" font-weight="600">request</text></g>
+          <g class="node" data-node="inguard" tabindex="0" role="button" aria-label="Input guardrails"><rect x="160" y="40" width="120" height="56" rx="6"/><text x="220" y="64" text-anchor="middle" font-size="13" font-weight="600">Input</text><text x="220" y="82" text-anchor="middle" font-size="13" font-weight="600">guardrails</text></g>
+          <g class="node" data-node="agent" tabindex="0" role="button" aria-label="Agent: model and instructions"><rect x="310" y="40" width="120" height="56" rx="6"/><text x="370" y="64" text-anchor="middle" font-size="13" font-weight="600">Agent</text><text x="370" y="82" text-anchor="middle" font-size="13" font-weight="600">model + prompt</text></g>
+          <g class="node" data-node="outguard" tabindex="0" role="button" aria-label="Output guardrails"><rect x="460" y="40" width="120" height="56" rx="6"/><text x="520" y="64" text-anchor="middle" font-size="13" font-weight="600">Output</text><text x="520" y="82" text-anchor="middle" font-size="13" font-weight="600">guardrails</text></g>
+          <g class="node" data-node="reply" tabindex="0" role="button" aria-label="Reply to user"><rect x="610" y="40" width="120" height="56" rx="6"/><text x="670" y="64" text-anchor="middle" font-size="13" font-weight="600">Reply</text><text x="670" y="82" text-anchor="middle" font-size="13" font-weight="600">to user</text></g>
+          <g class="node" data-node="tools" tabindex="0" role="button" aria-label="Tools and search"><rect x="310" y="130" width="120" height="48" rx="6"/><text x="370" y="159" text-anchor="middle" font-size="13" font-weight="600">Tools and search</text></g>
+          <g class="node" data-node="trace" tabindex="0" role="button" aria-label="Trace log"><rect x="10" y="214" width="720" height="40" rx="6"/><text x="370" y="239" text-anchor="middle" font-size="13" font-weight="600">Trace log: one record per run, covering every hop</text></g>
+          <g class="node" data-node="evals" tabindex="0" role="button" aria-label="Evals and monitoring"><rect x="215" y="272" width="310" height="40" rx="6"/><text x="370" y="297" text-anchor="middle" font-size="13" font-weight="600">Evals and monitoring read the traces</text></g>
+        </svg>
+      </div>
+      <div class="box" id="flowdetail" aria-live="polite"></div>
+    </section>
+
+    <section>
+      <h2>The nine stages</h2>
+      <p class="small">Examples on this page use an online-shop support agent. See page 2 for a real project.</p>
+      <div class="btnrow"><button class="tab" data-open="stagesG" type="button">Expand all</button><button class="tab" data-close="stagesG" type="button">Collapse all</button></div>
+      <div id="stagesG" style="display:flex;flex-direction:column;gap:10px"></div>
+    </section>
+
+    <section>
+      <h2>Rules that hold in every case</h2>
+      <div class="rules">
+        <div class="box"><div class="k">Look before you automate</div>Read real traces first. Metrics you invent before reading data usually measure the wrong thing.</div>
+        <div class="box"><div class="k">One failure, one check</div>Each judge or code check tests a single failure mode with a pass or fail answer. Avoid 1-to-5 scores.</div>
+        <div class="box"><div class="k">Trust the judge only after testing it</div>Compare the LLM judge with your own labels on a held-out set. Track true positive and true negative rates.</div>
+        <div class="box"><div class="k">Make a golden set early</div>Label a sample of real answers yourself. It is the answer key that tells you whether your judge can be trusted. About 50 is a rough starting point; what matters is having enough failures and enough good answers in it.</div>
+        <div class="box"><div class="k">Keep a regression set</div>Every failure you fix becomes a permanent test case, so it cannot quietly return.</div>
+        <div class="box"><div class="k">Cheaper first</div>Use code checks (format, schema, regex, tool arguments) before any LLM judge.</div>
+        <div class="box"><div class="k">Domain expert owns quality</div>The person who knows what a good answer is decides the failure categories, not the engineer.</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ PAGE 2: RECIPE CHATBOT ============ -->
+  <main id="p-recipe" hidden>
+    <section>
+      <h2>The use case</h2>
+      <div class="box">
+        <p>The Recipe Chatbot is a small AI agent from your AI evaluations course. A person types what they want to cook and it replies with a recipe. It is a good practice project because it is simple enough to understand fully and still fails in interesting ways.</p>
+        <p style="margin-top:8px">Under the hood: a web page for chatting (frontend), a Python server that receives each message (FastAPI), and a library that calls the AI model (LiteLLM). The course has five homeworks that follow the nine stages from page 1.</p>
+      </div>
+      <div class="hwgrid">
+        <div class="box"><div class="k">HW1</div>Prompt engineering</div>
+        <div class="box"><div class="k">HW2</div>Error analysis and failure taxonomy</div>
+        <div class="box"><div class="k">HW3</div>LLM-as-judge evaluation</div>
+        <div class="box"><div class="k">HW4</div>Search (retrieval) evaluation</div>
+        <div class="box"><div class="k">HW5</div>Agent failure analysis</div>
+      </div>
+    </section>
+
+    <div class="tabs subnav" id="subnav" role="group" aria-label="Section of page 2">
+      <button class="tab" type="button" data-sub="guide" aria-pressed="true">How-to guide</button>
+      <button class="tab" type="button" data-sub="system" aria-pressed="false">How the system works</button>
+      <button class="tab" type="button" data-sub="repo" aria-pressed="false">About the repo</button>
+    </div>
+
+    <div class="sub" data-sub="system" hidden>
+    <section>
+      <h2>The loop, for this project</h2>
+      <p class="small">The same loop as page 1, with the real file or tool you use at each step.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 760 250" role="img" aria-label="Recipe Chatbot loop: spec, chatbot v0, test queries, bulk run, error analysis, golden set, LLM judge, improve, monitor, back to bulk run">
+          <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+          <g stroke="var(--line)" stroke-width="1.5">
+            <rect x="10" y="30" width="120" height="54" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
+            <rect x="160" y="30" width="120" height="54" rx="6" fill="var(--surface)"/>
+            <rect x="310" y="30" width="120" height="54" rx="6" fill="var(--surface)"/>
+            <rect x="460" y="30" width="130" height="54" rx="6" fill="var(--warn-soft)" stroke="var(--warn)"/>
+            <rect x="620" y="30" width="130" height="54" rx="6" fill="var(--surface)"/>
+            <rect x="620" y="150" width="130" height="54" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
+            <rect x="460" y="150" width="130" height="54" rx="6" fill="var(--surface)"/>
+            <rect x="310" y="150" width="120" height="54" rx="6" fill="var(--ok-soft)" stroke="var(--ok)"/>
+            <rect x="160" y="150" width="120" height="54" rx="6" fill="var(--surface)"/>
+          </g>
+          <g font-size="13" font-weight="600" text-anchor="middle">
+            <text x="70" y="55">Define</text>
+            <text x="220" y="55">Chatbot v0</text>
+            <text x="370" y="55">Test queries</text>
+            <text x="525" y="55">Bulk run</text>
+            <text x="685" y="55">Error analysis</text>
+            <text x="685" y="173">Golden set</text>
+            <text x="525" y="173">LLM judge</text>
+            <text x="370" y="173">Improve</text>
+            <text x="220" y="173">Monitor</text>
+          </g>
+          <g font-size="11" text-anchor="middle" style="fill:var(--muted)">
+            <text x="70" y="72" style="fill:var(--muted)">spec document</text>
+            <text x="220" y="72" style="fill:var(--muted)">system_prompt.md</text>
+            <text x="370" y="72" style="fill:var(--muted)">sample_queries.csv</text>
+            <text x="525" y="72" style="fill:var(--muted)">results/ JSON file</text>
+            <text x="685" y="72" style="fill:var(--muted)">spreadsheet, HW2</text>
+            <text x="685" y="190" style="fill:var(--muted)">golden_set.csv</text>
+            <text x="525" y="190" style="fill:var(--muted)">HW3 notebook</text>
+            <text x="370" y="190" style="fill:var(--muted)">edit prompt, re-run</text>
+            <text x="220" y="190" style="fill:var(--muted)">weekly sample</text>
+          </g>
+          <g stroke="var(--muted)" stroke-width="1.8" fill="none" marker-end="url(#ah2)">
+            <path d="M130 57H158"/><path d="M280 57H308"/><path d="M430 57H458"/><path d="M590 57H618"/>
+            <path d="M685 84V148"/><path d="M620 177H592"/><path d="M460 177H432"/><path d="M310 177H282"/>
+            <path d="M220 150V110H525V86" stroke-dasharray="5 4"/>
+          </g>
+          <text x="380" y="232" font-size="12" text-anchor="middle" style="fill:var(--muted)">dashed: each week's new results files start the next round</text>
+        </svg>
+      </div>
+    </section>
+    </div>
+
+    <div class="sub" data-sub="guide">
+    <section>
+      <h2>Before you start</h2>
+      <div class="box">
+        <ol>
+          <li><b>Create a course folder</b> (any name, any place).</li>
+          <li><b>Clone the project with Claude Code.</b> In the Claude app, go to the <b>Code</b> tab, start a new session, select your course folder, and type:
+            <pre class="ex">Clone https://github.com/souhilabnm/recipe-chatbot.git into this folder</pre>
+            This creates a <code>recipe-chatbot</code> folder inside your course folder.</li>
+          <li><b>Open the project.</b> Start a new session in the <b>Code</b> tab and select the <code>recipe-chatbot</code> folder.</li>
+          <li><b>Let Claude Code set it up.</b> Type:
+            <pre class="ex">/learner-setup</pre>
+            It installs everything and creates your <code>.env</code> file. It is done when you see <code>Setup OK</code>.</li>
+          <li><b>Add your model and API key</b> to <code>.env</code>, in the <code>recipe-chatbot</code> folder.
+            <br>Windows: right-click <code>.env</code> &gt; <b>Open with</b> &gt; <b>Notepad</b>.
+            <br>Mac: in Finder press Cmd+Shift+. (period) to show hidden files, then right-click <code>.env</code> &gt; <b>Open With</b> &gt; <b>TextEdit</b>.
+            <br>Fill in these three lines (Anthropic example):
+            <pre class="ex">MODEL_NAME=anthropic/claude-sonnet-5-5
+MODEL_NAME_JUDGE=anthropic/claude-haiku-5-5
+ANTHROPIC_API_KEY=paste-your-key-here</pre>
+            Using OpenAI instead:
+            <pre class="ex">MODEL_NAME=openai/gpt-4.1-mini
+MODEL_NAME_JUDGE=openai/gpt-4.1-nano
+OPENAI_API_KEY=paste-your-key-here</pre>
+            No spaces around <code>=</code>, no quotes. Save: Ctrl+S on Windows, Cmd+S on Mac. Keep your key secret: never paste it into chats or screenshots.</li>
+          <li><b>Start the chatbot.</b> In Claude Code, type:
+            <pre class="ex">Start the chatbot with: uv run uvicorn backend.main:app --reload --reload-include '*.md'</pre>
+            Then open <code>http://127.0.0.1:8000</code> in your browser.
+            <br>If you see <code>Got unexpected extra argument (README.md)</code> (common on Windows), use this instead. The only difference: after editing the system prompt, stop the server with Ctrl+C and start it again.
+            <pre class="ex">Start the chatbot with: uv run uvicorn backend.main:app --reload</pre></li>
+          <li><b>Get guided, stage by stage.</b> In Claude Code, type:
+            <pre class="ex">/evals-coach</pre>
+            It checks what you have done, tells you which stage you are on below, and coaches you through it one step at a time. You do the writing and labeling; it explains, reviews your work and moves you to the next stage. Type it again any time to pick up where you left off.</li>
+        </ol>
+      </div>
+    </section>
+    </div>
+
+    <div class="sub" data-sub="system" hidden>
+    <section>
+      <h2>What happens when you send one message</h2>
+      <p class="small">Read from top to bottom. "You" is the person using the chatbot. Each column is a part of the system. Arrows show who passes what to whom. The orange arrow is where a record is saved. The green box is where evaluation happens.</p>
+      <div class="diagram">
+        <svg class="seq" viewBox="0 0 780 600" role="img" aria-label="What happens when you send one message: you, the person using the chatbot, type; the chat page sends it to the app, the app adds hidden instructions and asks the AI model provider, the answer comes back, a record is saved on your computer, and the answer is shown to you. Evals happen later, on the saved files, at three levels: each answer, each test run, and each part of the system">
+          <defs>
+            <marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker>
+            <marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--warn)"/></marker>
+            <marker id="ah6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ok)"/></marker>
+          </defs>
+          <g stroke="var(--line)" stroke-width="1.5" stroke-dasharray="3 5">
+            <path d="M80 40V420"/><path d="M240 40V420"/><path d="M400 40V420"/><path d="M560 40V420"/><path d="M700 40V420"/>
+          </g>
+          <g stroke="var(--line)" stroke-width="1.5" fill="var(--surface)">
+            <rect x="15" y="8" width="130" height="32" rx="6"/><rect x="175" y="8" width="130" height="32" rx="6"/><rect x="335" y="8" width="130" height="32" rx="6"/>
+            <rect x="495" y="8" width="130" height="32" rx="6"/><rect x="635" y="8" width="130" height="32" rx="6"/>
+          </g>
+          <g class="lane" text-anchor="middle">
+            <text x="80" y="29">You (chat user)</text><text x="240" y="29">Chat page</text><text x="400" y="29">The app</text>
+            <text x="560" y="29">AI model provider</text><text x="700" y="29">Saved files</text>
+          </g>
+          <g stroke="var(--muted)" stroke-width="1.8" fill="none" marker-end="url(#ah4)">
+            <path d="M80 76H238"/><path d="M240 122H398"/>
+            <path d="M400 160h30v18h-28"/>
+            <path d="M400 214H558"/>
+            <path d="M556 260H402" stroke-dasharray="5 4"/>
+            <path d="M396 352H242" stroke-dasharray="5 4"/><path d="M236 398H82" stroke-dasharray="5 4"/>
+          </g>
+          <path d="M400 306H698" stroke="var(--warn)" stroke-width="2" fill="none" marker-end="url(#ah5)"/>
+          <g>
+            <text x="86" y="70">1  You type a message and press send</text>
+            <text x="246" y="116">2  The chat page sends your message and the chat so far</text>
+            <text x="436" y="173">3  The app adds hidden instructions at the start</text>
+            <text x="406" y="208">4  The app asks the AI model, using your API key</text>
+            <text x="406" y="254">5  The AI model sends its answer back</text>
+            <text x="406" y="300" style="fill:var(--warn)">6  The app saves a record of this chat on your computer</text>
+            <text x="246" y="346">7  The app sends the answer to the chat page</text>
+            <text x="86" y="392">8  The chat page shows you the answer</text>
+          </g>
+          <text x="86" y="414" style="fill:var(--muted)">No check runs during steps 1 to 8. The answer reaches you unchecked.</text>
+          <path d="M700 420V454" stroke="var(--ok)" stroke-width="2" fill="none" marker-end="url(#ah6)"/>
+          <text x="694" y="442" text-anchor="end" style="fill:var(--ok)">later, evals read these files</text>
+          <rect x="15" y="458" width="750" height="132" rx="8" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="1.5"/>
+          <text x="31" y="482" font-weight="600" style="fill:var(--ok)">EVALS HAPPEN HERE: after the chat, on the saved files (offline)</text>
+          <text x="31" y="508"><tspan font-weight="600">Answer level:</tspan> you read and label each saved answer (HW2). An LLM judge gives PASS or FAIL per answer (HW3).</text>
+          <text x="31" y="532"><tspan font-weight="600">Run level:</tspan> score a whole bulk test run, then compare runs before and after a prompt change (HW3).</text>
+          <text x="31" y="556"><tspan font-weight="600">Part level:</tspan> search quality (HW4) and each agent step (HW5). These parts are not in this simple chat.</text>
+          <text x="31" y="578" style="fill:var(--muted)">In a live product, the same checks also run on a weekly sample of real chats (monitoring).</text>
+        </svg>
+      </div>
+      <p class="small"><b>Why this matters:</b> evals can only check what was saved. These four boxes tell you what the chatbot records today, what is missing, and what to ask engineering for.</p>
+      <div class="scen">
+        <div class="box"><div class="k">Saved today</div>Every chat in your browser leaves a small record (the question and the answer). Runs from the bulk test leave one file per run.</div>
+        <div class="box"><div class="k">Not saved today</div>Which AI model answered, which version of your instructions was used, how long it took and what it cost. If the AI provider fails, nothing is saved for that message.</div>
+        <div class="box"><div class="k">What a full record adds</div>Those four extras, plus every search or tool step in agents that have them. You do not add this here. You now know to ask engineering for it.</div>
+        <div class="box"><div class="k">Good to know</div>The hidden instructions (the system prompt) are read once when the app starts. That is why the app restarts when you save changes to that file.</div>
+      </div>
+    </section>
+
+    </div>
+
+    <div class="sub" data-sub="repo" hidden>
+    <section>
+      <h2>Where this repo comes from</h2>
+      <div class="scen">
+        <div class="box"><div class="k">Original</div><a href="https://github.com/ai-evals-course/recipe-chatbot">ai-evals-course/recipe-chatbot</a><br><span class="small">The course's own repository. The homeworks, lessons and sample data come from here.</span></div>
+        <div class="box"><div class="k">Your copy (fork)</div><a href="https://github.com/souhilabnm/recipe-chatbot">souhilabnm/recipe-chatbot</a><br><span class="small">Forked from the original. This is the link learners clone in "Before you start".</span></div>
+        <div class="box"><div class="k">What a fork means</div>A copy under your own GitHub account. You can change it freely without touching the original. Updates to the original do not arrive by themselves: use <b>Sync fork</b> on your GitHub page to pull them in.</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>The project folders, and what you can reuse</h2>
+      <p class="small">What each folder and file is for, and whether you can carry it into another chatbot project (a support bot, a travel bot, and so on). Based on reading the files themselves.</p>
+      <div class="box legend">
+        <span><span class="chip same">Reuse as is</span><span class="small">copy it, no edits</span></span>
+        <span><span class="chip edit">Reuse + change</span><span class="small">copy it, edit a few lines</span></span>
+        <span><span class="chip new">Replace</span><span class="small">write your own version</span></span>
+        <span><span class="chip course">Course only</span><span class="small">learning material, recipe data</span></span>
+      </div>
+      <div class="box" style="border-color:var(--accent)">
+        <div class="k">Shortest path to a new chatbot</div>
+        <ol>
+          <li>Rewrite <code>backend/system_prompt.md</code> for the new job. This one file is what makes it a recipe bot.</li>
+          <li>Change the name and the "Ask for a recipe..." text in <code>frontend/index.html</code>.</li>
+          <li>Replace <code>data/sample_queries.csv</code> with requests for the new bot. Keep the first line <code>id,query</code>.</li>
+          <li>Empty <code>annotation/traces/</code> so old recipe chats do not mix with the new ones.</li>
+          <li>Rename the project in <code>pyproject.toml</code>.</li>
+        </ol>
+        <p class="small" style="margin-top:8px">The server, the model connection, the bulk test and the trace recording carry over unchanged.</p>
+      </div>
+
+      <div class="fgroup">
+        <h3><code>backend/</code> <span class="chip edit">Reuse + change</span></h3>
+        <p>The chatbot itself: the server and the link to the AI model.</p>
+        <div class="frow"><div class="fname"><code>main.py</code><span class="chip same">Reuse as is</span></div>
+          <div>The server. Receives each message, gets the answer, saves one trace file per message in <code>annotation/traces/</code>, and serves the chat page.
+            <div class="chg"><b>Change:</b> nothing to run it. Later, ask for the model name, prompt version, time and cost to be added to each saved record.</div></div></div>
+        <div class="frow"><div class="fname"><code>utils.py</code><span class="chip same">Reuse as is</span></div>
+          <div>Reads the system prompt file and the model name from <code>.env</code>, adds the instructions to the conversation and calls the model through LiteLLM. Nothing in it is about recipes.
+            <div class="chg"><b>Change:</b> nothing.</div></div></div>
+        <div class="frow"><div class="fname"><code>system_prompt.md</code><span class="chip new">Replace</span></div>
+          <div>The hidden instructions ("You are an expert chef..."). The only thing that turns a general model into a recipe bot.
+            <div class="chg"><b>Change:</b> write the new bot's role, rules, format and defaults. Start from your stage 1 spec.</div></div></div>
+        <div class="frow"><div class="fname"><code>retrieval.py</code><span class="chip edit">Reuse + change</span></div>
+          <div>BM25 search over a recipe file. Not used by the chat page; it is for HW4. Only needed if the new bot answers from your own documents.
+            <div class="chg"><b>Change:</b> point it at your documents. It expects recipe fields (<code>name</code>, <code>ingredients</code>, <code>steps</code>, <code>tags</code>), so rename them to your fields.</div></div></div>
+        <div class="frow"><div class="fname"><code>query_rewrite_agent.py</code><span class="chip edit">Reuse + change</span></div>
+          <div>Rewords a user's question into better search words before searching. Goes with <code>retrieval.py</code>.
+            <div class="chg"><b>Change:</b> its instructions talk about cooking methods and equipment. Rewrite them for your subject.</div></div></div>
+        <div class="frow"><div class="fname"><code>evaluation_utils.py</code><span class="chip edit">Reuse + change</span></div>
+          <div>Scores search quality: recall@k and MRR. The method works for any search.
+            <div class="chg"><b>Change:</b> it looks for a field called <code>source_recipe_id</code>. Rename it to your document id.</div></div></div>
+      </div>
+
+      <div class="fgroup">
+        <h3><code>frontend/</code> <span class="chip edit">Reuse + change</span></h3>
+        <div class="frow"><div class="fname"><code>index.html</code><span class="chip edit">Reuse + change</span></div>
+          <div>The chat page you see in the browser, with the conversation history.
+            <div class="chg"><b>Change:</b> the page title and heading ("Recipe Chatbot") and the input hint ("Ask for a recipe..."). Colors are optional.</div></div></div>
+      </div>
+
+      <div class="fgroup">
+        <h3><code>data/</code> and <code>scripts/</code></h3>
+        <p>Test questions, and the tool that sends them all at once.</p>
+        <div class="frow"><div class="fname"><code>data/sample_queries.csv</code><span class="chip new">Replace</span></div>
+          <div>The test questions, one per row.
+            <div class="chg"><b>Change:</b> write requests for the new bot. Keep the first line exactly <code>id,query</code>.</div></div></div>
+        <div class="frow"><div class="fname"><code>scripts/bulk_test.py</code><span class="chip same">Reuse as is</span></div>
+          <div>Sends every row of a CSV to the bot and saves the answers in <code>results/results_&lt;time&gt;.json</code>.
+            <div class="chg"><b>Change:</b> nothing. Point it at your file with <code>--csv data/your_file.csv</code>.</div></div></div>
+        <div class="frow"><div class="fname"><code>results/</code><span class="chip same">Reuse as is</span></div>
+          <div>Created by the bulk test. Each run adds one file.
+            <div class="chg"><b>Change:</b> nothing. In a new project it starts empty.</div></div></div>
+      </div>
+
+      <div class="fgroup">
+        <h3><code>annotation/</code> <span class="chip edit">Reuse + change</span></h3>
+        <p>Where chats are recorded, and a tool to label them.</p>
+        <div class="frow"><div class="fname"><code>annotation.py</code><span class="chip same">Reuse as is</span></div>
+          <div>A small browser tool to read and label the traces in <code>traces/</code>. Run it with <code>uv run --with python-fasthtml --with monsterui python annotation/annotation.py</code> (it needs two packages the project does not install), then open <code>http://localhost:5001</code>.
+            <div class="chg"><b>Change:</b> nothing.</div></div></div>
+        <div class="frow"><div class="fname"><code>traces/</code><span class="chip new">Replace</span></div>
+          <div>One JSON file per chat message: the course's sample traces (<code>trace_2024-01-15_…</code>) plus every chat you have had.
+            <div class="chg"><b>Change:</b> start the new project with this folder empty. Your new chats fill it.</div></div></div>
+      </div>
+
+      <div class="fgroup">
+        <h3><code>homeworks/</code> and <code>lesson-4</code>, <code>lesson-7</code>, <code>lesson-8</code> <span class="chip course">Course only</span></h3>
+        <p>Learning material. The methods carry over; the data is about recipes or other course examples.</p>
+        <div class="frow"><div class="fname"><code>homeworks/hw1</code> to <code>hw5</code><span class="chip course">Course only</span></div>
+          <div>Instructions and walkthrough notebooks for each homework, with recipe data in <code>reference_files/</code> (for example <code>processed_recipes.json</code>, <code>dietary_queries.csv</code>).
+            <div class="chg"><b>To reuse:</b> copy a notebook as a template, then swap in your own traces and failure categories.</div></div></div>
+        <div class="frow"><div class="fname"><code>lesson-4/</code><span class="chip course">Course only</span></div>
+          <div>Logs from a different, real chatbot (NurtureBoss) used to practise judging whether answers are backed up.
+            <div class="chg"><b>To reuse:</b> the judging idea, not the data.</div></div></div>
+        <div class="frow"><div class="fname"><code>lesson-7/</code><span class="chip course">Course only</span></div>
+          <div>A custom labeling tool for HW5 conversation traces.
+            <div class="chg"><b>To reuse:</b> the tool, after changing the data file it loads.</div></div></div>
+        <div class="frow"><div class="fname"><code>lesson-8/</code><span class="chip course">Course only</span></div>
+          <div>A model cascade: try a cheap model first and pass hard cases to a bigger one. Shown on an SMS spam dataset.
+            <div class="chg"><b>To reuse:</b> the technique, with your own data.</div></div></div>
+      </div>
+
+      <div class="fgroup">
+        <h3>Files in the main folder</h3>
+        <p>Settings, setup and paperwork.</p>
+        <div class="frow"><div class="fname"><code>pyproject.toml</code>, <code>uv.lock</code><span class="chip edit">Reuse + change</span></div>
+          <div>The list of Python libraries the project needs, and their exact versions.
+            <div class="chg"><b>Change:</b> the name (<code>recipe-chatbot</code>) and description in <code>pyproject.toml</code>. <code>uv.lock</code> updates itself.</div></div></div>
+        <div class="frow"><div class="fname"><code>.python-version</code>, <code>.gitignore</code><span class="chip same">Reuse as is</span></div>
+          <div>The Python version (3.13) and the list of files Git should never save, such as <code>.env</code>.
+            <div class="chg"><b>Change:</b> nothing.</div></div></div>
+        <div class="frow"><div class="fname"><code>env.example</code><span class="chip same">Reuse as is</span></div>
+          <div>A blank template for <code>.env</code>, safe to share.
+            <div class="chg"><b>Change:</b> nothing.</div></div></div>
+        <div class="frow"><div class="fname"><code>.env</code><span class="chip new">Replace</span></div>
+          <div>Your model choice and secret API key.
+            <div class="chg"><b>Change:</b> never copy or share it. Each project gets its own, made from <code>env.example</code>.</div></div></div>
+        <div class="frow"><div class="fname"><code>CLAUDE.md</code>, <code>.claude/skills/</code><span class="chip edit">Reuse + change</span></div>
+          <div>Instructions for Claude Code: <code>/learner-setup</code> installs the project, and <code>/evals-coach</code> finds the learner's stage and hands off to one of six stage skills (spec and prompt, test queries, error analysis, LLM judge, component checks, improve and monitor). Shared coaching rules sit in <code>evals-coach/coaching-rules.md</code>.
+            <div class="chg"><b>Change:</b> the project name, the recipe examples and the homework references in each stage skill. The structure and coaching rules carry over.</div></div></div>
+        <div class="frow"><div class="fname"><code>README.md</code><span class="chip new">Replace</span></div>
+          <div>Describes the course and the homeworks.
+            <div class="chg"><b>Change:</b> write one for the new project.</div></div></div>
+        <div class="frow"><div class="fname"><code>LICENSE</code><span class="chip same">Reuse as is</span></div>
+          <div>GNU GPL version 3. You may copy and change the code.
+            <div class="chg"><b>Know this:</b> in short, if you share or publish a project built from this code, it must also be under GPL v3 with its source available. Check with engineering or legal before using it in a company product.</div></div></div>
+      </div>
+    </section>
+
+    </div>
+
+    <div class="sub" data-sub="guide">
+    <section>
+      <h2>The nine stages, applied</h2>
+      <div class="btnrow"><button class="tab" data-open="stagesR" type="button">Expand all</button><button class="tab" data-close="stagesR" type="button">Collapse all</button></div>
+      <div id="stagesR" style="display:flex;flex-direction:column;gap:10px"></div>
+    </section>
+
+    <section>
+      <h2>Your progress</h2>
+      <p class="prog" id="prog"></p>
+      <div class="check" id="check"></div>
+      <p class="small">Ticks are saved in this browser only.</p>
+    </section>
+    </div>
+  </main>
+
+  <section>
+    <h2>Glossary</h2>
+    <p class="small">Dotted words anywhere on these pages explain themselves on hover, focus or tap. All of them are listed here.</p>
+    <div class="gl" id="gl"></div>
+  </section>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+var SCEN = {
+  chat: {
+    name: "Chatbot / assistant",
+    job: "Answers or advises in free text.",
+    risk: ["Ignores constraints (diet, budget, tone)", "Makes up facts", "Off-topic or unsafe replies", "Too long or vague"],
+    eval: ["LLM judge per failure mode", "Code checks for format and length", "Human labels to validate the judge"],
+    start: "Write the system prompt, run 20 varied queries, read every answer."
+  },
+  rag: {
+    name: "RAG assistant",
+    job: "Answers from your documents using retrieval.",
+    risk: ["Retrieves the wrong passage", "Answer not supported by the passage", "Misses the answer that exists", "Stale or conflicting sources"],
+    eval: ["Retrieval: recall@k, MRR", "Faithfulness judge (answer vs. source)", "Synthetic questions made from each document"],
+    start: "Build a question set where you know which document holds the answer."
+  },
+  tool: {
+    name: "Tool-using agent",
+    job: "Calls APIs or functions to act (search, book, update).",
+    risk: ["Picks the wrong tool", "Bad or missing arguments", "Loops or repeats calls", "Takes an unsafe action"],
+    eval: ["Code checks on each tool call", "Task success on end-to-end scenarios", "Step-level failure counts"],
+    start: "List every tool, then write scenarios where the right tool sequence is known."
+  },
+  flow: {
+    name: "Multi-step workflow agent",
+    job: "Plans and runs several steps toward a goal.",
+    risk: ["Fails at one hand-off between steps", "Loses context mid-run", "Never finishes or stops early", "Cost and latency creep"],
+    eval: ["Transition matrix: which step fails most", "Goal completion rate", "Cost and step-count budgets"],
+    start: "Label each trace with the first step where it went wrong."
+  }
+};
+
+var STAGES = [
+  { t:"Define the job", hw:"HW1",
+    goal:"Decide who the agent serves, what a good result looks like, and what it must refuse.",
+    do:["Write a one-paragraph spec","List 10 realistic user requests","List what is out of scope and what is risky"],
+    out:"Spec paragraph and a first query list.",
+    s:{chat:"Define tone, constraints to respect, and refusal rules.",rag:"List which document sets the agent may use.",tool:"List every tool and which ones need user confirmation.",flow:"Define the goal, the steps, and when to stop."}},
+  { t:"Build version 0", hw:"HW1",
+    goal:"Get the simplest working agent, not the best one.",
+    do:["Write the system prompt","Pick a model and keep it in config","Add retrieval or tools only if the job needs them","Add guardrails for what the agent must never do"],
+    out:"Something you can chat with or call.",
+    s:{chat:"A prompt plus a model is enough to start.",rag:"Add an index (for example BM25) over your documents.",tool:"Add one tool at a time and test each alone.",flow:"Start with a fixed sequence before adding planning."}},
+  { t:"Create test inputs", hw:"HW1, HW2",
+    goal:"Cover the situations real users will create, including awkward ones.",
+    do:["Hand-write 20 to 30 typical requests","List dimensions (user type, difficulty, constraint) and combine them","Generate more with an LLM, then read and prune them"],
+    out:"A query file of 100 or more varied inputs.",
+    s:{chat:"Vary user type, constraints and ambiguous wording.",rag:"Add questions with no answer in the documents.",tool:"Include requests that need no tool, and impossible ones.",flow:"Include long goals and goals that change midway."}},
+  { t:"Capture traces", hw:"HW2, HW5",
+    goal:"Record everything the agent did so you can inspect it later.",
+    do:["Log input, output, tool calls, retrieved text, time, cost","Save every run as a record you can open later","Keep the model and prompt version with each trace"],
+    out:"A folder of traces you can search and sort.",
+    s:{chat:"Full message history per conversation.",rag:"Also store the retrieved passages.",tool:"Also store tool name, arguments, and results.",flow:"Also store the plan and each step's result."}},
+  { t:"Error analysis", hw:"HW2",
+    goal:"Find out how the agent actually fails, in your own words.",
+    do:["Read about 100 traces","Open coding: write a short note on each problem","Axial coding: group notes into 4 to 8 failure categories","Count each category"],
+    out:"A failure taxonomy with counts and example traces.",
+    s:{chat:"Typical groups: ignored constraint, wrong fact, bad format.",rag:"Separate retrieval failures from generation failures.",tool:"Separate wrong tool, wrong arguments, wrong follow-up.",flow:"Mark the first failing step in each trace."}},
+  { t:"Create a golden set and evals", hw:"HW3",
+    goal:"Turn each important failure into an automatic check you can trust.",
+    do:["Build your golden set: label a sample of traces yourself (about 50 is a common start), with a pass or fail for each failure","Objective failure: write a code check","Subjective failure: write an LLM judge with one pass or fail question","Measure the judge against your golden set and correct the bias"],
+    out:"A golden set and a set of checks with a known error rate.",
+    s:{chat:"Judge for constraint violations, one judge per constraint.",rag:"Judge that the answer is supported by the retrieved text.",tool:"Code check that arguments match the tool schema.",flow:"Judge task completion on the final state."}},
+  { t:"Evaluate the parts", hw:"HW4, HW5",
+    goal:"Test components separately so you know where to fix.",
+    do:["Score retrieval alone","Score each tool alone","Score each handoff between steps"],
+    out:"Per-component scores.",
+    s:{chat:"Often skipped; evaluate the prompt on its own if you chain prompts.",rag:"Recall@k and MRR on synthetic queries.",tool:"Selection accuracy and argument validity.",flow:"Transition failure matrix across steps."}},
+  { t:"Improve and re-run", hw:"HW1, HW3",
+    goal:"Change one thing, measure, keep it only if the numbers improve.",
+    do:["Fix the most frequent or most costly failure first","Change prompt, retrieval, tools, or model","Re-run all checks and compare with the last run","Add fixed cases to the regression set"],
+    out:"A before and after table.",
+    s:{chat:"Tighten the prompt or add examples.",rag:"Change chunking, query rewriting, or top-k.",tool:"Rewrite tool descriptions, add validation.",flow:"Add a checkpoint or a retry at the weak step."}},
+  { t:"Monitor and repeat", hw:"",
+    goal:"Real users will find failures your tests missed.",
+    do:["Sample live traces every week","Run the same checks on the sample","Send new failure types back to error analysis","Watch cost, latency, and refusal rate"],
+    out:"A weekly review habit.",
+    s:{chat:"Watch for new topics users bring.",rag:"Watch for new or changed documents.",tool:"Watch for API changes and new misuse.",flow:"Watch cost per run and abandoned runs."}}
+];
+
+var LOC = {
+  doc:   {n:"Document or spreadsheet", a:"Plain files you open like any office document. No code and no server. Good for planning, writing and labeling."},
+  local: {n:"Your laptop (local)", a:"Runs only on your own computer. Free, private and quick to change, but nobody else can use it. The address 127.0.0.1 means this computer."},
+  nb:    {n:"Notebook (Jupyter or Colab)", a:"A page that mixes notes, code and results. Jupyter runs on your laptop. Colab runs on Google's computers and you only use the browser."},
+  stage: {n:"Shared test server (staging)", a:"A copy of the app in the cloud where your team tries it before real users do. Uses test data, not real customer data."},
+  host:  {n:"Hosted platform (no-code)", a:"A service such as Replit or Lovable runs the app for you. You set it up in a web page and never manage a server."},
+  prod:  {n:"Production cloud", a:"The live version real users use, on AWS, Google Cloud, Azure or similar. Needs monitoring, security and a budget."}
+};
+
+function locHtml(x, showCourse){
+  return '<div class="col"><div class="k">Where it runs</div><ul class="loc">' + x.loc.map(function(k){
+    var inCourse = showCourse && x.course.indexOf(k) > -1;
+    return '<li><b>' + LOC[k].n + '</b>' + (inCourse ? ' <span class="tag hw">used in this project</span>' : '') +
+      '<br><span class="small">' + LOC[k].a + '</span></li>';
+  }).join("") + '</ul></div>';
+}
+
+/* ---------- Page 1: general content (online-shop support agent as the neutral example) ---------- */
+var GEN = [
+  { loc:["doc"],
+    f:"A one-page text (Google Doc or Markdown) plus a list of example requests (text file or spreadsheet).",
+    how:["Open a new Google Doc or text file and name it after your agent, followed by spec.",
+         "Copy the five headings below and answer each in one or two sentences.",
+         "Under them, write 10 requests exactly as a real user would type them. Messy and vague is good.",
+         "Ask someone who knows the subject to read it and tell you what is missing."],
+    ex:`Who uses it: (for example, shoppers asking about their orders)
+Job: (answers order, delivery and return questions)
+A good answer looks like: (correct, short, polite, cites the policy)
+Must never: (promise a refund the policy does not allow, or share another customer's data)
+Out of scope: (changing payment details)` },
+  { loc:["local","host","stage","prod"],
+    f:"A running app or agent. Its instructions sit in a text file or a settings page, and its keys sit in a protected settings file or a secrets manager.",
+    how:["Choose where you will build first. For learning, your own laptop or a hosted platform is enough (see Where it runs).",
+         "Pick a model from a provider such as OpenAI, Anthropic or Google and create an API key. An API key is a secret password that lets your app use the model. Keep it in a settings file or secrets manager and never paste it into chats, documents or screenshots.",
+         "Write the system prompt: plain-text instructions the model reads before every conversation. Users never see it. Use the five-part pattern below.",
+         "Run the agent and chat with it. Ask 5 questions you already know the answers to.",
+         "Change one thing at a time so you know which change caused which result."],
+    ex:`Role: You are a support assistant for an online shop.
+Task: Answer questions about orders, delivery and returns.
+Rules: Only use the shop policy provided. If you do not know, say so and offer to connect a person. Never promise a refund.
+Format: Two or three short sentences, then the next step for the customer.
+Defaults: If the order number is missing, ask for it.` },
+  { loc:["doc","local"],
+    f:"A table with one row per request: id, text, type, difficulty. Saved as a CSV file (a spreadsheet saved as plain text) or a sheet.",
+    how:["Open a spreadsheet and create the columns id, query, type.",
+         "Write 20 to 30 typical requests. Then add awkward ones: very short, very long, vague, missing details, rude, in another language, and some that have nothing to do with the agent's job.",
+         "List the dimensions that matter (user type, product, difficulty) and make sure every combination appears at least once.",
+         "To get more, ask an AI to write 50 more in the same style. Read every one and delete the unrealistic ones.",
+         "Save as CSV and run all requests through your agent in one batch. How you start a batch depends on your tool: a script, a test feature, or a notebook."],
+    ex:`id,query,type
+1,Where is my order?,typical
+2,I want a refund after 90 days,policy edge case
+3,help,vague
+4,Tell me a joke,off-topic` },
+  { loc:["local","stage","prod"],
+    f:"One record per run, as JSON or a table row: input, output, every step, version, time and cost.",
+    how:["Decide what to record for every run: the user's input, the final output, every step in between (tool calls, search results), the prompt version, the model, the time and the cost.",
+         "Save one record per run in a file or table. JSON is the common format because it keeps steps in order.",
+         "Give each run an id and keep old files. Never overwrite them, because you will compare runs later.",
+         "Open a few records and check that you can tell, from the record alone, why the agent answered the way it did. If you cannot, record more."],
+    ex:`{
+  "id": "1",
+  "input": "Where is my order?",
+  "steps": [
+    { "type": "tool_call", "name": "lookup_order", "result": "shipped" }
+  ],
+  "output": "Your order shipped yesterday.",
+  "prompt_version": "v3",
+  "cost_usd": 0.002
+}` },
+  { loc:["doc","nb","local"],
+    f:"A sheet with the columns id, what went wrong, category. Then a count table: category and how many.",
+    how:["Open a sample of 50 to 100 traces next to a spreadsheet with the columns id, what went wrong, category.",
+         "For each answer ask: would a real user be happy? Did it follow my spec? Write one short note per problem. This is open coding. Do not worry about categories yet.",
+         "Group similar notes and give each group a name, such as ignored a rule or invented a fact. This is axial coding.",
+         "Count each category. The top two are your first targets.",
+         "Keep the answers you judged. They become your golden set in the next stage."] },
+  { loc:["nb","local","prod"],
+    f:"A golden set (a table of answers with your own PASS or FAIL), a judge that returns PASS or FAIL, and a results table with the judge's true positive and true negative rates.",
+    how:["Build your golden set. It is a small answer key: real answers that you have judged yourself. Take a sample of answers (about 50 is a common starting point, not a fixed rule). Make sure it includes both failures and good answers; if failures are rare, pull more traces until you have enough of each. In a spreadsheet, add your own PASS or FAIL for the failure you picked. Suggested columns: id, query, response, follows_policy, your note.",
+         "Split it: for example, use about 60 percent while you improve the judge and keep the rest untouched to check the final version. The exact split is a judgment call.",
+         "For objective failures (format, length, missing fields) write a code check first. It needs no AI and is cheap.",
+         "For subjective failures write an AI judge: one yes or no question per failure, answering PASS or FAIL plus one sentence of reason (template below).",
+         "Run the judge on the golden set and compare its PASS or FAIL with yours. Count how often it agrees on real failures and on good answers. If agreement is low, rewrite the question and repeat."],
+    ex:`You are checking one thing only.
+User request: {query}
+Answer: {response}
+Question: Does the answer stay within the refund policy?
+Reply with PASS or FAIL, then one sentence explaining why.` },
+  { loc:["nb","stage"],
+    f:"A score table, one row per component (search, each tool, each step).",
+    how:["Write down the parts of your agent: the search step, each tool, each hand-off between steps.",
+         "For each part ask: given a correct input, does it do its job? Test it on its own.",
+         "For search: take questions where you know which document holds the answer, and check whether that document appears in the top results.",
+         "Fill a table with the columns part, test, score. The lowest score is where to work first."] },
+  { loc:["local","stage"],
+    f:"A before and after table in a spreadsheet, with a label for each version of the prompt.",
+    how:["Choose the most frequent or most costly failure from your counts.",
+         "Change one thing: a sentence in the prompt, a search setting, or a tool description.",
+         "Re-run the same requests and your checks on the new output.",
+         "Put old and new scores side by side. Keep the change only if the target improved and nothing else got worse.",
+         "Add the fixed cases to your regression set. If you changed the judge, check it against your golden set first."] },
+  { loc:["prod","doc"],
+    f:"A weekly review sheet (sample, findings, actions) and a small dashboard of the main checks.",
+    how:["Once a week, pick 20 recent real conversations at random.",
+         "Run your checks on them and read the failures yourself.",
+         "Write any new failure type into your category list.",
+         "Add it to the regression set, then repeat error analysis.",
+         "Ask engineering for a dashboard of your main checks and an alert when a score drops."] }
+];
+
+var PM = [
+  "You own this stage: who the users are, what success means, what is out of scope.",
+  "Choose the model and accept the cost and quality trade-off. Approve what the system prompt says.",
+  "Make sure the requests look like real users, including rude, vague and edge-case ones.",
+  "Require logging before launch. No traces means no way to find out why something failed.",
+  "This is core PM work. You read the traces and name the failures, because you know what good looks like.",
+  "Define what pass means in words. Label the examples yourself. Decide whether the judge is accurate enough to trust.",
+  "Ask which component is the bottleneck, so the team fixes the right thing first.",
+  "Choose what to fix first by user impact and frequency. Decide when the numbers are good enough.",
+  "Set the review routine and the alert thresholds. Decide how new failures get into the next round."
+];
+
+/* ---------- Page 2: Recipe Chatbot specifics ---------- */
+var EXTRA = [
+  { loc:["doc"], course:["doc"],
+    f:"A one-page text (Google Doc or Markdown) plus a list of example requests (text file or spreadsheet).",
+    how:["Open a new Google Doc or a Notepad file and name it recipe-bot-spec.",
+         "Copy the five headings below and answer each in one or two sentences.",
+         "Under them, write 10 requests exactly as a real user would type them. Messy and vague is good.",
+         "Ask someone who cooks to read it and tell you what is missing."],
+    ex:`Who uses it: (for example, busy parents cooking on weekdays)
+Job: (what the agent does for them)
+A good answer looks like: (for example, one complete recipe with clear steps and a serving size)
+Must never: (for example, give medical advice, or use an ingredient the user cannot eat)
+Out of scope: (for example, ordering groceries)`,
+  },
+  { loc:["local","host","stage","prod"], course:["local"],
+    f:"A Python app. The agent's instructions live in a text file (backend/system_prompt.md) and your keys live in .env.",
+    how:["A system prompt is plain-text instruction the AI reads before every conversation. Users never see it. It sets the agent's role, tone and rules.",
+         "Where it lives: open the recipe-chatbot folder you cloned (inside the folder you chose in Before you start), then the backend folder, then the file system_prompt.md.",
+         "How to open it: on Windows, right-click the file, choose Open with, then Notepad (or VS Code). On Mac, in Finder, right-click (or Control-click) the file, choose Open With, then TextEdit (or VS Code). It is an ordinary text file and already holds a short default prompt.",
+         "Delete the default text and write your own under five headings: Role, Task, Rules, Format, Defaults (the full example is in the box below). You do not invent these from scratch. Each one is a heading of the spec you wrote in stage 1, reworded as an instruction to the AI:" +
+           '<div class="mapwrap"><table class="map"><thead><tr><th>Your spec (stage 1) says</th><th>Example in the spec</th><th>Becomes in the system prompt</th></tr></thead><tbody>' +
+           '<tr><td>Who uses it</td><td>Busy parents cooking on weekdays</td><td><b>Role:</b> You are an expert chef helping busy parents cook on weekdays.</td></tr>' +
+           '<tr><td>Job</td><td>Suggest a recipe for what they want to cook</td><td><b>Task:</b> Give one complete recipe that fits the user\'s request.</td></tr>' +
+           '<tr><td>Must never, and Out of scope</td><td>Use an ingredient the user cannot eat. Order groceries.</td><td><b>Rules:</b> Respect every diet the user mentions. If asked to order groceries, say you cannot.</td></tr>' +
+           '<tr><td>A good answer looks like</td><td>One complete recipe, clear steps, a serving size</td><td><b>Format:</b> Title, serving size, ingredients list, then numbered steps.</td></tr>' +
+           '<tr><td>Not in the spec</td><td>(what to assume when the user leaves something out)</td><td><b>Defaults:</b> If no ingredients are given, assume basic pantry items. If no serving size is given, assume 2 people.</td></tr>' +
+           '</tbody></table></div>' +
+           "The spec is for people (you, your team, the expert who reviews it). The system prompt is the same intent written for the AI. Later, when you judge answers in stages 5 and 6, you check them against the spec.",
+         "Save with Ctrl+S on Windows or Cmd+S on Mac. If you started the server with --reload-include '*.md', it restarts by itself. If you used the shorter command, stop it with Ctrl+C and start it again.",
+         "Refresh http://127.0.0.1:8000 and ask the same question as before. Compare the two answers.",
+         "Change one thing at a time so you know which edit caused which change."],
+    ex:`Role: You are an expert chef helping busy parents cook on weekdays.
+Task: Give one complete recipe that fits the user's request.
+Rules: Respect every diet the user mentions. If asked to order groceries, say you cannot.
+Format: Title, serving size, ingredients list, then numbered steps.
+Defaults: If no ingredients are given, assume basic pantry items. If no serving size is given, assume 2 people.`,
+  },
+  { loc:["doc","local"], course:["doc","local"],
+    f:"A CSV file (a spreadsheet saved as plain text) with two columns: id and query.",
+    how:["Open data/sample_queries.csv in Notepad or VS Code. Excel also works, but save it back as CSV.",
+         "Add your own rows below the existing ones, one request per row, each with a new id. How many: write 20 to 30 now (the course homework asks for at least 10 new ones). Then grow the file to about 100 before stage 5, because error analysis reads 50 to 100 answers. More queries is not better by itself: 100 varied ones beat 500 similar ones.",
+         "Cover different situations: short, long, vague, a diet restriction, missing details, and one that has nothing to do with cooking.",
+         "Save as a new file, for example data/my_queries.csv. Keep the first line exactly: id,query",
+         'Run all of them at once. <b>Why:</b> this sends every question to the chatbot and saves each question with its answer in one new file in the results folder. You get (1) answers to read in stage 5, instead of typing 100 questions by hand, (2) a record to compare against after you change the prompt, and (3) your traces, the saved answers that every later check reads. Open a terminal in the recipe-chatbot folder, click the copy icon and paste this:<pre class="ex">uv run python scripts/bulk_test.py --csv data/my_queries.csv</pre>To run the sample file instead, use this:<pre class="ex">uv run python scripts/bulk_test.py</pre>'],
+    ex:`id,query
+1,What can I cook with chicken and rice?
+2,I'm vegan and have 15 minutes. Dinner ideas?
+3,Something fancy for a date night
+4,What's the capital of France?`,
+  },
+  { loc:["local","stage","prod"], course:["local"],
+    f:"In this project, two places. Chats in your browser are saved by the app as one JSON file per message (folder annotation/traces). Bulk runs are saved as one JSON file per run (folder results). Real products also record model, prompt version, time and cost.",
+    how:["Run the bulk test from stage 3. It prints each question and answer in the terminal.",
+         "When it finishes, it prints a line starting Saved, with the new file name, for example results/results_20261024_150000.json.",
+         "Open the results folder inside the project and open that file in Notepad or VS Code.",
+         "This file is your set of traces. Keep every file and do not overwrite them, so you can compare runs later. Before you change the prompt, copy the file and rename the copy (for example before-prompt-change.json).",
+         "Browser chats are saved too. Chat with the bot in your browser, then open the folder annotation/traces inside the project. Each file is one message: the conversation sent (request) and the updated conversation (response).",
+         "Neither place saves the model name, prompt version, time taken or cost. A real product would. You are not adding that here. Just know to ask for it (see the diagram above)."],
+    ex:`[
+  {
+    "id": "1",
+    "query": "What can I cook with chicken and rice?",
+    "response": "..."
+  }
+]`,
+  },
+  { loc:["doc","nb","local"], course:["nb","local"],
+    f:"A sheet with columns: id, what went wrong, category. Then a count table: category and how many.",
+    how:["Open a results file from stage 4. Open a spreadsheet next to it with the columns id, what went wrong, category.",
+         "For each answer ask: would a real user be happy? Did it follow my stage 1 spec? Write one short note for each problem. This is open coding. Do not worry about categories yet.",
+         "After 50 to 100 notes, group similar notes and give each group a name, such as ignored the diet or too long. This is axial coding.",
+         "Count how many notes are in each category. The top two are your first targets.",
+         "Keep the answers you judged. In stage 6 they become your golden set.",
+         'Optional labeling tool in the browser. In a terminal in the recipe-chatbot folder, paste this, then open http://localhost:5001. It shows your browser chats (annotation/traces), not the bulk-test results. The --with parts add two packages for this run only, because the project does not install them.<pre class="ex">uv run --with python-fasthtml --with monsterui python annotation/annotation.py</pre>',
+         'Optional guided notebook. In a terminal in the recipe-chatbot folder, paste this (--with jupyter adds Jupyter for this run only):<pre class="ex">uv run --with jupyter jupyter notebook homeworks/hw2/hw2_walkthrough.ipynb</pre>'],
+  },
+  { loc:["nb","local","prod"], course:["nb"],
+    f:"A golden set (a table of answers with your own PASS or FAIL), a judge that returns PASS or FAIL, and a results table with the judge's true positive and true negative rates.",
+    how:["Pick one failure from your list, for example: ignores the stated diet.",
+         "Write a single yes or no question about it. One failure per judge.",
+         "Give the judge the user request and the answer, and ask for PASS or FAIL plus one sentence of reason (template below).",
+         "Build your golden set. It is a small answer key: real answers that you have judged yourself. Take a sample of answers from your results files (about 50 is a common starting point, not a fixed rule). Make sure it includes both failures and good answers; if failures are rare, run more queries until you have enough of each. In a spreadsheet, add your own PASS or FAIL for the failure you picked. Suggested columns: id, query, response, respects_diet, your note. Save it, for example as data/golden_set.csv.",
+         "Split it: for example, use about 60 percent while you improve the judge and keep the rest untouched to check the final version. The exact split is a judgment call.",
+         "Run the judge on the golden set and compare its PASS or FAIL with yours.",
+         "Count how often the judge agrees with you on real failures and on good answers. If the agreement is low, rewrite the question and try again.",
+         "A guided version is in the notebook homeworks/hw3/hw3_walkthrough.ipynb."],
+    ex:`You are checking one thing only.
+User request: {query}
+Answer: {response}
+Question: Does the answer respect every diet restriction the user mentioned?
+Reply with PASS or FAIL, then one sentence explaining why.`,
+  },
+  { loc:["nb","stage"], course:["nb"],
+    f:"A score table, one row per component (search, each tool, each step).",
+    how:["Write down the parts of your agent: the search step, each tool, each hand-off between steps.",
+         "For each part ask: given a correct input, does it do its job? Test it on its own.",
+         "For search: take questions where you know which document holds the answer, and check whether that document appears in the top results.",
+         "Fill a table with the columns part, test, score. The lowest score is where to work first.",
+         "Guided versions: homeworks/hw4/hw4_walkthrough.ipynb for search and homeworks/hw5/hw5_walkthrough.ipynb for agent steps."],
+  },
+  { loc:["local","stage"], course:["local"],
+    f:"A before and after table in a spreadsheet, with a label for each version of the prompt.",
+    how:["Choose the most frequent failure from your stage 5 counts.",
+         "Change one thing. In the Recipe Chatbot that means one sentence in backend/system_prompt.md.",
+         "Re-run the same query file with the bulk test and run your checks on the new results file. If you changed the judge itself, check it against your golden set first.",
+         "Put the old and new scores side by side. Keep the change only if the target improved and nothing else got worse.",
+         "Add the cases you fixed to your regression set: a CSV of requests that must keep passing."],
+  },
+  { loc:["prod","doc","local"], course:["local"],
+    f:"A weekly review sheet (sample, findings, actions) and a small dashboard of the main checks.",
+    how:["Once a week, pick 20 recent conversations at random.",
+         "Run your checks on them and read the failures yourself.",
+         "Write any new failure type into your category list.",
+         "Add it to the regression set, then repeat from stage 5.",
+         "In a real product, ask engineering for a dashboard of your main checks and an alert when a score drops. In this course you practice by sampling the results files you saved."],
+  }
+];
+
+var CHECKS = [
+  "Wrote a spec and 10 example requests",
+  "Version 0 runs end to end",
+  "Test query set of 100+ inputs saved",
+  "Traces are saved as JSON",
+  "Read 100 traces and wrote notes",
+  "Failure taxonomy with counts",
+  "Code checks for objective failures",
+  "Golden set labeled by me (both failures and good answers)",
+  "LLM judge checked against my golden set",
+  "Before and after table for one improvement",
+  "Regression set created",
+  "Weekly monitoring routine set"
+];
+
+var cur = "chat";
+try { var sv = localStorage.getItem("playbook-scen"); if (sv && SCEN[sv]) cur = sv; } catch(e){}
+
+function li(a){ return "<ul>" + a.map(function(x){return "<li>"+x+"</li>"}).join("") + "</ul>"; }
+function ol(a){ return "<ol>" + a.map(function(x){return "<li>"+x+"</li>"}).join("") + "</ol>"; }
+
+function renderScen(){
+  var tabs = document.getElementById("tabs");
+  tabs.innerHTML = "";
+  Object.keys(SCEN).forEach(function(k){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "tab"; b.textContent = SCEN[k].name;
+    b.setAttribute("aria-pressed", k === cur ? "true" : "false");
+    b.onclick = function(){ cur = k; try{localStorage.setItem("playbook-scen",k)}catch(e){} renderScen(); renderStages("stagesG","gen"); decorate(); };
+    tabs.appendChild(b);
+  });
+  var s = SCEN[cur];
+  document.getElementById("scen").innerHTML =
+    '<div class="box"><div class="k">What it does</div>'+s.job+'</div>'+
+    '<div class="box"><div class="k">Typical failures</div>'+li(s.risk)+'</div>'+
+    '<div class="box"><div class="k">Main evals</div>'+li(s.eval)+'</div>'+
+    '<div class="box"><div class="k">Start here</div>'+s.start+'</div>';
+}
+
+/* mode "gen" = page 1 (general), mode "rec" = page 2 (Recipe Chatbot) */
+function renderStages(id, mode){
+  var box = document.getElementById(id), openSet = {}, first = box.children.length === 0;
+  box.querySelectorAll("details").forEach(function(d,i){ if(d.open) openSet[i]=1; });
+  var h = "";
+  STAGES.forEach(function(st,i){
+    var gen = mode === "gen", x = gen ? GEN[i] : EXTRA[i], isOpen = first ? i === 0 : openSet[i];
+    h += '<details class="stage"'+(isOpen?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+st.t+'</span>'+
+      (!gen && st.hw ? '<span class="tag hw">'+st.hw+'</span>' : '')+'<span class="chev">&#9656;</span></summary><div class="body">'+
+      '<div class="col"><div class="k">Goal</div>'+st.goal+'</div>'+
+      '<div class="col"><div class="k">Do this</div>'+li(st.do)+'</div>'+
+      '<div class="col"><div class="k">You end with</div>'+st.out+'</div>'+
+      locHtml(x, !gen)+
+      '<div class="col"><div class="k">Format</div>'+x.f+'</div>'+
+      '<div class="col"><div class="k">Your role as PM</div>'+PM[i]+'</div>'+
+      (gen ? '<div class="col scn"><div class="k">For: '+SCEN[cur].name+'</div>'+st.s[cur]+'</div>' : '')+
+      '<div class="col how"><div class="k">How, step by step (beginner)</div>'+ol(x.how)+(x.ex?'<pre class="ex" data-ex></pre>':'')+'</div>'+
+      '</div></details>';
+  });
+  box.innerHTML = h;
+  box.querySelectorAll("details").forEach(function(d,i){
+    var pre = d.querySelector("pre.ex[data-ex]"); if(pre) pre.textContent = (mode === "gen" ? GEN : EXTRA)[i].ex;
+  });
+  addCopy();
+}
+
+/* Copy icon inside every code box */
+var ICON_COPY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>';
+var ICON_DONE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>';
+function copyText(t){
+  if(navigator.clipboard && window.isSecureContext){
+    return navigator.clipboard.writeText(t).catch(function(){ return legacyCopy(t); });
+  }
+  return Promise.resolve(legacyCopy(t));
+}
+function legacyCopy(t){
+  var ta = document.createElement("textarea");
+  ta.value = t; ta.setAttribute("readonly",""); ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand("copy"); }catch(e){}
+  document.body.removeChild(ta);
+}
+function addCopy(){
+  document.querySelectorAll("pre.ex").forEach(function(pre){
+    if(pre.querySelector(".copy")) return;
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "copy"; b.title = "Copy"; b.setAttribute("aria-label","Copy to clipboard");
+    b.innerHTML = ICON_COPY;
+    b.onclick = function(){
+      copyText(pre.textContent.trim()).then(function(){
+        b.innerHTML = ICON_DONE; b.classList.add("done"); b.title = "Copied";
+        setTimeout(function(){ b.innerHTML = ICON_COPY; b.classList.remove("done"); b.title = "Copy"; }, 1500);
+      });
+    };
+    pre.appendChild(b);
+  });
+}
+
+function renderChecks(){
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem("playbook-checks") || "{}"); } catch(e){}
+  var box = document.getElementById("check");
+  box.innerHTML = "";
+  CHECKS.forEach(function(c,i){
+    var l = document.createElement("label");
+    var cb = document.createElement("input");
+    cb.type = "checkbox"; cb.id = "chk"+i; cb.checked = !!saved[i];
+    cb.onchange = function(){
+      saved[i] = cb.checked;
+      try{localStorage.setItem("playbook-checks", JSON.stringify(saved))}catch(e){}
+      updateProg();
+    };
+    var sp = document.createElement("span"); sp.textContent = c;
+    l.appendChild(cb); l.appendChild(sp); box.appendChild(l);
+  });
+  updateProg();
+}
+function updateProg(){
+  var n = document.querySelectorAll("#check input:checked").length;
+  document.getElementById("prog").textContent = n + " of " + CHECKS.length + " done";
+}
+
+document.addEventListener("click", function(e){
+  var o = e.target.closest && e.target.closest("[data-open]"), c = e.target.closest && e.target.closest("[data-close]");
+  if(o) document.querySelectorAll("#"+o.getAttribute("data-open")+" details").forEach(function(d){d.open=true});
+  if(c) document.querySelectorAll("#"+c.getAttribute("data-close")+" details").forEach(function(d){d.open=false});
+});
+
+/* ---------- Glossary ---------- */
+var GLOSS = {
+  "RAG": {n:"RAG", d:"Retrieval-Augmented Generation. The AI first looks up relevant text in your documents, then writes its answer using that text. Like an open-book exam.", a:["RAG"]},
+  "guardrails": {n:"Guardrails", d:"Rules that stop the agent from doing or saying certain things, such as giving medical advice or leaving its topic.", a:["guardrails","guardrail"]},
+  "golden set": {n:"Golden set (golden record)", d:"A small collection of real examples where you have checked the right answer or label yourself. It is your answer key: you use it to test whether your AI judge can be trusted, and to compare the agent against verified answers.", a:["golden set","golden record","golden records"]},
+  "trace": {n:"Trace", d:"A complete record of one conversation or run: what the user asked, what the agent did, and what it answered.", a:["traces","trace"]},
+  "agent": {n:"Agent", d:"An AI system that does a job for a user, often by deciding on its own which steps or tools to use.", a:["agents","agent"]},
+  "LLM": {n:"LLM", d:"Large Language Model. The AI model that reads and writes text, such as Claude or GPT.", a:["LLM"]},
+  "system prompt": {n:"System prompt", d:"Hidden instructions you give the model before the user speaks. They set its role, tone and rules.", a:["system prompt"]},
+  "LLM judge": {n:"LLM judge", d:"A second AI model asked to grade the agent's answer, for example pass or fail on one question. Also called LLM-as-judge.", a:["LLM judge","LLM-as-judge","judge","judges"]},
+  "error analysis": {n:"Error analysis", d:"Reading many real traces and writing down what went wrong, so you learn how your agent actually fails.", a:["error analysis"]},
+  "open coding": {n:"Open coding", d:"Reading traces and jotting a short free-form note on each problem you see, without fixed categories yet.", a:["open coding"]},
+  "axial coding": {n:"Axial coding", d:"Grouping your open-coding notes into a few clear categories of failure.", a:["axial coding"]},
+  "failure taxonomy": {n:"Failure taxonomy", d:"Your named list of failure types, with counts and examples. The result of error analysis.", a:["failure taxonomy","taxonomy"]},
+  "regression set": {n:"Regression set", d:"Cases that used to fail and now pass. You re-run them after every change so old bugs do not come back.", a:["regression set"]},
+  "eval": {n:"Eval", d:"Short for evaluation. A repeatable test that tells you how well the agent does on one thing.", a:["evals","eval"]},
+  "retrieval": {n:"Retrieval", d:"The search step that finds the most relevant pieces of text for a question.", a:["retrieval","retrieves","retrieved"]},
+  "BM25": {n:"BM25", d:"A classic keyword-based search method. It ranks documents by how well their words match the question.", a:["BM25"]},
+  "recall@k": {n:"Recall@k", d:"Out of the top k results returned, did the correct document appear? 1 means yes, 0 means no, averaged over many questions.", a:["recall@k"]},
+  "MRR": {n:"MRR", d:"Mean Reciprocal Rank. Scores how high the correct result sits in the list: first place scores 1, second 0.5, third 0.33.", a:["MRR"]},
+  "top-k": {n:"Top-k", d:"How many search results you keep, for example the top 5.", a:["top-k"]},
+  "chunking": {n:"Chunking", d:"Cutting long documents into smaller pieces so search can find the right part.", a:["chunking"]},
+  "query rewriting": {n:"Query rewriting", d:"Having the AI reword the user's question into a better search query before searching.", a:["query rewriting"]},
+  "synthetic": {n:"Synthetic data", d:"Test examples generated by an AI instead of collected from real users. Always read them before trusting them.", a:["synthetic","generate more"]},
+  "faithfulness": {n:"Faithfulness", d:"Whether the answer sticks to the source text, with nothing made up.", a:["faithfulness","supported by"]},
+  "tool": {n:"Tool", d:"A function the agent can call to act or fetch data, such as a search, a calendar or a database lookup.", a:["tools","tool"]},
+  "schema": {n:"Schema", d:"The exact shape a piece of data must have, such as which fields are required and their types.", a:["schema"]},
+  "JSON": {n:"JSON", d:"A plain text format for storing structured data as labeled fields. Easy for both people and programs to read.", a:["JSON"]},
+  "true positive rate": {n:"True positive and true negative rate", d:"How often your judge agrees with you. In this course (HW3), PASS counts as positive: the true positive rate is how often the judge says PASS when you said PASS, and the true negative rate is how often it says FAIL when you said FAIL. You need both to be high to trust the judge.", a:["true positive and true negative rates","true positive rate"]},
+  "bias": {n:"Judge bias", d:"A judge that is consistently too strict or too lenient. You can measure it and adjust the final numbers.", a:["bias"]},
+  "LiteLLM": {n:"LiteLLM", d:"A library that lets your code talk to many AI providers the same way, so you can switch models by changing one setting.", a:["LiteLLM"]},
+  "FastAPI": {n:"FastAPI", d:"A Python tool for building the server side of an app, the part that receives requests and returns answers.", a:["FastAPI"]},
+  "latency": {n:"Latency", d:"How long the user waits for a response.", a:["latency"]},
+  "hand-off": {n:"Hand-off", d:"The moment one step or one agent passes its result to the next.", a:["hand-off","handoff","handoffs","hand-offs"]},
+  "transition matrix": {n:"Transition matrix", d:"A table showing, for each step, how often the run failed when moving to the next step. It shows the weakest link.", a:["transition matrix"]},
+  "prompt": {n:"Prompt", d:"The text you give the model to tell it what to do.", a:["prompt"]},
+  "CSV": {n:"CSV", d:"A spreadsheet saved as plain text, with one row per line and columns separated by commas. Opens in Excel or any text editor.", a:["CSV"]},
+  "staging": {n:"Staging", d:"A private copy of the app in the cloud used for testing before real users see changes.", a:["staging","shared test server"]},
+  "Jupyter": {n:"Jupyter notebook", d:"A page where you mix notes, code and results. You run the code one block at a time and see the output right below.", a:["Jupyter","notebook","notebooks"]},
+  "local": {n:"Local", d:"Running on your own computer instead of on someone else's server. Only you can reach it.", a:["local","locally"]},
+  "API key": {n:"API key", d:"A secret password that lets your app use an AI provider's model. Keep it private and never paste it into chats or documents.", a:["API key"]},
+  "model": {n:"Model", d:"The trained AI that produces the answers, for example Claude or GPT.", a:["model"]}
+};
+
+var tip = document.getElementById("tip");
+function showTip(el){
+  var g = GLOSS[el.getAttribute("data-g")]; if(!g) return;
+  tip.innerHTML = "<b></b><span></span>";
+  tip.firstChild.textContent = g.n; tip.lastChild.textContent = g.d;
+  tip.classList.add("on");
+  var r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+  var x = Math.max(12, Math.min(r.left, window.innerWidth - w - 12));
+  var y = r.bottom + 8; if (y + h > window.innerHeight - 8) y = Math.max(8, r.top - h - 8);
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+function hideTip(){ tip.classList.remove("on"); }
+
+var ALIAS = {}, alts = [];
+Object.keys(GLOSS).forEach(function(k){ GLOSS[k].a.forEach(function(a){ ALIAS[a.toLowerCase()] = k; alts.push(a); }); });
+alts.sort(function(a,b){ return b.length - a.length; });
+var RE = new RegExp("(^|[^A-Za-z0-9@-])(" + alts.map(function(a){ return a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"); }).join("|") + ")(?![A-Za-z0-9@])", "gi");
+var SKIP = "SCRIPT,STYLE,CODE,PRE,SUMMARY,BUTTON,H1,H2,H3,LABEL,INPUT";
+
+function decorate(){
+  var root = document.querySelector(".wrap"), seen = new Map();
+  function blockOf(n){ return n.parentElement.closest(".stage,.box,.col,header,p,.diagram") || root; }
+  root.querySelectorAll(".term").forEach(function(t){
+    var b = blockOf(t); if(!seen.has(b)) seen.set(b,{}); seen.get(b)[t.getAttribute("data-g")] = 1;
+  });
+  var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: function(n){
+    var p = n.parentElement;
+    if(!p || p.closest("svg") || p.closest(SKIP) || p.closest(".term") || p.closest("#gl") || p.closest(".tag") || p.closest(".chip") || p.closest(".tabs")) return NodeFilter.FILTER_REJECT;
+    return n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+  }});
+  var nodes = []; while(walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(function(n){
+    var text = n.nodeValue, b = blockOf(n);
+    if(!seen.has(b)) seen.set(b,{});
+    var used = seen.get(b), out = document.createDocumentFragment(), last = 0, m, any = false;
+    RE.lastIndex = 0;
+    while((m = RE.exec(text))){
+      var key = ALIAS[m[2].toLowerCase()]; if(!key || used[key]) continue;
+      used[key] = 1; any = true;
+      var start = m.index + m[1].length;
+      out.appendChild(document.createTextNode(text.slice(last, start)));
+      var s = document.createElement("span");
+      s.className = "term"; s.tabIndex = 0; s.setAttribute("data-g", key); s.textContent = m[2];
+      out.appendChild(s); last = start + m[2].length;
+    }
+    if(any){ out.appendChild(document.createTextNode(text.slice(last))); n.parentNode.replaceChild(out, n); }
+  });
+}
+document.addEventListener("mouseover", function(e){ var t = e.target.closest && e.target.closest(".term"); if(t) showTip(t); });
+document.addEventListener("mouseout", function(e){ if(e.target.closest && e.target.closest(".term")) hideTip(); });
+document.addEventListener("focusin", function(e){ if(e.target.classList && e.target.classList.contains("term")) showTip(e.target); });
+document.addEventListener("focusout", hideTip);
+document.addEventListener("click", function(e){ var t = e.target.closest && e.target.closest(".term"); if(t) showTip(t); else hideTip(); });
+document.addEventListener("keydown", function(e){ if(e.key === "Escape") hideTip(); });
+window.addEventListener("scroll", hideTip, {passive:true});
+
+(function(){
+  var gl = document.getElementById("gl");
+  Object.keys(GLOSS).sort(function(a,b){ return GLOSS[a].n.localeCompare(GLOSS[b].n); }).forEach(function(k){
+    var d = document.createElement("div"); d.className = "box";
+    var b = document.createElement("b"); b.textContent = GLOSS[k].n;
+    var p = document.createElement("p"); p.textContent = GLOSS[k].d;
+    d.appendChild(b); d.appendChild(p); gl.appendChild(d);
+  });
+})();
+
+/* ---------- Runtime flow (page 1) ---------- */
+var FLOW = {
+  user:     {t:"User request", what:"A person types or speaks a request.", rec:"The exact text, a session id, the time. Anonymize personal details.", fail:"Vague, rude, off-topic or unexpected requests that your spec never imagined."},
+  inguard:  {t:"Input guardrails", what:"Optional checks before the model sees the request. They can block unsafe or out-of-scope input.", rec:"Whether the request passed and which rule fired.", fail:"Blocking legitimate requests, or letting bad ones through."},
+  agent:    {t:"Agent (model + prompt)", what:"The model reads the system prompt, the conversation so far and the request. It then decides: answer now, or use a tool or search first.", rec:"Prompt version, model name, everything the model was given, its answer, time and cost.", fail:"Ignoring a rule, inventing facts, picking the wrong tool, looping."},
+  tools:    {t:"Tools and search", what:"Looks up documents, calls an API or runs code. The result goes back to the agent, which may repeat this loop several times.", rec:"Which tool was used, what it was asked, what it returned, how long it took, and any error.", fail:"Wrong tool, wrong inputs to the tool, empty or irrelevant search results, errors nobody handles."},
+  outguard: {t:"Output guardrails", what:"Optional checks on the answer before the user sees it: format, safety, policy.", rec:"Pass or fail, which rule fired, and any edit made to the text.", fail:"Missing a violation, or rewriting a good answer."},
+  reply:    {t:"Reply to the user", what:"The final answer is sent back.", rec:"The final text, delivery time and any user feedback (a thumbs-down, a rephrased question).", fail:"Too slow, too long, wrong format."},
+  trace:    {t:"Trace log", what:"A recorder that writes one record per run, covering every hop above under one id.", rec:"Everything listed in the other boxes, joined together.", fail:"A hop that is not logged cannot be diagnosed. This is why logging comes before error analysis."},
+  evals:    {t:"Evals and monitoring", what:"Your checks run on saved traces: offline on your test set, and on samples of live traffic.", rec:"Scores per check and per version of the agent.", fail:"A judge that disagrees with you, or checks for failures nobody actually has."}
+};
+function showFlow(k){
+  var f = FLOW[k]; if(!f) return;
+  document.querySelectorAll(".node").forEach(function(g){ g.classList.toggle("sel", g.getAttribute("data-node") === k); });
+  document.getElementById("flowdetail").innerHTML = '<h3 style="margin-bottom:10px">' + f.t + '</h3><div class="flowcols">' +
+    '<div><div class="k">What happens</div>' + f.what + '</div>' +
+    '<div><div class="k">What to record</div>' + f.rec + '</div>' +
+    '<div><div class="k">What can go wrong</div>' + f.fail + '</div></div>';
+}
+document.querySelectorAll(".node").forEach(function(g){
+  g.addEventListener("click", function(){ showFlow(g.getAttribute("data-node")); });
+  g.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); showFlow(g.getAttribute("data-node")); } });
+});
+showFlow("agent");
+
+/* ---------- Two pages (open with #general or #recipe-chatbot) ---------- */
+var PAGE_IDS = {"general":"p-general","recipe-chatbot":"p-recipe"};
+function showPage(key){
+  if(!PAGE_IDS[key]) key = "general";
+  Object.keys(PAGE_IDS).forEach(function(k){ document.getElementById(PAGE_IDS[k]).hidden = (k !== key); });
+  document.querySelectorAll("#pagenav button").forEach(function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-page") === key ? "true" : "false");
+  });
+  try{ history.replaceState(null, "", "#" + key); }catch(e){}
+  try{ localStorage.setItem("playbook-page", key); }catch(e){}
+}
+document.querySelectorAll("#pagenav button").forEach(function(b){
+  b.onclick = function(){ showPage(b.getAttribute("data-page")); window.scrollTo(0,0); };
+});
+
+/* Page 2 sub-tabs: how-to guide, how the system works, about the repo (several wrappers can share one data-sub) */
+function showSub(key){
+  if(key !== "repo" && key !== "system") key = "guide";
+  document.querySelectorAll("#p-recipe .sub").forEach(function(d){ d.hidden = d.getAttribute("data-sub") !== key; });
+  document.querySelectorAll("#subnav button").forEach(function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-sub") === key ? "true" : "false");
+  });
+  try{ localStorage.setItem("playbook-sub", key); }catch(e){}
+}
+document.querySelectorAll("#subnav button").forEach(function(b){
+  b.onclick = function(){ showSub(b.getAttribute("data-sub")); };
+});
+try{ showSub(localStorage.getItem("playbook-sub")); }catch(e){ showSub("guide"); }
+
+renderScen();
+renderStages("stagesG","gen");
+renderStages("stagesR","rec");
+renderChecks();
+decorate();
+var startKey = (location.hash || "").replace("#","");
+if(!PAGE_IDS[startKey]){ try{ startKey = localStorage.getItem("playbook-page") || "general"; }catch(e){ startKey = "general"; } }
+showPage(startKey);
+</script>
