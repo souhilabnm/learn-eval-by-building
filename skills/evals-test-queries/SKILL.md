@@ -59,7 +59,7 @@ Do not ask them to re-run queries by hand or run each query twice. That is optio
 
 Optional, only if the learner asks: `annotation/traces/` holds a different kind of trace. Files named `trace_2024-...` (ids like `SYN025`) are ready-made sample chats shipped with the course, with empty `open_coding` and `axial_coding_code` fields for the annotation tool. Files named `trace_2026...` are the learner's own browser chats, one file per message. In both, `request` is the conversation sent and `response` is the full conversation with the bot's new answer at the end (the system prompt is the first message). It is a separate place from `results/`; nothing from it goes into the results file, and the bulk test queries do not need to be repeated there.
 
-If they want an easier way to read the file, you may build a simple HTML viewer for it (HW1 suggests this). It is a tool, not the lesson.
+If they want an easier way to read the file, point them to `homeworks/hw2/reference_files/viewer.html`: double-click it, then pick the results file. It shows one question and answer at a time and reads both bulk test `.json` files and `.jsonl` files.
 
 ## Done when
 
