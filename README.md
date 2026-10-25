@@ -4,8 +4,7 @@ My notes and playbook from learning how to build and evaluate AI agents, from ze
 
 ## Open the page
 
-- **On the web:** https://souhilabnm.github.io/learn-eval-by-building/
-- **After cloning the repo:** double-click `index.html` in the main folder. It opens the Learn Evals by Doing page in your browser. (GitHub's file viewer shows the HTML as code, so open it from your computer or use the web link.)
+After cloning the repo, double-click `index.html` in the main folder. It opens the Learn Evals by Doing page in your browser. (GitHub's file viewer shows the HTML as code, so open it from your computer, not from GitHub.)
 
 ## What's here
 
