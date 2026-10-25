@@ -1,0 +1,5 @@
+week,sample size,check,pass rate,new failure types,action
+2026-W44,20,stays within budget,19/20,,none
+2026-W44,20,no invented facts,18/20,,read both failures: the guide pages were missing
+2026-W45,20,stays within budget,20/20,,none
+2026-W45,20,no invented facts,19/20,users ask about visas more often (3 of 20),add visa questions to the test set; back to stage 5

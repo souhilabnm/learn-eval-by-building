@@ -1,0 +1,9 @@
+id,my label,judge label,agree? (yes or no),judge's reason,who was right?
+41,FAIL,FAIL,yes,Total 420 exceeds the 300 budget,
+27,FAIL,PASS,no,(v1) No total stated so no overspend found,me: v2 now adds up the costs
+11,FAIL,FAIL,yes,Plan costs 160 on a 50 budget,
+4,PASS,PASS,yes,Total 135 is within 150,
+8,PASS,PASS,yes,Total 470 is within 500,
+60,PASS,PASS,yes,Total 185 is within 200,
+10,PASS,PASS,yes,No budget given and the answer asks for one,
+33,FAIL,FAIL,yes,Total 160 exceeds 120,

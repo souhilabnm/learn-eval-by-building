@@ -1,0 +1,4 @@
+id,query,failure it guards against,passes when,added on
+3,parental leave how long,wrong policy section,Answer comes from leave-policy.pdf,2026-10-25
+2,can i bring my dog to work,answered when the policies are silent,Says the policies don't cover it,2026-10-25
+7,Do unused vacation days carry over to next year?,no source,Has a Source: line,2026-10-27

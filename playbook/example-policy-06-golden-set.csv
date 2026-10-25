@@ -1,0 +1,9 @@
+id,query,response,failure checked,my label (PASS or FAIL),my note,split (dev or test)
+2,can i bring my dog to work,Dogs are allowed on Fridays...,supported by the passages,FAIL,No passage mentions pets,dev
+1,How many sick days do I get?,You get 10 paid sick days per year. Source: Sick leave 2.1,supported by the passages,PASS,,dev
+3,parental leave how long,You get 10 sick days per year...,supported by the passages,PASS,Wrong topic but faithful to its passages; search failure counted elsewhere,dev
+4,What's the limit for a team dinner on expenses?,Up to 50 euros per person. Source: Expenses 4.2,supported by the passages,PASS,,dev
+31,Can I expense a gym membership?,Yes up to 30 euros a month...,supported by the passages,FAIL,Passage says gyms are not covered,dev
+8,is dental covered,Yes. Dental check-ups are covered once a year. Source: Benefits 1.3,supported by the passages,PASS,,test
+44,How long is bereavement leave?,Five days...,supported by the passages,FAIL,Passage says three days,test
+7,Do unused vacation days carry over to next year?,Up to 5 days carry over. Source: Leave 3.4,supported by the passages,PASS,,test

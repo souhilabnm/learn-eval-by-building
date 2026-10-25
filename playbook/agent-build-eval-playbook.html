@@ -1,8 +1,8 @@
-<title>Agent Build and Eval Playbook</title>
+<title>Learn Evals by Doing</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: header with a two-page switch; page 1 is the general playbook, page 2 is the Recipe Chatbot worked example. */
+/* Layout: header with a three-page switch; page 1 is the playbook for any topic, page 2 is the Recipe Chatbot worked example, page 3 the glossary. */
 :root{
   --bg:#F2F5F7; --surface:#FFFFFF; --fg:#13202B; --muted:#51616F; --line:#D5DDE3;
   --accent:#0B7A85; --accent-soft:#DCF0F2; --warn:#A8460C; --warn-soft:#FBE9DC;
@@ -24,6 +24,7 @@ body{background:var(--bg);color:var(--fg);font:400 15px/1.55 var(--f-body);
   padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
 main{display:flex;flex-direction:column;gap:28px}
+[hidden]{display:none !important}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
 h1{font-size:clamp(28px,5vw,40px);letter-spacing:-.01em}
 h2{font-size:22px}
@@ -62,6 +63,29 @@ section{display:flex;flex-direction:column;gap:14px}
 .stage li+li{margin-top:3px}
 .tag{display:inline-block;font:500 12px var(--f-mono);padding:2px 8px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
 .tag.hw{background:var(--ok-soft);color:var(--ok)}
+.stage .tag{margin-right:4px}
+.tag.sk-evals{background:var(--ok-soft);color:var(--ok)}
+.tag.sk-obs,.tag.sk-iter{background:var(--accent-soft);color:var(--accent)}
+.tag.sk-rag{background:var(--bg);color:var(--fg);border:1px solid var(--line)}
+.tag.sk-def,.tag.sk-setup{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.skills .box p{font-size:14px;margin-top:6px}
+#viewer{width:min(920px,calc(100vw - 32px));max-height:85vh;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg)}
+#viewer::backdrop{background:rgba(0,0,0,.45)}
+.vhead{position:sticky;top:0;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.vhead b{font:500 13px var(--f-mono);overflow-wrap:anywhere}
+#vbody{padding:12px 16px 16px}
+#vbody pre{margin:0;white-space:pre-wrap;font:13px/1.55 var(--f-mono)}
+.csv{border-collapse:collapse;font-size:13px;line-height:1.45;min-width:100%}
+.csv th,.csv td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+.csv th{background:var(--bg);font-weight:600}
+.tplgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.loc code{font-size:12px;overflow-wrap:anywhere}
+.glwrap{display:flex;flex-direction:column;gap:18px}
+.glgroup h3{font-size:16px;margin-bottom:8px}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.path h3{font-size:17px;margin-bottom:6px}
+.path ol{margin-top:8px}
 .scn{grid-column:1/-1;background:var(--warn-soft);border-radius:6px;padding:10px 12px}
 .scn .k{color:var(--warn)}
 code{font:400 13px var(--f-mono);background:var(--bg);padding:1px 5px;border-radius:3px}
@@ -135,93 +159,167 @@ a{color:var(--accent);overflow-wrap:anywhere}
 <div class="wrap">
   <header>
     <div class="eyebrow">Reusable playbook</div>
-    <h1>Build an AI agent, then prove it works</h1>
-    <p class="lede">Page 1 is the general method that fits any agent. Page 2 applies it to a real project, the Recipe Chatbot from your course.</p>
+    <h1>Learn evals by doing them</h1>
+    <p class="lede">Page 1 walks you through evals, observability, RAG and iteration on a chatbot about any topic you choose. Page 2 is the worked example from your course, the Recipe Chatbot, whose setup you can borrow. Page 3 explains every term.</p>
     <div class="tabs pagenav" id="pagenav" role="group" aria-label="Page">
-      <button class="tab" type="button" data-page="general" aria-pressed="true">1. General playbook</button>
+      <button class="tab" type="button" data-page="general" aria-pressed="true">1. Playbook for any topic</button>
       <button class="tab" type="button" data-page="recipe-chatbot" aria-pressed="false">2. Real use case: Recipe Chatbot</button>
+      <button class="tab" type="button" data-page="glossary" aria-pressed="false">3. Glossary</button>
     </div>
   </header>
 
-  <!-- ============ PAGE 1: GENERAL ============ -->
+  <!-- ============ PAGE 1: ANY TOPIC ============ -->
   <main id="p-general">
     <section>
-      <h2>Pick your kind of agent</h2>
-      <div class="tabs" id="tabs" role="group" aria-label="Scenario"></div>
-      <div class="scen" id="scen"></div>
-      <p class="small">Real agents often combine several of these. Evaluate each capability on its own, then evaluate the whole.</p>
+      <h2>What you practise here</h2>
+      <p class="small">This page is for learning evals by doing them on a chatbot about a topic you choose. Building the chatbot is not the lesson: any simple bot that saves its answers is enough.</p>
+      <div class="skills">
+        <div class="box"><span class="tag sk-evals">Evals</span><p>Read real answers and name the failures against your definition of good, then turn them into checks and an LLM judge you have tested against your own labels. Some of it you do by hand (naming failures, labeling), some is automatic (code checks and a judge).</p></div>
+        <div class="box"><span class="tag sk-obs">Observability</span><p>Record every run so you can see why an answer went wrong.</p></div>
+        <div class="box"><span class="tag sk-rag">RAG</span><p>When the bot answers from documents, test the search apart from the writing.</p></div>
+        <div class="box"><span class="tag sk-iter">Iteration</span><p>Change one thing, re-run, compare, keep it only if the numbers improve.</p></div>
+      </div>
+      <p class="small"><b>Left out on purpose:</b> choosing models, comparing costs, interface design and deployment. Any reasonable model works for practice.</p>
     </section>
 
     <section>
-      <h2>The loop</h2>
-      <p class="small">You never finish. Production traces feed the next round of error analysis.</p>
+      <h2>Start here: pick a topic</h2>
+      <div class="scen">
+        <div class="box"><div class="k">Pick something you know well</div>You are the judge of every answer. If you cannot tell a good answer from a bad one, you cannot evaluate it.</div>
+        <div class="box"><div class="k">Pick a topic with rules</div>Budgets, dates, policies, diets, safety limits. Rules the bot can break give you failures worth finding.</div>
+        <div class="box"><div class="k">Want to practise RAG?</div>Give the bot 5 to 20 documents to answer from: an HR policy, product pages, your course notes, a city guide.</div>
+      </div>
+      <div class="box">
+        <div class="k">Topic ideas</div>
+        <ul>
+          <li><b>Travel planner</b>: day-by-day plans within a budget and dates. Fails by ignoring limits and inventing facts.</li>
+          <li><b>Policy bot</b> (HR, returns, school rules) answering from a PDF. Good for RAG: wrong section, unsupported answers.</li>
+          <li><b>Study buddy</b> for a subject you teach or studied. Fails by being wrong with confidence or too long.</li>
+          <li><b>Support bot</b> for a made-up shop. Fails by promising what the policy does not allow.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Then get a bot to test</h2>
+      <p class="small">Spend under an hour here. The bot only needs to answer well enough to have failures worth finding.</p>
+      <div class="paths">
+        <div class="box path">
+          <div class="k">Path A · recommended</div>
+          <h3>Borrow the Recipe Chatbot setup</h3>
+          <p>Clone it, let Claude Code install it, then change five files to make it your topic. You also get <code>/evals-coach</code>, which guides you stage by stage.</p>
+          <ol>
+            <li>Follow <b>Before you start</b> on page 2.</li>
+            <li>Then follow <b>Shortest path to a new chatbot</b> in <b>About the repo</b> on page 2.</li>
+          </ol>
+          <div class="btnrow" style="margin-top:10px"><button class="tab" type="button" data-goto="repo">Open About the repo</button></div>
+        </div>
+        <div class="box path">
+          <div class="k">Path B</div>
+          <h3>Vibe-code your own</h3>
+          <p>Use Lovable, Replit or Claude Code. Paste this prompt and fill in your topic. Keep your API key in the tool's secrets settings, never in the code or a chat.</p>
+          <pre class="ex" id="vibe"></pre>
+        </div>
+        <div class="box path">
+          <div class="k">Path C</div>
+          <h3>Use a bot you already have</h3>
+          <p>A bot from work or an earlier project works too, as long as it has the minimum kit below. If something is missing, ask whoever built it to add it.</p>
+        </div>
+      </div>
+      <div class="box" style="border-color:var(--accent)">
+        <div class="k">Minimum kit, whatever path you take</div>
+        <ol>
+          <li><b>Editable instructions.</b> The system prompt sits in one file or setting you can change.</li>
+          <li><b>Every run saved.</b> Question, answer, prompt version, model and, for a document bot, the passages it used. (The Recipe Chatbot of Path A saves only id, question and answer. Its stand-in for the prompt version is to rename each results file, for example v1-first-prompt.json.)</li>
+          <li><b>Batch runs.</b> A way to send a whole list of questions and save all answers in one file per run.</li>
+          <li><b>Optional, for RAG:</b> a folder of documents the bot searches before answering.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section>
+      <h2>The loop, and where the evals happen</h2>
+      <p class="small">Green boxes are where you evaluate: by hand first, then automatically. Orange is where runs are recorded, the data every eval reads. Grey boxes set things up. You never finish: new conversations start the next round.</p>
       <div class="diagram">
-        <svg viewBox="0 0 760 250" role="img" aria-label="Loop: define, build, test inputs, collect traces, error analysis, golden set, create evals, improve, monitor, back to traces">
-          <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
-          <g stroke="var(--line)" stroke-width="1.5">
-            <rect x="10" y="30" width="120" height="54" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
-            <rect x="160" y="30" width="120" height="54" rx="6" fill="var(--surface)"/>
-            <rect x="310" y="30" width="120" height="54" rx="6" fill="var(--surface)"/>
-            <rect x="460" y="30" width="130" height="54" rx="6" fill="var(--warn-soft)" stroke="var(--warn)"/>
-            <rect x="620" y="30" width="130" height="54" rx="6" fill="var(--surface)"/>
-            <rect x="620" y="150" width="130" height="54" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
-            <rect x="460" y="150" width="130" height="54" rx="6" fill="var(--surface)"/>
-            <rect x="310" y="150" width="120" height="54" rx="6" fill="var(--ok-soft)" stroke="var(--ok)"/>
-            <rect x="160" y="150" width="120" height="54" rx="6" fill="var(--surface)"/>
+        <svg viewBox="0 0 760 360" role="img" aria-label="Loop. Setup: define good, get a bot, test questions. Recording: record runs, which every eval reads. Evals by hand: error analysis and golden set. Automatic evals: checks and judge, with an optional search test for document bots. Evals re-run: improve and compare, keep watching. Keep watching feeds new runs back into record runs.">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker>
+          </defs>
+          <g stroke-width="1.5">
+            <rect x="10" y="30" width="120" height="66" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+            <rect x="160" y="30" width="120" height="66" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+            <rect x="310" y="30" width="120" height="66" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+            <rect x="460" y="30" width="130" height="66" rx="6" fill="var(--warn-soft)" stroke="var(--warn)"/>
+            <rect x="620" y="30" width="130" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="620" y="160" width="130" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="460" y="160" width="130" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="310" y="160" width="120" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="160" y="160" width="120" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="460" y="256" width="130" height="50" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-dasharray="5 4"/>
           </g>
           <g font-size="14" font-weight="600" text-anchor="middle">
-            <text x="70" y="62">Define</text>
-            <text x="220" y="62">Build v0</text>
-            <text x="370" y="62">Test inputs</text>
-            <text x="525" y="62">Collect traces</text>
-            <text x="685" y="55">Error</text><text x="685" y="73">analysis</text>
-            <text x="685" y="175">Golden set</text><text x="685" y="193">(label by hand)</text>
-            <text x="525" y="175">Create</text><text x="525" y="193">evals</text>
-            <text x="370" y="175">Improve</text><text x="370" y="193">and re-run</text>
-            <text x="220" y="182">Monitor</text>
+            <text x="70" y="58">1 Define good</text>
+            <text x="220" y="58">2 Get a bot</text>
+            <text x="370" y="58">3 Test questions</text>
+            <text x="525" y="58">4 Record runs</text>
+            <text x="685" y="58">5 Error analysis</text>
+            <text x="685" y="188">6a Golden set</text>
+            <text x="525" y="188">6b Checks + judge</text>
+            <text x="370" y="188">8 Improve</text>
+            <text x="220" y="188">9 Keep watching</text>
+            <text x="525" y="278">7 Search test</text>
+          </g>
+          <g font-size="11" text-anchor="middle" style="fill:var(--muted)">
+            <text x="70" y="80" style="fill:var(--muted)">what evals check</text>
+            <text x="220" y="80" style="fill:var(--muted)">something to test</text>
+            <text x="370" y="80" style="fill:var(--muted)">what evals run on</text>
+            <text x="525" y="80" style="fill:var(--warn)">what evals read</text>
+            <text x="685" y="80" style="fill:var(--ok)">EVAL · by hand</text>
+            <text x="685" y="210" style="fill:var(--ok)">EVAL · your labels</text>
+            <text x="525" y="210" style="fill:var(--ok)">EVAL · automatic</text>
+            <text x="370" y="210" style="fill:var(--ok)">EVAL · re-run</text>
+            <text x="220" y="210" style="fill:var(--ok)">EVAL · new chats</text>
+            <text x="525" y="296" style="fill:var(--ok)">EVAL · RAG only</text>
           </g>
           <g stroke="var(--muted)" stroke-width="1.8" fill="none" marker-end="url(#ah)">
-            <path d="M130 57H158"/><path d="M280 57H308"/><path d="M430 57H458"/><path d="M590 57H618"/>
-            <path d="M685 84V148"/><path d="M620 177H592"/><path d="M460 177H432"/><path d="M310 177H282"/>
-            <path d="M220 150V110H525V86" stroke-dasharray="5 4"/>
+            <path d="M130 63H158"/><path d="M280 63H308"/><path d="M430 63H458"/><path d="M590 63H618"/>
+            <path d="M685 96V158"/><path d="M620 193H592"/><path d="M460 193H432"/><path d="M310 193H282"/>
+            <path d="M220 160V126H525V98" stroke-dasharray="5 4"/>
           </g>
-          <text x="380" y="232" font-size="12" text-anchor="middle" style="fill:var(--muted)">dashed: new production traces start the next round</text>
+          <path d="M525 226V254" stroke="var(--ok)" stroke-width="1.8" stroke-dasharray="3 3" fill="none"/>
+          <text x="372" y="120" font-size="11" text-anchor="middle" style="fill:var(--muted)">new runs: next round</text>
+          <g font-size="12">
+            <rect x="10" y="262" width="16" height="16" rx="3" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>
+            <text x="34" y="275">Setup</text>
+            <rect x="10" y="290" width="16" height="16" rx="3" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="1.5"/>
+            <text x="34" y="303">Recording (observability)</text>
+            <rect x="10" y="318" width="16" height="16" rx="3" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <text x="34" y="331">Evals happen here</text>
+            <rect x="230" y="318" width="16" height="16" rx="3" fill="var(--ok-soft)" stroke="var(--ok)" stroke-dasharray="4 3" stroke-width="1.5"/>
+            <text x="254" y="331">Eval, optional</text>
+          </g>
         </svg>
       </div>
     </section>
 
     <section>
-      <h2>How an agent runs in reality</h2>
-      <p class="small">One request travels left to right. The trace log records every hop. Click a box to see what happens there, what to record, and what can go wrong.</p>
-      <div class="diagram">
-        <svg viewBox="0 0 760 320" role="group" aria-label="Runtime flow: user request, input guardrails, agent, output guardrails, reply, with tools below the agent, a trace log under everything, and evals reading the traces">
-          <defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
-          <g stroke="var(--muted)" stroke-width="1.8" fill="none" marker-end="url(#ah3)">
-            <path d="M130 68H158"/><path d="M280 68H308"/><path d="M430 68H458"/><path d="M580 68H608"/>
-            <path d="M360 98V128"/><path d="M380 128V98"/>
-            <path d="M370 254V270"/>
-          </g>
-          <g stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="2 4" fill="none">
-            <path d="M70 96V214"/><path d="M220 96V214"/><path d="M520 96V214"/><path d="M670 96V214"/><path d="M370 178V214"/>
-          </g>
-          <g class="node" data-node="user" tabindex="0" role="button" aria-label="User request"><rect x="10" y="40" width="120" height="56" rx="6"/><text x="70" y="64" text-anchor="middle" font-size="13" font-weight="600">User</text><text x="70" y="82" text-anchor="middle" font-size="13" font-weight="600">request</text></g>
-          <g class="node" data-node="inguard" tabindex="0" role="button" aria-label="Input guardrails"><rect x="160" y="40" width="120" height="56" rx="6"/><text x="220" y="64" text-anchor="middle" font-size="13" font-weight="600">Input</text><text x="220" y="82" text-anchor="middle" font-size="13" font-weight="600">guardrails</text></g>
-          <g class="node" data-node="agent" tabindex="0" role="button" aria-label="Agent: model and instructions"><rect x="310" y="40" width="120" height="56" rx="6"/><text x="370" y="64" text-anchor="middle" font-size="13" font-weight="600">Agent</text><text x="370" y="82" text-anchor="middle" font-size="13" font-weight="600">model + prompt</text></g>
-          <g class="node" data-node="outguard" tabindex="0" role="button" aria-label="Output guardrails"><rect x="460" y="40" width="120" height="56" rx="6"/><text x="520" y="64" text-anchor="middle" font-size="13" font-weight="600">Output</text><text x="520" y="82" text-anchor="middle" font-size="13" font-weight="600">guardrails</text></g>
-          <g class="node" data-node="reply" tabindex="0" role="button" aria-label="Reply to user"><rect x="610" y="40" width="120" height="56" rx="6"/><text x="670" y="64" text-anchor="middle" font-size="13" font-weight="600">Reply</text><text x="670" y="82" text-anchor="middle" font-size="13" font-weight="600">to user</text></g>
-          <g class="node" data-node="tools" tabindex="0" role="button" aria-label="Tools and search"><rect x="310" y="130" width="120" height="48" rx="6"/><text x="370" y="159" text-anchor="middle" font-size="13" font-weight="600">Tools and search</text></g>
-          <g class="node" data-node="trace" tabindex="0" role="button" aria-label="Trace log"><rect x="10" y="214" width="720" height="40" rx="6"/><text x="370" y="239" text-anchor="middle" font-size="13" font-weight="600">Trace log: one record per run, covering every hop</text></g>
-          <g class="node" data-node="evals" tabindex="0" role="button" aria-label="Evals and monitoring"><rect x="215" y="272" width="310" height="40" rx="6"/><text x="370" y="297" text-anchor="middle" font-size="13" font-weight="600">Evals and monitoring read the traces</text></g>
-        </svg>
-      </div>
-      <div class="box" id="flowdetail" aria-live="polite"></div>
+      <h2>Templates and filled-in examples</h2>
+      <p class="small">One file per stage, in the same folder as this guide. Make a copy for your project before you fill it in. <b>Sheets</b> (.csv) open in Excel or Google Sheets (File &gt; Import). <b>Docs</b> (.md) are plain text: open them in Notepad or TextEdit, or paste them into a Google Doc. Next to each blank template are two filled-in examples for made-up bots, a <b>city trip planner</b> and an <b>HR policy bot</b>, each following one story from stage 1 to 9. Checking them is up to you: open them after you have tried the stage yourself. Click any file to read it here; <b>Save a copy</b> downloads it.</p>
+      <div class="tplgrid" id="tpls"></div>
     </section>
 
     <section>
-      <h2>The nine stages</h2>
-      <p class="small">Examples on this page use an online-shop support agent. See page 2 for a real project.</p>
+      <h2>The nine stages, on your own topic</h2>
+      <p class="small">Each stage says what to do and links a blank template, plus two filled-in examples (a city trip planner and an HR policy bot) to check your work against. Stage numbers match page 2 and <code>/evals-coach</code>.</p>
       <div class="btnrow"><button class="tab" data-open="stagesG" type="button">Expand all</button><button class="tab" data-close="stagesG" type="button">Collapse all</button></div>
       <div id="stagesG" style="display:flex;flex-direction:column;gap:10px"></div>
+    </section>
+
+    <section>
+      <h2>Your progress</h2>
+      <p class="prog" id="progG"></p>
+      <div class="check" id="checkG"></div>
+      <p class="small">Ticks are saved in this browser only.</p>
     </section>
 
     <section>
@@ -232,8 +330,8 @@ a{color:var(--accent);overflow-wrap:anywhere}
         <div class="box"><div class="k">Trust the judge only after testing it</div>Compare the LLM judge with your own labels on a held-out set. Track true positive and true negative rates.</div>
         <div class="box"><div class="k">Make a golden set early</div>Label a sample of real answers yourself. It is the answer key that tells you whether your judge can be trusted. About 50 is a rough starting point; what matters is having enough failures and enough good answers in it.</div>
         <div class="box"><div class="k">Keep a regression set</div>Every failure you fix becomes a permanent test case, so it cannot quietly return.</div>
-        <div class="box"><div class="k">Cheaper first</div>Use code checks (format, schema, regex, tool arguments) before any LLM judge.</div>
-        <div class="box"><div class="k">Domain expert owns quality</div>The person who knows what a good answer is decides the failure categories, not the engineer.</div>
+        <div class="box"><div class="k">Cheaper first</div>Use code checks (format, length, required fields) before any LLM judge.</div>
+        <div class="box"><div class="k">You own quality</div>The person who knows what a good answer is decides the failure categories. On your own topic, that is you.</div>
       </div>
     </section>
   </main>
@@ -263,50 +361,74 @@ a{color:var(--accent);overflow-wrap:anywhere}
 
     <div class="sub" data-sub="system" hidden>
     <section>
-      <h2>The loop, for this project</h2>
-      <p class="small">The same loop as page 1, with the real file or tool you use at each step.</p>
+      <h2>The loop for this project, and where the evals happen</h2>
+      <p class="small">The same loop as page 1, with the real file or tool you use at each step. Green boxes are where you evaluate; orange is where runs are saved, the files every eval reads.</p>
       <div class="diagram">
-        <svg viewBox="0 0 760 250" role="img" aria-label="Recipe Chatbot loop: spec, chatbot v0, test queries, bulk run, error analysis, golden set, LLM judge, improve, monitor, back to bulk run">
+        <svg viewBox="0 0 760 370" role="img" aria-label="Recipe Chatbot loop. Setup: spec document, system_prompt.md, sample_queries.csv. Recording: bulk run saves results JSON files, which every eval reads. Evals by hand: error analysis in a spreadsheet (HW2) and golden_set.csv. Automatic eval: LLM judge in the HW3 notebook, with an optional parts test in HW4 and HW5. Evals re-run: improve by editing the prompt and re-running, and a weekly sample. The weekly sample feeds new runs back into the bulk run.">
           <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
-          <g stroke="var(--line)" stroke-width="1.5">
-            <rect x="10" y="30" width="120" height="54" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
-            <rect x="160" y="30" width="120" height="54" rx="6" fill="var(--surface)"/>
-            <rect x="310" y="30" width="120" height="54" rx="6" fill="var(--surface)"/>
-            <rect x="460" y="30" width="130" height="54" rx="6" fill="var(--warn-soft)" stroke="var(--warn)"/>
-            <rect x="620" y="30" width="130" height="54" rx="6" fill="var(--surface)"/>
-            <rect x="620" y="150" width="130" height="54" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
-            <rect x="460" y="150" width="130" height="54" rx="6" fill="var(--surface)"/>
-            <rect x="310" y="150" width="120" height="54" rx="6" fill="var(--ok-soft)" stroke="var(--ok)"/>
-            <rect x="160" y="150" width="120" height="54" rx="6" fill="var(--surface)"/>
+          <g stroke-width="1.5">
+            <rect x="10" y="30" width="120" height="74" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+            <rect x="160" y="30" width="120" height="74" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+            <rect x="310" y="30" width="120" height="74" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+            <rect x="460" y="30" width="130" height="74" rx="6" fill="var(--warn-soft)" stroke="var(--warn)"/>
+            <rect x="620" y="30" width="130" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="620" y="166" width="130" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="460" y="166" width="130" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="310" y="166" width="120" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="160" y="166" width="120" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="460" y="270" width="130" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-dasharray="5 4"/>
           </g>
-          <g font-size="13" font-weight="600" text-anchor="middle">
-            <text x="70" y="55">Define</text>
-            <text x="220" y="55">Chatbot v0</text>
-            <text x="370" y="55">Test queries</text>
-            <text x="525" y="55">Bulk run</text>
-            <text x="685" y="55">Error analysis</text>
-            <text x="685" y="173">Golden set</text>
-            <text x="525" y="173">LLM judge</text>
-            <text x="370" y="173">Improve</text>
-            <text x="220" y="173">Monitor</text>
+          <g font-size="14" font-weight="600" text-anchor="middle">
+            <text x="70" y="56">1 Define good</text>
+            <text x="220" y="56">2 Chatbot v0</text>
+            <text x="370" y="56">3 Test queries</text>
+            <text x="525" y="56">4 Bulk run</text>
+            <text x="685" y="56">5 Error analysis</text>
+            <text x="685" y="192">6a Golden set</text>
+            <text x="525" y="192">6b LLM judge</text>
+            <text x="370" y="192">8 Improve</text>
+            <text x="220" y="192">9 Monitor</text>
+            <text x="525" y="294">7 Parts test</text>
           </g>
-          <g font-size="11" text-anchor="middle" style="fill:var(--muted)">
-            <text x="70" y="72" style="fill:var(--muted)">spec document</text>
-            <text x="220" y="72" style="fill:var(--muted)">system_prompt.md</text>
-            <text x="370" y="72" style="fill:var(--muted)">sample_queries.csv</text>
-            <text x="525" y="72" style="fill:var(--muted)">results/ JSON file</text>
-            <text x="685" y="72" style="fill:var(--muted)">spreadsheet, HW2</text>
-            <text x="685" y="190" style="fill:var(--muted)">golden_set.csv</text>
-            <text x="525" y="190" style="fill:var(--muted)">HW3 notebook</text>
-            <text x="370" y="190" style="fill:var(--muted)">edit prompt, re-run</text>
-            <text x="220" y="190" style="fill:var(--muted)">weekly sample</text>
+          <g font-size="11" text-anchor="middle">
+            <text x="70" y="76" style="fill:var(--muted)">spec document</text>
+            <text x="220" y="76" style="fill:var(--muted)">system_prompt.md</text>
+            <text x="370" y="76" style="fill:var(--muted)">sample_queries.csv</text>
+            <text x="525" y="76" style="fill:var(--muted)">results/ JSON files</text>
+            <text x="685" y="76" style="fill:var(--muted)">spreadsheet, HW2</text>
+            <text x="685" y="212" style="fill:var(--muted)">golden_set.csv</text>
+            <text x="525" y="212" style="fill:var(--muted)">HW3 notebook</text>
+            <text x="370" y="212" style="fill:var(--muted)">edit prompt, re-run</text>
+            <text x="220" y="212" style="fill:var(--muted)">weekly sample</text>
+            <text x="525" y="312" style="fill:var(--muted)">HW4 search, HW5 steps</text>
+            <text x="70" y="94" style="fill:var(--muted)">what evals check</text>
+            <text x="220" y="94" style="fill:var(--muted)">something to test</text>
+            <text x="370" y="94" style="fill:var(--muted)">what evals run on</text>
+            <text x="525" y="94" style="fill:var(--warn)">what evals read</text>
+            <text x="685" y="94" style="fill:var(--ok)">EVAL · by hand</text>
+            <text x="685" y="230" style="fill:var(--ok)">EVAL · your labels</text>
+            <text x="525" y="230" style="fill:var(--ok)">EVAL · automatic</text>
+            <text x="370" y="230" style="fill:var(--ok)">EVAL · re-run</text>
+            <text x="220" y="230" style="fill:var(--ok)">EVAL · new chats</text>
+            <text x="525" y="328" style="fill:var(--ok)">EVAL · optional</text>
           </g>
           <g stroke="var(--muted)" stroke-width="1.8" fill="none" marker-end="url(#ah2)">
-            <path d="M130 57H158"/><path d="M280 57H308"/><path d="M430 57H458"/><path d="M590 57H618"/>
-            <path d="M685 84V148"/><path d="M620 177H592"/><path d="M460 177H432"/><path d="M310 177H282"/>
-            <path d="M220 150V110H525V86" stroke-dasharray="5 4"/>
+            <path d="M130 67H158"/><path d="M280 67H308"/><path d="M430 67H458"/><path d="M590 67H618"/>
+            <path d="M685 104V164"/><path d="M620 203H592"/><path d="M460 203H432"/><path d="M310 203H282"/>
+            <path d="M220 166V134H525V106" stroke-dasharray="5 4"/>
           </g>
-          <text x="380" y="232" font-size="12" text-anchor="middle" style="fill:var(--muted)">dashed: each week's new results files start the next round</text>
+          <path d="M525 240V268" stroke="var(--ok)" stroke-width="1.8" stroke-dasharray="3 3" fill="none"/>
+          <text x="372" y="128" font-size="11" text-anchor="middle" style="fill:var(--muted)">each week's new results files: next round</text>
+          <g font-size="12">
+            <rect x="10" y="272" width="16" height="16" rx="3" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>
+            <text x="34" y="285">Setup</text>
+            <rect x="10" y="300" width="16" height="16" rx="3" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="1.5"/>
+            <text x="34" y="313">Recording (observability)</text>
+            <rect x="10" y="328" width="16" height="16" rx="3" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <text x="34" y="341">Evals happen here</text>
+            <rect x="230" y="328" width="16" height="16" rx="3" fill="var(--ok-soft)" stroke="var(--ok)" stroke-dasharray="4 3" stroke-width="1.5"/>
+            <text x="254" y="341">Eval, optional</text>
+          </g>
         </svg>
       </div>
     </section>
@@ -560,92 +682,59 @@ OPENAI_API_KEY=paste-your-key-here</pre>
     </div>
   </main>
 
+  <!-- ============ PAGE 3: GLOSSARY ============ -->
+  <main id="p-glossary" hidden>
   <section>
     <h2>Glossary</h2>
-    <p class="small">Dotted words anywhere on these pages explain themselves on hover, focus or tap. All of them are listed here.</p>
-    <div class="gl" id="gl"></div>
+    <p class="small">Dotted words anywhere on these pages explain themselves on hover, focus or tap. Here they are grouped by the skill they belong to, with the stage where you meet them.</p>
+    <div id="gl" class="glwrap"></div>
   </section>
+  </main>
 </div>
+<dialog id="viewer" aria-labelledby="vtitle">
+  <div class="vhead"><b id="vtitle"></b><span class="btnrow"><button class="tab" type="button" id="vsave">Save a copy</button><button class="tab" type="button" id="vclose">Close</button></span></div>
+  <div id="vbody"></div>
+</dialog>
 <div id="tip" role="tooltip"></div>
 
 <script>
-var SCEN = {
-  chat: {
-    name: "Chatbot / assistant",
-    job: "Answers or advises in free text.",
-    risk: ["Ignores constraints (diet, budget, tone)", "Makes up facts", "Off-topic or unsafe replies", "Too long or vague"],
-    eval: ["LLM judge per failure mode", "Code checks for format and length", "Human labels to validate the judge"],
-    start: "Write the system prompt, run 20 varied queries, read every answer."
-  },
-  rag: {
-    name: "RAG assistant",
-    job: "Answers from your documents using retrieval.",
-    risk: ["Retrieves the wrong passage", "Answer not supported by the passage", "Misses the answer that exists", "Stale or conflicting sources"],
-    eval: ["Retrieval: recall@k, MRR", "Faithfulness judge (answer vs. source)", "Synthetic questions made from each document"],
-    start: "Build a question set where you know which document holds the answer."
-  },
-  tool: {
-    name: "Tool-using agent",
-    job: "Calls APIs or functions to act (search, book, update).",
-    risk: ["Picks the wrong tool", "Bad or missing arguments", "Loops or repeats calls", "Takes an unsafe action"],
-    eval: ["Code checks on each tool call", "Task success on end-to-end scenarios", "Step-level failure counts"],
-    start: "List every tool, then write scenarios where the right tool sequence is known."
-  },
-  flow: {
-    name: "Multi-step workflow agent",
-    job: "Plans and runs several steps toward a goal.",
-    risk: ["Fails at one hand-off between steps", "Loses context mid-run", "Never finishes or stops early", "Cost and latency creep"],
-    eval: ["Transition matrix: which step fails most", "Goal completion rate", "Cost and step-count budgets"],
-    start: "Label each trace with the first step where it went wrong."
-  }
-};
-
 var STAGES = [
   { t:"Define the job", hw:"HW1",
     goal:"Decide who the agent serves, what a good result looks like, and what it must refuse.",
     do:["Write a one-paragraph spec","List 10 realistic user requests","List what is out of scope and what is risky"],
-    out:"Spec paragraph and a first query list.",
-    s:{chat:"Define tone, constraints to respect, and refusal rules.",rag:"List which document sets the agent may use.",tool:"List every tool and which ones need user confirmation.",flow:"Define the goal, the steps, and when to stop."}},
+    out:"Spec paragraph and a first query list."},
   { t:"Build version 0", hw:"HW1",
     goal:"Get the simplest working agent, not the best one.",
     do:["Write the system prompt","Pick a model and keep it in config","Add retrieval or tools only if the job needs them","Add guardrails for what the agent must never do"],
-    out:"Something you can chat with or call.",
-    s:{chat:"A prompt plus a model is enough to start.",rag:"Add an index (for example BM25) over your documents.",tool:"Add one tool at a time and test each alone.",flow:"Start with a fixed sequence before adding planning."}},
+    out:"Something you can chat with or call."},
   { t:"Create test inputs", hw:"HW1, HW2",
     goal:"Cover the situations real users will create, including awkward ones.",
     do:["Hand-write 20 to 30 typical requests","List dimensions (user type, difficulty, constraint) and combine them","Generate more with an LLM, then read and prune them"],
-    out:"A query file of 100 or more varied inputs.",
-    s:{chat:"Vary user type, constraints and ambiguous wording.",rag:"Add questions with no answer in the documents.",tool:"Include requests that need no tool, and impossible ones.",flow:"Include long goals and goals that change midway."}},
+    out:"A query file of 100 or more varied inputs."},
   { t:"Capture traces", hw:"HW2, HW5",
     goal:"Record everything the agent did so you can inspect it later.",
     do:["Log input, output, tool calls, retrieved text, time, cost","Save every run as a record you can open later","Keep the model and prompt version with each trace"],
-    out:"A folder of traces you can search and sort.",
-    s:{chat:"Full message history per conversation.",rag:"Also store the retrieved passages.",tool:"Also store tool name, arguments, and results.",flow:"Also store the plan and each step's result."}},
+    out:"A folder of traces you can search and sort."},
   { t:"Error analysis", hw:"HW2",
     goal:"Find out how the agent actually fails, in your own words.",
     do:["Read about 100 traces","Open coding: write a short note on each problem","Axial coding: group notes into 4 to 8 failure categories","Count each category"],
-    out:"A failure taxonomy with counts and example traces.",
-    s:{chat:"Typical groups: ignored constraint, wrong fact, bad format.",rag:"Separate retrieval failures from generation failures.",tool:"Separate wrong tool, wrong arguments, wrong follow-up.",flow:"Mark the first failing step in each trace."}},
+    out:"A failure taxonomy with counts and example traces."},
   { t:"Create a golden set and evals", hw:"HW3",
     goal:"Turn each important failure into an automatic check you can trust.",
     do:["Build your golden set: label a sample of traces yourself (about 50 is a common start), with a pass or fail for each failure","Objective failure: write a code check","Subjective failure: write an LLM judge with one pass or fail question","Measure the judge against your golden set and correct the bias"],
-    out:"A golden set and a set of checks with a known error rate.",
-    s:{chat:"Judge for constraint violations, one judge per constraint.",rag:"Judge that the answer is supported by the retrieved text.",tool:"Code check that arguments match the tool schema.",flow:"Judge task completion on the final state."}},
+    out:"A golden set and a set of checks with a known error rate."},
   { t:"Evaluate the parts", hw:"HW4, HW5",
     goal:"Test components separately so you know where to fix.",
     do:["Score retrieval alone","Score each tool alone","Score each handoff between steps"],
-    out:"Per-component scores.",
-    s:{chat:"Often skipped; evaluate the prompt on its own if you chain prompts.",rag:"Recall@k and MRR on synthetic queries.",tool:"Selection accuracy and argument validity.",flow:"Transition failure matrix across steps."}},
+    out:"Per-component scores."},
   { t:"Improve and re-run", hw:"HW1, HW3",
     goal:"Change one thing, measure, keep it only if the numbers improve.",
     do:["Fix the most frequent or most costly failure first","Change prompt, retrieval, tools, or model","Re-run all checks and compare with the last run","Add fixed cases to the regression set"],
-    out:"A before and after table.",
-    s:{chat:"Tighten the prompt or add examples.",rag:"Change chunking, query rewriting, or top-k.",tool:"Rewrite tool descriptions, add validation.",flow:"Add a checkpoint or a retry at the weak step."}},
+    out:"A before and after table."},
   { t:"Monitor and repeat", hw:"",
     goal:"Real users will find failures your tests missed.",
     do:["Sample live traces every week","Run the same checks on the sample","Send new failure types back to error analysis","Watch cost, latency, and refusal rate"],
-    out:"A weekly review habit.",
-    s:{chat:"Watch for new topics users bring.",rag:"Watch for new or changed documents.",tool:"Watch for API changes and new misuse.",flow:"Watch cost per run and abandoned runs."}}
+    out:"A weekly review habit."}
 ];
 
 var LOC = {
@@ -665,99 +754,240 @@ function locHtml(x, showCourse){
   }).join("") + '</ul></div>';
 }
 
-/* ---------- Page 1: general content (online-shop support agent as the neutral example) ---------- */
+/* ---------- Page 1: any topic. Examples use a travel planner and a policy bot that answers from documents ---------- */
+var SKILL = {def:"Definition", evals:"Evals", obs:"Observability", rag:"RAG", iter:"Iteration", setup:"Setup"};
+
+var VIBE = `Build a minimal chatbot about [your topic] for practising AI evaluations. Keep the interface plain. Requirements:
+1. The bot's instructions live in one editable text file (system_prompt.md).
+2. Every message saves one JSON record: id, time, user question, full answer, prompt version, model name and, if it searches documents, the passages it used with their document ids.
+3. A way to run a CSV file of questions (columns id,query) through the bot, saving all answers to one new results file per run.
+4. Optional: answer from the documents in a docs folder using simple keyword search, passing the top 5 passages to the model.
+Keep my API key in the platform's secrets settings, never in the code.`;
+
 var GEN = [
-  { loc:["doc"],
-    f:"A one-page text (Google Doc or Markdown) plus a list of example requests (text file or spreadsheet).",
-    how:["Open a new Google Doc or text file and name it after your agent, followed by spec.",
-         "Copy the five headings below and answer each in one or two sentences.",
+  { t:"Define what good means", sk:["def"],
+    why:"You cannot score an answer until you have written down what a good one looks like. Every later check is measured against this page.",
+    how:["Write one sentence: who uses your bot, and for what.",
+         "Answer the five headings in the template, one or two sentences each.",
          "Under them, write 10 requests exactly as a real user would type them. Messy and vague is good.",
-         "Ask someone who knows the subject to read it and tell you what is missing."],
-    ex:`Who uses it: (for example, shoppers asking about their orders)
-Job: (answers order, delivery and return questions)
-A good answer looks like: (correct, short, polite, cites the policy)
-Must never: (promise a refund the policy does not allow, or share another customer's data)
-Out of scope: (changing payment details)` },
-  { loc:["local","host","stage","prod"],
-    f:"A running app or agent. Its instructions sit in a text file or a settings page, and its keys sit in a protected settings file or a secrets manager.",
-    how:["Choose where you will build first. For learning, your own laptop or a hosted platform is enough (see Where it runs).",
-         "Pick a model from a provider such as OpenAI, Anthropic or Google and create an API key. An API key is a secret password that lets your app use the model. Keep it in a settings file or secrets manager and never paste it into chats, documents or screenshots.",
-         "Write the system prompt: plain-text instructions the model reads before every conversation. Users never see it. Use the five-part pattern below.",
-         "Run the agent and chat with it. Ask 5 questions you already know the answers to.",
-         "Change one thing at a time so you know which change caused which result."],
-    ex:`Role: You are a support assistant for an online shop.
-Task: Answer questions about orders, delivery and returns.
-Rules: Only use the shop policy provided. If you do not know, say so and offer to connect a person. Never promise a refund.
-Format: Two or three short sentences, then the next step for the customer.
-Defaults: If the order number is missing, ask for it.` },
-  { loc:["doc","local"],
-    f:"A table with one row per request: id, text, type, difficulty. Saved as a CSV file (a spreadsheet saved as plain text) or a sheet.",
-    how:["Open a spreadsheet and create the columns id, query, type.",
-         "Write 20 to 30 typical requests. Then add awkward ones: very short, very long, vague, missing details, rude, in another language, and some that have nothing to do with the agent's job.",
-         "List the dimensions that matter (user type, product, difficulty) and make sure every combination appears at least once.",
-         "To get more, ask an AI to write 50 more in the same style. Read every one and delete the unrealistic ones.",
-         "Save as CSV and run all requests through your agent in one batch. How you start a batch depends on your tool: a script, a test feature, or a notebook."],
-    ex:`id,query,type
-1,Where is my order?,typical
-2,I want a refund after 90 days,policy edge case
-3,help,vague
-4,Tell me a joke,off-topic` },
-  { loc:["local","stage","prod"],
-    f:"One record per run, as JSON or a table row: input, output, every step, version, time and cost.",
-    how:["Decide what to record for every run: the user's input, the final output, every step in between (tool calls, search results), the prompt version, the model, the time and the cost.",
-         "Save one record per run in a file or table. JSON is the common format because it keeps steps in order.",
-         "Give each run an id and keep old files. Never overwrite them, because you will compare runs later.",
-         "Open a few records and check that you can tell, from the record alone, why the agent answered the way it did. If you cannot, record more."],
-    ex:`{
-  "id": "1",
-  "input": "Where is my order?",
-  "steps": [
-    { "type": "tool_call", "name": "lookup_order", "result": "shipped" }
-  ],
-  "output": "Your order shipped yesterday.",
-  "prompt_version": "v3",
-  "cost_usd": 0.002
-}` },
-  { loc:["doc","nb","local"],
-    f:"A sheet with the columns id, what went wrong, category. Then a count table: category and how many.",
-    how:["Open a sample of 50 to 100 traces next to a spreadsheet with the columns id, what went wrong, category.",
-         "For each answer ask: would a real user be happy? Did it follow my spec? Write one short note per problem. This is open coding. Do not worry about categories yet.",
-         "Group similar notes and give each group a name, such as ignored a rule or invented a fact. This is axial coding.",
-         "Count each category. The top two are your first targets.",
-         "Keep the answers you judged. They become your golden set in the next stage."] },
-  { loc:["nb","local","prod"],
-    f:"A golden set (a table of answers with your own PASS or FAIL), a judge that returns PASS or FAIL, and a results table with the judge's true positive and true negative rates.",
-    how:["Build your golden set. It is a small answer key: real answers that you have judged yourself. Take a sample of answers (about 50 is a common starting point, not a fixed rule). Make sure it includes both failures and good answers; if failures are rare, pull more traces until you have enough of each. In a spreadsheet, add your own PASS or FAIL for the failure you picked. Suggested columns: id, query, response, follows_policy, your note.",
-         "Split it: for example, use about 60 percent while you improve the judge and keep the rest untouched to check the final version. The exact split is a judgment call.",
-         "For objective failures (format, length, missing fields) write a code check first. It needs no AI and is cheap.",
-         "For subjective failures write an AI judge: one yes or no question per failure, answering PASS or FAIL plus one sentence of reason (template below).",
-         "Run the judge on the golden set and compare its PASS or FAIL with yours. Count how often it agrees on real failures and on good answers. If agreement is low, rewrite the question and repeat."],
-    ex:`You are checking one thing only.
+         "Ask someone who knows the topic to read it and tell you what is missing."],
+    tpl:`Who uses it:
+Job:
+A good answer looks like:
+Must never:
+Out of scope:`,
+    done:"Spec written, with 10 real-sounding requests",
+    ask:"Could a stranger use your spec to decide whether one answer passes or fails?" },
+  { t:"Get a bot to test", sk:["setup"],
+    why:"You need something that answers, but the bot is not the lesson. Its job is to produce answers you can study.",
+    how:["Choose a path from <b>Then get a bot to test</b> above: borrow the Recipe Chatbot setup, vibe-code your own, or use one you have.",
+         "Turn your spec into the system prompt using the template: each spec heading becomes one instruction.",
+         "Check the minimum kit: editable instructions, every run saved, batch runs.",
+         "Ask 5 questions you know the answers to. If it answers at all, move on. Do not polish it yet: polishing before you have measured anything is guessing."],
+    tpl:`Role: You are a ... helping ... (from Who uses it)
+Task: ... (from Job)
+Rules: ... (from Must never and Out of scope)
+Format: ... (from A good answer looks like)
+Defaults: If the user leaves out ..., assume ...`,
+    done:"Bot answers, and I can find the saved record afterwards",
+    ask:"Which file or setting would you edit to change how your bot behaves?",
+    recipe:"Page 2, <b>Before you start</b>, then <b>Shortest path to a new chatbot</b> in <b>About the repo</b>." },
+  { t:"Write test questions", sk:["setup"],
+    why:"Your evals are only as good as the questions you test with. Real users are vaguer, ruder and stranger than you expect.",
+    how:["Start a sheet with the columns id, query, type.",
+         "Write 20 to 30 typical requests. Then add awkward ones: very short, missing details, two requests in one, off-topic, and ones the bot must refuse.",
+         "Name 2 or 3 dimensions that matter for your topic (for example user type, difficulty, constraint) and make sure each combination appears at least once.",
+         "Ask an AI for 50 more in the same style. Read every one and delete the unrealistic ones.",
+         "Grow the file to about 100 before stage 5. 100 varied questions beat 500 similar ones."],
+    tpl:`id,query,type
+1,,typical
+2,,missing detail
+3,,two requests in one
+4,,off-topic
+5,,must refuse`,
+    done:"About 100 varied test questions saved as CSV",
+    ask:"Which of your questions do you expect the bot to fail, and why?",
+    recipe:"<code>data/sample_queries.csv</code>, run with <code>scripts/bulk_test.py</code>." },
+  { t:"Record every run", sk:["obs"],
+    why:"Evals can only check what was saved. If a step is not recorded, you cannot tell why an answer went wrong.",
+    how:["Run all your test questions through the bot in one batch.",
+         "Open a few saved records and check each one holds the fields in the template.",
+         "If a field is missing, add it now: ask your vibe-coding tool, or whoever built the bot. For a document bot, the retrieved passages matter most.",
+         "Keep every run's file and never overwrite it. You will compare before and after later.",
+         "Test it: pick one bad answer. Can you tell from the record alone why it happened? If not, record more."],
+    tpl:`{
+  "id": "",
+  "time": "",
+  "query": "",
+  "response": "",
+  "prompt_version": "",
+  "model": "",
+  "retrieved": [ { "doc_id": "", "text": "" } ]
+}`,
+    done:"Each batch run saved, with enough detail to explain a bad answer",
+    ask:"For one wrong answer: was the cause the search, the instructions, or the model?",
+    recipe:"<code>results/</code> for batch runs and <code>annotation/traces/</code> for browser chats (page 2, stage 4)." },
+  { t:"Read and name the failures", sk:["evals"],
+    why:"The core skill. You learn how your bot actually fails, in your own words, before writing any automatic check.",
+    how:["Open 50 to 100 records next to a sheet with the columns in the template.",
+         "For each answer ask: would a real user be happy? Does it follow my spec? Write one short note per problem. This is open coding: no categories yet.",
+         "Group similar notes into 4 to 8 named failure types. This is axial coding.",
+         "Count each type. The top two are your first targets.",
+         "For a document bot, note for each failure whether search missed the right passage or the answer ignored it.",
+         "Keep every answer you judged. In stage 6 they become the start of your golden set, so you do not label them twice."],
+    tpl:`id,what went wrong,category,search or answer?`,
+    done:"Failure list with counts and one example record each",
+    ask:"Which failure would hurt a real user most, even if it is rare?" },
+  { t:"Golden set, checks and a judge", sk:["evals"],
+    why:"Turn your top failures into automatic checks, then prove each check agrees with you before you trust it.",
+    how:["Build your golden set: start from the answers you already judged in stage 5 and add more until you have about 50, each labeled PASS or FAIL for one failure. It must include both failures and good answers; if failures are rare, run more questions.",
+         "Split it: about 60 percent to improve the judge with, the rest kept aside for the final check.",
+         "Objective failure (format, length, missing citation): write a code check. No AI needed.",
+         "Subjective failure (ignored budget, unsupported claim): write an LLM judge with one yes or no question, using the template.",
+         "Run the judge on your golden set and count how often it agrees with you on failures and on good answers (true positive and true negative rates). If agreement is low, rewrite the question and repeat."],
+    tpl:`You are checking one thing only.
 User request: {query}
 Answer: {response}
-Question: Does the answer stay within the refund policy?
-Reply with PASS or FAIL, then one sentence explaining why.` },
-  { loc:["nb","stage"],
-    f:"A score table, one row per component (search, each tool, each step).",
-    how:["Write down the parts of your agent: the search step, each tool, each hand-off between steps.",
-         "For each part ask: given a correct input, does it do its job? Test it on its own.",
-         "For search: take questions where you know which document holds the answer, and check whether that document appears in the top results.",
-         "Fill a table with the columns part, test, score. The lowest score is where to work first."] },
-  { loc:["local","stage"],
-    f:"A before and after table in a spreadsheet, with a label for each version of the prompt.",
-    how:["Choose the most frequent or most costly failure from your counts.",
-         "Change one thing: a sentence in the prompt, a search setting, or a tool description.",
-         "Re-run the same requests and your checks on the new output.",
-         "Put old and new scores side by side. Keep the change only if the target improved and nothing else got worse.",
-         "Add the fixed cases to your regression set. If you changed the judge, check it against your golden set first."] },
-  { loc:["prod","doc"],
-    f:"A weekly review sheet (sample, findings, actions) and a small dashboard of the main checks.",
-    how:["Once a week, pick 20 recent real conversations at random.",
+Question: (one yes or no question about one failure)
+Reply with PASS or FAIL, then one sentence explaining why.`,
+    done:"Golden set labeled by me, with failures and good answers",
+    done2:"One judge, with its agreement with me measured",
+    ask:"Where did the judge disagree with you, and who was right?",
+    recipe:"<code>homeworks/hw3/hw3_walkthrough.ipynb</code>." },
+  { t:"Test the search part", sk:["rag","evals"], opt:"Only if your bot answers from documents",
+    why:"When a document bot is wrong, first find out whether search found the right passage. Rewriting the instructions does not help if search failed.",
+    how:["No documents in your bot? Skip to stage 8, or add 5 to 20 documents now to practise RAG.",
+         "Write 20 to 30 questions where you know which document holds the answer. An AI can draft them from each document; read and fix every one.",
+         "For each question, check whether that document is in the top 5 results (recall@5) and how high it sits (MRR).",
+         "Separately, judge whether the answer is supported by what was retrieved (faithfulness).",
+         "Keep the two scores apart. The lower one is where to work."],
+    tpl:`question,expected_doc_id,in_top_5,rank,answer_supported`,
+    done:"Search score and faithfulness score, kept separate",
+    ask:"For your worst answers, was search or writing to blame?",
+    recipe:"<code>backend/retrieval.py</code> and <code>homeworks/hw4/hw4_walkthrough.ipynb</code>." },
+  { t:"Improve one thing and compare", sk:["iter","evals"],
+    why:"Change one thing, measure, keep it only if the numbers improve. Change two things at once and you cannot tell which one helped.",
+    how:["Pick the most frequent or most harmful failure from stage 5.",
+         "Change one thing: a sentence in the instructions, a search setting, or how many passages are passed in.",
+         "Re-run the same test questions, then the same checks.",
+         "Put before and after side by side. Keep the change only if the target improved and nothing else got worse.",
+         "Add the cases you fixed to a regression set: questions that must keep passing."],
+    tpl:`change,target failure,before,after,other checks,keep?`,
+    done:"Before and after table for one change",
+    done2:"Regression set created",
+    ask:"Did your fix break anything else?" },
+  { t:"Keep watching", sk:["obs","iter","evals"],
+    why:"Real users find failures your test questions missed. Evals become a habit, not a one-off.",
+    how:["Each week, or after each change, get 20 new conversations. A practice bot has no real users, so make them: ask 3 or 4 friends to use the bot for a week, or write 20 fresh questions you have never tested and run them as a batch.",
          "Run your checks on them and read the failures yourself.",
-         "Write any new failure type into your category list.",
-         "Add it to the regression set, then repeat error analysis.",
-         "Ask engineering for a dashboard of your main checks and an alert when a score drops."] }
+         "Found a new failure type? Add it to your list and go back to stage 5.",
+         "Track a few numbers over time: each check's pass rate and how often the bot refuses or says it does not know."],
+    tpl:`week,sample size,check,pass rate,new failure types,action`,
+    done:"Two rounds of review done",
+    ask:"What would make you trust this bot enough to put it in front of real users?" }
 ];
+
+/* Template files sit next to this page; index = stage - 1 */
+var TFILES = [
+  [["template-01-spec.md","Doc","Spec"]],
+  [["template-02-system-prompt.md","Doc","System prompt"]],
+  [["template-03-test-questions.csv","Sheet","Test questions"]],
+  [["template-04-trace-record.md","Doc","What each run must record"]],
+  [["template-05-open-coding.csv","Sheet","Open coding notes"],["template-05-failure-counts.csv","Sheet","Failure counts"]],
+  [["template-06-golden-set.csv","Sheet","Golden set"],["template-06-judge-prompt.md","Doc","Judge prompt and agreement rates"],["template-06-judge-agreement.csv","Sheet","Judge vs. you, row by row"]],
+  [["template-07-search-test.csv","Sheet","Search test"]],
+  [["template-08-before-after.csv","Sheet","Before and after"],["template-08-regression-set.csv","Sheet","Regression set"]],
+  [["template-09-weekly-review.csv","Sheet","Weekly review"]]
+];
+function fileList(files){
+  return '<ul class="loc">' + files.map(function(f){
+    return '<li><a href="'+f[0]+'" data-tpl-file>'+f[2]+'</a> <span class="chip '+(f[1]==="Sheet"?"same":"edit")+'">'+f[1]+'</span><br><code>'+f[0]+'</code></li>';
+  }).join("") + '</ul>';
+}
+/* Template and example links open in a viewer; Save a copy goes through the downloads capability (in claude.ai a plain download link is blocked) */
+var DL = null;
+try { if (window.claude && window.claude.use) window.claude.use("downloads").then(function(d){ DL = d; }); } catch(e){}
+function parseCSV(t){
+  var rows = [], row = [], f = "", q = false;
+  for(var i = 0; i < t.length; i++){
+    var c = t[i];
+    if(q){ if(c === '"'){ if(t[i+1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
+    else if(c === '"') q = true;
+    else if(c === ','){ row.push(f); f = ""; }
+    else if(c === '\n'){ row.push(f); rows.push(row); row = []; f = ""; }
+    else if(c !== '\r') f += c;
+  }
+  if(f || row.length){ row.push(f); rows.push(row); }
+  return rows;
+}
+var viewer = document.getElementById("viewer"), vText = "", vName = "";
+function openViewer(name, text){
+  vName = name; vText = text;
+  document.getElementById("vtitle").textContent = name;
+  var body = document.getElementById("vbody"); body.innerHTML = "";
+  if(/\.csv$/.test(name)){
+    var tbl = document.createElement("table"); tbl.className = "csv";
+    parseCSV(text).forEach(function(r, ri){
+      var tr = tbl.insertRow();
+      r.forEach(function(c){ var cell = document.createElement(ri ? "td" : "th"); cell.textContent = c; tr.appendChild(cell); });
+    });
+    var w = document.createElement("div"); w.className = "mapwrap"; w.appendChild(tbl); body.appendChild(w);
+  } else {
+    var pre = document.createElement("pre"); pre.textContent = text; body.appendChild(pre);
+  }
+  document.getElementById("vsave").hidden = !DL;
+  if(viewer.showModal) viewer.showModal(); else viewer.setAttribute("open", "");
+}
+document.getElementById("vclose").onclick = function(){ if(viewer.close) viewer.close(); else viewer.removeAttribute("open"); };
+document.getElementById("vsave").onclick = function(){ if(DL) DL.save({filename:vName, data:vText}).catch(function(){}); };
+document.addEventListener("click", function(e){
+  var a = e.target.closest && e.target.closest("a[data-tpl-file]");
+  if(!a) return;
+  e.preventDefault();
+  var name = a.getAttribute("href");
+  fetch(name).then(function(r){ if(!r.ok) throw new Error("fetch"); return r.text(); })
+    .then(function(t){ openViewer(name, t); })
+    .catch(function(){ window.open(a.href, "_blank"); });
+});
+
+/* Filled-in examples: same names as the templates, with example-<topic>- in front */
+var TOPICS = [["travel","City trip planner"],["policy","HR policy bot"]];
+function exList(i){
+  return '<ul class="loc">' + TOPICS.map(function(t){
+    return '<li><b>'+t[1]+'</b><br>' + TFILES[i].map(function(f){
+      return '<a href="example-'+t[0]+'-'+f[0].slice(9)+'" data-tpl-file>'+f[2]+'</a>';
+    }).join(" · ") + '</li>';
+  }).join("") + '</ul><p class="small" style="margin-top:6px">Try the stage yourself first, then compare.</p>';
+}
+
+function renderTemplates(){
+  document.getElementById("tpls").innerHTML = GEN.map(function(x,i){
+    return '<div class="box"><div class="k">Stage '+(i+1)+' · '+x.t+'</div>'+fileList(TFILES[i])+'<div class="k" style="margin-top:10px">Filled-in examples</div>'+exList(i)+'</div>';
+  }).join("");
+}
+
+function renderGen(){
+  var h = "";
+  GEN.forEach(function(x,i){
+    h += '<details class="stage"'+(i===0?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+x.t+'</span>'+
+      x.sk.map(function(k){ return '<span class="tag sk-'+k+'">'+SKILL[k]+'</span>'; }).join(" ")+
+      '<span class="chev">&#9656;</span></summary><div class="body">'+
+      (x.opt ? '<div class="col scn"><div class="k">Optional</div>'+x.opt+'</div>' : '')+
+      '<div class="col" style="grid-column:1/-1"><div class="k">Why</div>'+x.why+'</div>'+
+      '<div class="col how" style="border-top:0;padding-top:0"><div class="k">Do it on your project</div>'+ol(x.how)+'</div>'+
+      '<div class="col" style="grid-column:1/-1"><div class="k">Template to fill in</div>'+fileList(TFILES[i])+'<p class="small" style="margin-top:8px">Preview:</p><pre class="ex" data-tpl></pre></div>'+
+      '<div class="col"><div class="k">Filled-in examples</div>'+exList(i)+'</div>'+
+      '<div class="col"><div class="k">Done when</div>'+x.done+(x.done2?'<br>'+x.done2:'')+'</div>'+
+      '<div class="col"><div class="k">Check yourself</div>'+x.ask+'</div>'+
+      (x.recipe ? '<div class="col"><div class="k">Using the Recipe setup?</div>'+x.recipe+'</div>' : '')+
+      '</div></details>';
+  });
+  var box = document.getElementById("stagesG");
+  box.innerHTML = h;
+  box.querySelectorAll("details").forEach(function(d,i){ d.querySelector("pre[data-tpl]").textContent = GEN[i].tpl; });
+  document.getElementById("vibe").textContent = VIBE;
+  addCopy();
+}
 
 var PM = [
   "You own this stage: who the users are, what success means, what is out of scope.",
@@ -822,13 +1052,13 @@ Defaults: If no ingredients are given, assume basic pantry items. If no serving 
 4,What's the capital of France?`,
   },
   { loc:["local","stage","prod"], course:["local"],
-    f:"In this project, two places. Chats in your browser are saved by the app as one JSON file per message (folder annotation/traces). Bulk runs are saved as one JSON file per run (folder results). Real products also record model, prompt version, time and cost.",
+    f:"A trace is one question plus the bot's answer. Your bulk test already saves all of them in one file in the results folder. Your only jobs here: run it, read three entries, and keep a renamed copy of the file. Real products also record model, prompt version, time and cost; this project does not.",
     how:["Run the bulk test from stage 3. It prints each question and answer in the terminal.",
          "When it finishes, it prints a line starting Saved, with the new file name, for example results/results_20261024_150000.json.",
-         "Open the results folder inside the project and open that file in Notepad or VS Code.",
-         "This file is your set of traces. Keep every file and do not overwrite them, so you can compare runs later. Before you change the prompt, copy the file and rename the copy (for example before-prompt-change.json).",
-         "Browser chats are saved too. Chat with the bot in your browser, then open the folder annotation/traces inside the project. Each file is one message: the conversation sent (request) and the updated conversation (response).",
-         "Neither place saves the model name, prompt version, time taken or cost. A real product would. You are not adding that here. Just know to ask for it (see the diagram above)."],
+         "Open the results folder inside the project (<code>recipe-chatbot\\results</code>) in File Explorer and open that file in Notepad or VS Code. Each entry is one trace: an id, the query (the question) and the response (the bot's answer). Read three entries. This file is your set of traces.",
+         "Make a copy of the file and rename the copy after your prompt version, for example v1-first-prompt.json. Why: the file does not say which prompt produced it, and the next bulk test makes a new file. The copy lets you compare before and after later. Never edit or delete old copies. After each prompt change, run the bulk test again and rename the new file (v2-...).",
+         "Know what is not saved: the model name, the prompt version, the time taken and the cost. A real product would save them. You are not adding them here. Just remember to ask for them when you build or buy a bot.",
+         "Optional, you can skip it: the folder <code>recipe-chatbot\\annotation\\traces</code> holds a different kind of trace. Files named trace_2024-... (ids like SYN025) are ready-made sample chats that came with the course, with empty open_coding and axial_coding_code fields for the annotation tool. Files named trace_2026... are your own browser chats, one file per message. In both, request is the conversation sent and response is the full conversation with the bot's new answer at the end (the system prompt is the first message). This is a separate place from results. You do not need to repeat your bulk test queries there."],
     ex:`[
   {
     "id": "1",
@@ -840,11 +1070,11 @@ Defaults: If no ingredients are given, assume basic pantry items. If no serving 
   { loc:["doc","nb","local"], course:["nb","local"],
     f:"A sheet with columns: id, what went wrong, category. Then a count table: category and how many.",
     how:["Open a results file from stage 4. Open a spreadsheet next to it with the columns id, what went wrong, category.",
-         "For each answer ask: would a real user be happy? Did it follow my stage 1 spec? Write one short note for each problem. This is open coding. Do not worry about categories yet.",
+         "Open coding means reading one answer at a time and writing, in your own words, what is wrong with it. For each answer ask: would a real user be happy? Did it follow my stage 1 spec? Write one short note per problem, specific enough that someone else could see it in the answer. Good: used butter after the user said vegan. Weak: bad answer. Example: the user asked for a kosher, dairy-free meal from their pantry, and the bot listed 10 ingredients without asking what the pantry holds. Note: ignored pantry, assumed ingredients. Why do this first: you find out how the bot really fails before you decide on categories. Do not make categories yet.",
          "After 50 to 100 notes, group similar notes and give each group a name, such as ignored the diet or too long. This is axial coding.",
          "Count how many notes are in each category. The top two are your first targets.",
          "Keep the answers you judged. In stage 6 they become your golden set.",
-         'Optional labeling tool in the browser. In a terminal in the recipe-chatbot folder, paste this, then open http://localhost:5001. It shows your browser chats (annotation/traces), not the bulk-test results. The --with parts add two packages for this run only, because the project does not install them.<pre class="ex">uv run --with python-fasthtml --with monsterui python annotation/annotation.py</pre>',
+         'Optional: a labeling tool, instead of a spreadsheet. What it is for: it does the same open coding and axial coding as steps 2 and 3, but shows one chat at a time with a box for your note and a box for the category. When you press Save it stores them inside that chat\'s file in annotation/traces and moves to the next chat, so you do not copy and paste between a sheet and a results file. Use it to practise on the 250 ready-made sample chats (the trace_2024 files), or on your own browser chats. It does not show your bulk-test results file, so for those use the spreadsheet. To start it, paste this in a terminal in the recipe-chatbot folder, then open http://localhost:5001. The --with parts add two packages for this run only, because the project does not install them.<pre class="ex">uv run --with python-fasthtml --with monsterui python annotation/annotation.py</pre>',
          'Optional guided notebook. In a terminal in the recipe-chatbot folder, paste this (--with jupyter adds Jupyter for this run only):<pre class="ex">uv run --with jupyter jupyter notebook homeworks/hw2/hw2_walkthrough.ipynb</pre>'],
   },
   { loc:["nb","local","prod"], course:["nb"],
@@ -904,52 +1134,34 @@ var CHECKS = [
   "Weekly monitoring routine set"
 ];
 
-var cur = "chat";
-try { var sv = localStorage.getItem("playbook-scen"); if (sv && SCEN[sv]) cur = sv; } catch(e){}
-
 function li(a){ return "<ul>" + a.map(function(x){return "<li>"+x+"</li>"}).join("") + "</ul>"; }
 function ol(a){ return "<ol>" + a.map(function(x){return "<li>"+x+"</li>"}).join("") + "</ol>"; }
 
-function renderScen(){
-  var tabs = document.getElementById("tabs");
-  tabs.innerHTML = "";
-  Object.keys(SCEN).forEach(function(k){
-    var b = document.createElement("button");
-    b.type = "button"; b.className = "tab"; b.textContent = SCEN[k].name;
-    b.setAttribute("aria-pressed", k === cur ? "true" : "false");
-    b.onclick = function(){ cur = k; try{localStorage.setItem("playbook-scen",k)}catch(e){} renderScen(); renderStages("stagesG","gen"); decorate(); };
-    tabs.appendChild(b);
-  });
-  var s = SCEN[cur];
-  document.getElementById("scen").innerHTML =
-    '<div class="box"><div class="k">What it does</div>'+s.job+'</div>'+
-    '<div class="box"><div class="k">Typical failures</div>'+li(s.risk)+'</div>'+
-    '<div class="box"><div class="k">Main evals</div>'+li(s.eval)+'</div>'+
-    '<div class="box"><div class="k">Start here</div>'+s.start+'</div>';
-}
+/* Page 2 stages (Recipe Chatbot): the skill each stage practises, same names as page 1 */
+var STAGE_SK = [["def"],["setup"],["setup"],["obs"],["evals"],["evals"],["rag","evals"],["iter","evals"],["obs","iter","evals"]];
 
-/* mode "gen" = page 1 (general), mode "rec" = page 2 (Recipe Chatbot) */
-function renderStages(id, mode){
+/* Page 2 stages (Recipe Chatbot) */
+function renderStages(id){
   var box = document.getElementById(id), openSet = {}, first = box.children.length === 0;
   box.querySelectorAll("details").forEach(function(d,i){ if(d.open) openSet[i]=1; });
   var h = "";
   STAGES.forEach(function(st,i){
-    var gen = mode === "gen", x = gen ? GEN[i] : EXTRA[i], isOpen = first ? i === 0 : openSet[i];
+    var x = EXTRA[i], isOpen = first ? i === 0 : openSet[i];
     h += '<details class="stage"'+(isOpen?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+st.t+'</span>'+
-      (!gen && st.hw ? '<span class="tag hw">'+st.hw+'</span>' : '')+'<span class="chev">&#9656;</span></summary><div class="body">'+
+      STAGE_SK[i].map(function(k){ return '<span class="tag sk-'+k+'">'+SKILL[k]+'</span>'; }).join(" ")+" "+
+      (st.hw ? '<span class="tag hw">'+st.hw+'</span>' : '')+'<span class="chev">&#9656;</span></summary><div class="body">'+
       '<div class="col"><div class="k">Goal</div>'+st.goal+'</div>'+
       '<div class="col"><div class="k">Do this</div>'+li(st.do)+'</div>'+
       '<div class="col"><div class="k">You end with</div>'+st.out+'</div>'+
-      locHtml(x, !gen)+
+      locHtml(x, true)+
       '<div class="col"><div class="k">Format</div>'+x.f+'</div>'+
       '<div class="col"><div class="k">Your role as PM</div>'+PM[i]+'</div>'+
-      (gen ? '<div class="col scn"><div class="k">For: '+SCEN[cur].name+'</div>'+st.s[cur]+'</div>' : '')+
       '<div class="col how"><div class="k">How, step by step (beginner)</div>'+ol(x.how)+(x.ex?'<pre class="ex" data-ex></pre>':'')+'</div>'+
       '</div></details>';
   });
   box.innerHTML = h;
   box.querySelectorAll("details").forEach(function(d,i){
-    var pre = d.querySelector("pre.ex[data-ex]"); if(pre) pre.textContent = (mode === "gen" ? GEN : EXTRA)[i].ex;
+    var pre = d.querySelector("pre.ex[data-ex]"); if(pre) pre.textContent = EXTRA[i].ex;
   });
   addCopy();
 }
@@ -986,28 +1198,28 @@ function addCopy(){
   });
 }
 
-function renderChecks(){
+var CHECKS_GEN = [];
+GEN.forEach(function(x){ CHECKS_GEN.push(x.done); if(x.done2) CHECKS_GEN.push(x.done2); });
+
+function renderChecks(list, boxId, progId, key){
   var saved = {};
-  try { saved = JSON.parse(localStorage.getItem("playbook-checks") || "{}"); } catch(e){}
-  var box = document.getElementById("check");
+  try { saved = JSON.parse(localStorage.getItem(key) || "{}"); } catch(e){}
+  var box = document.getElementById(boxId);
   box.innerHTML = "";
-  CHECKS.forEach(function(c,i){
+  function prog(){ document.getElementById(progId).textContent = box.querySelectorAll("input:checked").length + " of " + list.length + " done"; }
+  list.forEach(function(c,i){
     var l = document.createElement("label");
     var cb = document.createElement("input");
-    cb.type = "checkbox"; cb.id = "chk"+i; cb.checked = !!saved[i];
+    cb.type = "checkbox"; cb.checked = !!saved[i];
     cb.onchange = function(){
       saved[i] = cb.checked;
-      try{localStorage.setItem("playbook-checks", JSON.stringify(saved))}catch(e){}
-      updateProg();
+      try{localStorage.setItem(key, JSON.stringify(saved))}catch(e){}
+      prog();
     };
     var sp = document.createElement("span"); sp.textContent = c;
     l.appendChild(cb); l.appendChild(sp); box.appendChild(l);
   });
-  updateProg();
-}
-function updateProg(){
-  var n = document.querySelectorAll("#check input:checked").length;
-  document.getElementById("prog").textContent = n + " of " + CHECKS.length + " done";
+  prog();
 }
 
 document.addEventListener("click", function(e){
@@ -1016,48 +1228,60 @@ document.addEventListener("click", function(e){
   if(c) document.querySelectorAll("#"+c.getAttribute("data-close")+" details").forEach(function(d){d.open=false});
 });
 
-/* ---------- Glossary ---------- */
+/* ---------- Glossary, grouped by the skill each term belongs to ---------- */
+var GROUPS = ["Basics", "Evals: by hand", "Evals: automatic", "Observability", "RAG", "Iteration", "Recipe Chatbot setup (page 2)"];
 var GLOSS = {
-  "RAG": {n:"RAG", d:"Retrieval-Augmented Generation. The AI first looks up relevant text in your documents, then writes its answer using that text. Like an open-book exam.", a:["RAG"]},
-  "guardrails": {n:"Guardrails", d:"Rules that stop the agent from doing or saying certain things, such as giving medical advice or leaving its topic.", a:["guardrails","guardrail"]},
-  "golden set": {n:"Golden set (golden record)", d:"A small collection of real examples where you have checked the right answer or label yourself. It is your answer key: you use it to test whether your AI judge can be trusted, and to compare the agent against verified answers.", a:["golden set","golden record","golden records"]},
-  "trace": {n:"Trace", d:"A complete record of one conversation or run: what the user asked, what the agent did, and what it answered.", a:["traces","trace"]},
-  "agent": {n:"Agent", d:"An AI system that does a job for a user, often by deciding on its own which steps or tools to use.", a:["agents","agent"]},
-  "LLM": {n:"LLM", d:"Large Language Model. The AI model that reads and writes text, such as Claude or GPT.", a:["LLM"]},
-  "system prompt": {n:"System prompt", d:"Hidden instructions you give the model before the user speaks. They set its role, tone and rules.", a:["system prompt"]},
-  "LLM judge": {n:"LLM judge", d:"A second AI model asked to grade the agent's answer, for example pass or fail on one question. Also called LLM-as-judge.", a:["LLM judge","LLM-as-judge","judge","judges"]},
-  "error analysis": {n:"Error analysis", d:"Reading many real traces and writing down what went wrong, so you learn how your agent actually fails.", a:["error analysis"]},
-  "open coding": {n:"Open coding", d:"Reading traces and jotting a short free-form note on each problem you see, without fixed categories yet.", a:["open coding"]},
-  "axial coding": {n:"Axial coding", d:"Grouping your open-coding notes into a few clear categories of failure.", a:["axial coding"]},
-  "failure taxonomy": {n:"Failure taxonomy", d:"Your named list of failure types, with counts and examples. The result of error analysis.", a:["failure taxonomy","taxonomy"]},
-  "regression set": {n:"Regression set", d:"Cases that used to fail and now pass. You re-run them after every change so old bugs do not come back.", a:["regression set"]},
-  "eval": {n:"Eval", d:"Short for evaluation. A repeatable test that tells you how well the agent does on one thing.", a:["evals","eval"]},
-  "retrieval": {n:"Retrieval", d:"The search step that finds the most relevant pieces of text for a question.", a:["retrieval","retrieves","retrieved"]},
-  "BM25": {n:"BM25", d:"A classic keyword-based search method. It ranks documents by how well their words match the question.", a:["BM25"]},
-  "recall@k": {n:"Recall@k", d:"Out of the top k results returned, did the correct document appear? 1 means yes, 0 means no, averaged over many questions.", a:["recall@k"]},
-  "MRR": {n:"MRR", d:"Mean Reciprocal Rank. Scores how high the correct result sits in the list: first place scores 1, second 0.5, third 0.33.", a:["MRR"]},
-  "top-k": {n:"Top-k", d:"How many search results you keep, for example the top 5.", a:["top-k"]},
-  "chunking": {n:"Chunking", d:"Cutting long documents into smaller pieces so search can find the right part.", a:["chunking"]},
-  "query rewriting": {n:"Query rewriting", d:"Having the AI reword the user's question into a better search query before searching.", a:["query rewriting"]},
-  "synthetic": {n:"Synthetic data", d:"Test examples generated by an AI instead of collected from real users. Always read them before trusting them.", a:["synthetic","generate more"]},
-  "faithfulness": {n:"Faithfulness", d:"Whether the answer sticks to the source text, with nothing made up.", a:["faithfulness","supported by"]},
-  "tool": {n:"Tool", d:"A function the agent can call to act or fetch data, such as a search, a calendar or a database lookup.", a:["tools","tool"]},
-  "schema": {n:"Schema", d:"The exact shape a piece of data must have, such as which fields are required and their types.", a:["schema"]},
-  "JSON": {n:"JSON", d:"A plain text format for storing structured data as labeled fields. Easy for both people and programs to read.", a:["JSON"]},
-  "true positive rate": {n:"True positive and true negative rate", d:"How often your judge agrees with you. In this course (HW3), PASS counts as positive: the true positive rate is how often the judge says PASS when you said PASS, and the true negative rate is how often it says FAIL when you said FAIL. You need both to be high to trust the judge.", a:["true positive and true negative rates","true positive rate"]},
-  "bias": {n:"Judge bias", d:"A judge that is consistently too strict or too lenient. You can measure it and adjust the final numbers.", a:["bias"]},
-  "LiteLLM": {n:"LiteLLM", d:"A library that lets your code talk to many AI providers the same way, so you can switch models by changing one setting.", a:["LiteLLM"]},
-  "FastAPI": {n:"FastAPI", d:"A Python tool for building the server side of an app, the part that receives requests and returns answers.", a:["FastAPI"]},
-  "latency": {n:"Latency", d:"How long the user waits for a response.", a:["latency"]},
-  "hand-off": {n:"Hand-off", d:"The moment one step or one agent passes its result to the next.", a:["hand-off","handoff","handoffs","hand-offs"]},
-  "transition matrix": {n:"Transition matrix", d:"A table showing, for each step, how often the run failed when moving to the next step. It shows the weakest link.", a:["transition matrix"]},
-  "prompt": {n:"Prompt", d:"The text you give the model to tell it what to do.", a:["prompt"]},
-  "CSV": {n:"CSV", d:"A spreadsheet saved as plain text, with one row per line and columns separated by commas. Opens in Excel or any text editor.", a:["CSV"]},
-  "staging": {n:"Staging", d:"A private copy of the app in the cloud used for testing before real users see changes.", a:["staging","shared test server"]},
-  "Jupyter": {n:"Jupyter notebook", d:"A page where you mix notes, code and results. You run the code one block at a time and see the output right below.", a:["Jupyter","notebook","notebooks"]},
-  "local": {n:"Local", d:"Running on your own computer instead of on someone else's server. Only you can reach it.", a:["local","locally"]},
-  "API key": {n:"API key", d:"A secret password that lets your app use an AI provider's model. Keep it private and never paste it into chats or documents.", a:["API key"]},
-  "model": {n:"Model", d:"The trained AI that produces the answers, for example Claude or GPT.", a:["model"]}
+  "LLM": {g:0, n:"LLM", d:"Large Language Model. The AI model that reads and writes text, such as Claude or GPT.", a:["LLM"]},
+  "model": {g:0, n:"Model", d:"The trained AI that produces the answers. For practice, any reasonable model works; this playbook does not compare them.", a:["model"]},
+  "agent": {g:0, n:"Agent", d:"An AI system that does a job for a user, sometimes deciding on its own which steps or tools to use. A chatbot is the simplest kind.", a:["agents","agent"]},
+  "prompt": {g:0, n:"Prompt", d:"The text you give the model to tell it what to do.", a:["prompt"]},
+  "system prompt": {g:0, n:"System prompt", d:"Hidden instructions the model reads before every conversation: role, task, rules, format, defaults. Written from your spec in stage 2.", a:["system prompt"]},
+  "spec": {g:0, n:"Spec", d:"Your one-page description of who the bot serves and what a good answer looks like (stage 1). Every check you build later is measured against it.", a:["spec"]},
+  "vibe coding": {g:0, n:"Vibe coding", d:"Building an app by describing it to an AI tool such as Lovable, Replit or Claude Code instead of writing the code yourself. Path B in this playbook.", a:["vibe-code","vibe coding","vibe-coding"]},
+  "API key": {g:0, n:"API key", d:"A secret password that lets your bot use an AI provider's model. Keep it in a settings file or the platform's secrets settings; never paste it into chats or documents.", a:["API key"]},
+  "CSV": {g:0, n:"CSV", d:"A spreadsheet saved as plain text, one row per line, columns separated by commas. The sheet templates are CSV files.", a:["CSV"]},
+  "synthetic": {g:0, n:"Synthetic data", d:"Test questions written by an AI instead of real users. Useful for volume, but read every one and delete the unrealistic ones (stage 3).", a:["synthetic","generate more"]},
+
+  "error analysis": {g:1, n:"Error analysis", d:"Reading 50 to 100 saved answers and writing down what went wrong, so you learn how your bot actually fails (stage 5). The first eval, done by hand.", a:["error analysis"]},
+  "open coding": {g:1, n:"Open coding", d:"The first pass of error analysis: one short free-form note per problem, with no categories yet.", a:["open coding"]},
+  "axial coding": {g:1, n:"Axial coding", d:"The second pass: grouping your open-coding notes into 4 to 8 named failure types.", a:["axial coding"]},
+  "failure taxonomy": {g:1, n:"Failure taxonomy (failure list)", d:"Your named list of failure types with counts and an example each. The output of stage 5 and the input to stage 6.", a:["failure taxonomy","taxonomy","failure list"]},
+  "golden set": {g:1, n:"Golden set", d:"About 50 real answers you have labeled PASS or FAIL yourself, with both failures and good answers in it. Your answer key for testing whether a judge can be trusted (stage 6).", a:["golden set","golden record","golden records"]},
+
+  "eval": {g:2, n:"Eval", d:"Short for evaluation. A repeatable test of how well the bot does on one thing. It can be done by hand (you read and label) or automatically (a code check or LLM judge).", a:["evals","eval"]},
+  "code check": {g:2, n:"Code check", d:"An automatic check written as a simple rule, with no AI: length, format, a required section. Cheap and exact, so use one whenever a failure can be checked this way.", a:["code check","code checks"]},
+  "LLM judge": {g:2, n:"LLM judge", d:"A second AI model asked one yes or no question about an answer and told to reply PASS or FAIL with a reason. One judge per failure. Also called LLM-as-judge.", a:["LLM judge","LLM-as-judge","judge","judges"]},
+  "true positive rate": {g:2, n:"True positive and true negative rate", d:"How often the judge agrees with your labels. PASS counts as positive: the true positive rate is how often the judge says PASS when you said PASS; the true negative rate is how often it says FAIL when you said FAIL. Both must be high before you trust it.", a:["true positive and true negative rates","true positive rate"]},
+  "held-out": {g:2, n:"Held-out set", d:"The part of your golden set (for example 40 percent) you do not look at while improving the judge. You use it once at the end for an honest score.", a:["held-out set","kept aside"]},
+  "bias": {g:2, n:"Judge bias", d:"A judge that is consistently too strict or too lenient. You see it when one of its two agreement rates is low.", a:["bias"]},
+  "pass rate": {g:2, n:"Pass rate", d:"The share of answers that pass one check. The number you compare before and after a change, and track week by week.", a:["pass rate"]},
+
+  "observability": {g:3, n:"Observability", d:"Being able to see what your bot did on every run, from what it saved. Without it you can only guess why an answer went wrong (stage 4).", a:["observability"]},
+  "trace": {g:3, n:"Trace (saved run)", d:"The record of one run: the question, the answer, the prompt version, the model and, for a document bot, the passages it used.", a:["traces","trace"]},
+  "prompt version": {g:3, n:"Prompt version", d:"A label such as v1, v2 saved with every run, so you can tell which instructions produced which answer.", a:["prompt version"]},
+  "batch run": {g:3, n:"Batch run", d:"Sending your whole list of test questions through the bot in one go and saving all answers in one file. In the Recipe Chatbot it is called the bulk test.", a:["batch run","batch runs","bulk test"]},
+  "JSON": {g:3, n:"JSON", d:"A plain text format that stores data as labeled fields. Most bots save their runs in it.", a:["JSON"]},
+  "monitoring": {g:3, n:"Monitoring", d:"Running your checks on new conversations at a steady rhythm, so you notice new failures (stage 9).", a:["monitoring"]},
+  "latency": {g:3, n:"Latency", d:"How long the user waits for an answer.", a:["latency"]},
+
+  "RAG": {g:4, n:"RAG", d:"Retrieval-Augmented Generation. The bot first searches your documents, then writes its answer from what it found. Like an open-book exam.", a:["RAG"]},
+  "retrieval": {g:4, n:"Retrieval (search)", d:"The step that finds the passages most relevant to a question. Test it on its own in stage 7.", a:["retrieval","retrieves","retrieved"]},
+  "recall@k": {g:4, n:"Recall@k", d:"Did the right document appear in the top k results? For example recall@5 checks the top 5. Averaged over many questions.", a:["recall@k","recall@5"]},
+  "MRR": {g:4, n:"MRR", d:"Mean Reciprocal Rank. How high the right document sits in the results: first place scores 1, second 0.5, third 0.33.", a:["MRR"]},
+  "faithfulness": {g:4, n:"Faithfulness", d:"Whether every claim in the answer is supported by the passages search found, with nothing made up.", a:["faithfulness","supported by"]},
+  "BM25": {g:4, n:"BM25", d:"A classic keyword search. It ranks documents by how well their words match the question.", a:["BM25"]},
+
+  "iteration": {g:5, n:"Iteration", d:"Change one thing, re-run the same questions and checks, keep the change only if the numbers improve (stage 8).", a:["iteration"]},
+  "regression set": {g:5, n:"Regression set", d:"Questions that used to fail and now pass. You re-run them after every change so fixed failures cannot quietly return.", a:["regression set"]},
+
+  "LiteLLM": {g:6, n:"LiteLLM", d:"A library that lets the Recipe Chatbot talk to many AI providers the same way, so you switch models by changing one setting.", a:["LiteLLM"]},
+  "FastAPI": {g:6, n:"FastAPI", d:"The Python tool the Recipe Chatbot's server is built with.", a:["FastAPI"]},
+  "Jupyter": {g:6, n:"Jupyter notebook", d:"A page that mixes notes, code and results. The course homeworks come as notebooks.", a:["Jupyter","notebook","notebooks"]},
+  "local": {g:6, n:"Local", d:"Running on your own computer. Only you can reach it.", a:["local","locally"]},
+  "staging": {g:6, n:"Staging", d:"A private copy of an app in the cloud, used for testing before real users see changes.", a:["staging","shared test server"]},
+  "tool": {g:6, n:"Tool", d:"A function an agent can call to act or fetch data, such as a search or a database lookup.", a:["tools","tool"]},
+  "guardrails": {g:6, n:"Guardrails", d:"Rules that stop the bot from doing or saying certain things, such as leaving its topic.", a:["guardrails","guardrail"]},
+  "hand-off": {g:6, n:"Hand-off", d:"The moment one step passes its result to the next.", a:["hand-off","handoff","handoffs","hand-offs"]}
 };
 
 var tip = document.getElementById("tip");
@@ -1118,41 +1342,23 @@ window.addEventListener("scroll", hideTip, {passive:true});
 
 (function(){
   var gl = document.getElementById("gl");
-  Object.keys(GLOSS).sort(function(a,b){ return GLOSS[a].n.localeCompare(GLOSS[b].n); }).forEach(function(k){
-    var d = document.createElement("div"); d.className = "box";
-    var b = document.createElement("b"); b.textContent = GLOSS[k].n;
-    var p = document.createElement("p"); p.textContent = GLOSS[k].d;
-    d.appendChild(b); d.appendChild(p); gl.appendChild(d);
+  GROUPS.forEach(function(name, gi){
+    var keys = Object.keys(GLOSS).filter(function(k){ return GLOSS[k].g === gi; });
+    var wrap = document.createElement("div"); wrap.className = "glgroup";
+    var h = document.createElement("h3"); h.textContent = name; wrap.appendChild(h);
+    var grid = document.createElement("div"); grid.className = "gl";
+    keys.forEach(function(k){
+      var d = document.createElement("div"); d.className = "box";
+      var b = document.createElement("b"); b.textContent = GLOSS[k].n;
+      var p = document.createElement("p"); p.textContent = GLOSS[k].d;
+      d.appendChild(b); d.appendChild(p); grid.appendChild(d);
+    });
+    wrap.appendChild(grid); gl.appendChild(wrap);
   });
 })();
 
-/* ---------- Runtime flow (page 1) ---------- */
-var FLOW = {
-  user:     {t:"User request", what:"A person types or speaks a request.", rec:"The exact text, a session id, the time. Anonymize personal details.", fail:"Vague, rude, off-topic or unexpected requests that your spec never imagined."},
-  inguard:  {t:"Input guardrails", what:"Optional checks before the model sees the request. They can block unsafe or out-of-scope input.", rec:"Whether the request passed and which rule fired.", fail:"Blocking legitimate requests, or letting bad ones through."},
-  agent:    {t:"Agent (model + prompt)", what:"The model reads the system prompt, the conversation so far and the request. It then decides: answer now, or use a tool or search first.", rec:"Prompt version, model name, everything the model was given, its answer, time and cost.", fail:"Ignoring a rule, inventing facts, picking the wrong tool, looping."},
-  tools:    {t:"Tools and search", what:"Looks up documents, calls an API or runs code. The result goes back to the agent, which may repeat this loop several times.", rec:"Which tool was used, what it was asked, what it returned, how long it took, and any error.", fail:"Wrong tool, wrong inputs to the tool, empty or irrelevant search results, errors nobody handles."},
-  outguard: {t:"Output guardrails", what:"Optional checks on the answer before the user sees it: format, safety, policy.", rec:"Pass or fail, which rule fired, and any edit made to the text.", fail:"Missing a violation, or rewriting a good answer."},
-  reply:    {t:"Reply to the user", what:"The final answer is sent back.", rec:"The final text, delivery time and any user feedback (a thumbs-down, a rephrased question).", fail:"Too slow, too long, wrong format."},
-  trace:    {t:"Trace log", what:"A recorder that writes one record per run, covering every hop above under one id.", rec:"Everything listed in the other boxes, joined together.", fail:"A hop that is not logged cannot be diagnosed. This is why logging comes before error analysis."},
-  evals:    {t:"Evals and monitoring", what:"Your checks run on saved traces: offline on your test set, and on samples of live traffic.", rec:"Scores per check and per version of the agent.", fail:"A judge that disagrees with you, or checks for failures nobody actually has."}
-};
-function showFlow(k){
-  var f = FLOW[k]; if(!f) return;
-  document.querySelectorAll(".node").forEach(function(g){ g.classList.toggle("sel", g.getAttribute("data-node") === k); });
-  document.getElementById("flowdetail").innerHTML = '<h3 style="margin-bottom:10px">' + f.t + '</h3><div class="flowcols">' +
-    '<div><div class="k">What happens</div>' + f.what + '</div>' +
-    '<div><div class="k">What to record</div>' + f.rec + '</div>' +
-    '<div><div class="k">What can go wrong</div>' + f.fail + '</div></div>';
-}
-document.querySelectorAll(".node").forEach(function(g){
-  g.addEventListener("click", function(){ showFlow(g.getAttribute("data-node")); });
-  g.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); showFlow(g.getAttribute("data-node")); } });
-});
-showFlow("agent");
-
-/* ---------- Two pages (open with #general or #recipe-chatbot) ---------- */
-var PAGE_IDS = {"general":"p-general","recipe-chatbot":"p-recipe"};
+/* ---------- Three pages (open with #general, #recipe-chatbot or #glossary) ---------- */
+var PAGE_IDS = {"general":"p-general","recipe-chatbot":"p-recipe","glossary":"p-glossary"};
 function showPage(key){
   if(!PAGE_IDS[key]) key = "general";
   Object.keys(PAGE_IDS).forEach(function(k){ document.getElementById(PAGE_IDS[k]).hidden = (k !== key); });
@@ -1179,11 +1385,15 @@ document.querySelectorAll("#subnav button").forEach(function(b){
   b.onclick = function(){ showSub(b.getAttribute("data-sub")); };
 });
 try{ showSub(localStorage.getItem("playbook-sub")); }catch(e){ showSub("guide"); }
+document.querySelectorAll("[data-goto]").forEach(function(b){
+  b.onclick = function(){ showPage("recipe-chatbot"); showSub(b.getAttribute("data-goto")); window.scrollTo(0,0); };
+});
 
-renderScen();
-renderStages("stagesG","gen");
-renderStages("stagesR","rec");
-renderChecks();
+renderGen();
+renderTemplates();
+renderStages("stagesR");
+renderChecks(CHECKS_GEN, "checkG", "progG", "playbook-checks-gen");
+renderChecks(CHECKS, "check", "prog", "playbook-checks");
 decorate();
 var startKey = (location.hash || "").replace("#","");
 if(!PAGE_IDS[startKey]){ try{ startKey = localStorage.getItem("playbook-page") || "general"; }catch(e){ startKey = "general"; } }

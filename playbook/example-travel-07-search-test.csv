@@ -1,0 +1,8 @@
+question,expected_doc_id,in_top_5,rank,answer_supported
+Is the Vatican open on Sundays?,rome-guide.pdf,yes,1,no
+How much is the Colosseum ticket?,rome-guide.pdf,yes,1,yes
+Where can I eat cheaply in Porto?,porto-guide.pdf,yes,2,yes
+Best viewpoint in Lisbon at sunset?,lisbon-guide.pdf,yes,1,yes
+Is the Livraria Lello worth the queue?,porto-guide.pdf,no,,no
+What time does the Lisbon tram 28 start?,lisbon-guide.pdf,yes,4,yes
+Summary: recall@5 = 5/6 = 0.83; answers supported = 4/6,,,,

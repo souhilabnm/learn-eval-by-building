@@ -47,16 +47,24 @@ Without `--csv` it uses `data/sample_queries.csv`. When it finishes it prints a 
 
 ## Step 4: Read the traces
 
-Have them open the newest `results/results_<time>.json` in Notepad or VS Code and read three entries (`id`, `query`, `response`). Explain that this file is their set of traces, and that chats in the browser are also saved, one file per message, in `annotation/traces/`.
+Why: a trace is one question plus the bot's answer. Reading a few shows what your evals will work with.
 
-Point out what is not saved: the model, the prompt version, the time and the cost. Have them copy the results file and rename the copy to say which prompt version produced it (for example `results/v1-first-prompt.json`).
+There are exactly three actions. Give them one at a time and wait for the learner to finish each before the next:
+
+1. **Open** the newest `results/results_<time>.json` in Notepad or VS Code. Each entry is one trace, with an `id`, a `query` (the question) and a `response` (the bot's answer). Have them read three entries.
+2. **Copy** the file and **rename the copy** after the prompt version that produced it, for example `results/v1-first-prompt.json`. Why: the file does not record the prompt version, and the next bulk test creates a new file. The renamed copy keeps this version for the before/after comparison in stage 8. Never edit or delete old copies. After every prompt change: run the bulk test again, then rename the new file (`v2-...`).
+3. **Know what is not saved.** The file has no model name, prompt version, time taken or cost. A real product would save them. The learner does not add them here; they only need to know to ask for them. The renamed copy is the manual stand-in for the prompt version.
+
+Do not ask them to re-run queries by hand or run each query twice. That is optional and not part of this stage.
+
+Optional, only if the learner asks: `annotation/traces/` holds a different kind of trace. Files named `trace_2024-...` (ids like `SYN025`) are ready-made sample chats shipped with the course, with empty `open_coding` and `axial_coding_code` fields for the annotation tool. Files named `trace_2026...` are the learner's own browser chats, one file per message. In both, `request` is the conversation sent and `response` is the full conversation with the bot's new answer at the end (the system prompt is the first message). It is a separate place from `results/`; nothing from it goes into the results file, and the bulk test queries do not need to be repeated there.
 
 If they want an easier way to read the file, you may build a simple HTML viewer for it (HW1 suggests this). It is a tool, not the lesson.
 
 ## Done when
 
 - [ ] `data/my_queries.csv` with varied queries (100+ is the target over time)
-- [ ] At least one results file in `results/`, kept and renamed by version
+- [ ] At least one results file in `results/`, read (3 entries), then copied and renamed by prompt version
 
 These match "Test query set of 100+ inputs saved" and "Traces are saved as JSON".
 
