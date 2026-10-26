@@ -30,6 +30,7 @@ One edit to `backend/system_prompt.md` that targets the failure, such as a clear
 1. They run the same query file again: `uv run python scripts/bulk_test.py --csv data/my_queries.csv`.
 2. They run the same checks on the new results (code check, or judge).
 3. They fill a before/after table: version, rate for the target failure, rates for the other failures.
+4. To compare the answers themselves, they open the old and the new results file in `useful apps/stage-4-capture-traces/results-viewer.html`, in two browser tabs.
 
 Keep the change only if the target improved and nothing else got worse. If they changed the judge itself, they check it against the golden set again first.
 
@@ -44,7 +45,7 @@ Have them add the queries that now pass to `data/regression_queries.csv` (same `
 Why: real users find failures your tests missed.
 
 Help them write their weekly routine:
-1. Pick 20 recent conversations at random (here: browser chats in `annotation/traces/` or the newest results file).
+1. Pick 20 recent conversations at random (here: browser chats in `annotation/traces/` or the newest bulk run). To code them in the annotation app, move last week's coded traces into `annotation/old_traces/` first, so only the new sample is listed.
 2. Run the checks and read the failures themselves.
 3. Add any new failure type to the taxonomy and its queries to the regression set.
 4. Go back to error analysis.

@@ -20,7 +20,7 @@ Why: if search returns the wrong recipe, even a perfect prompt gives a wrong ans
 3. The two scores, both in `backend/evaluation_utils.py`:
    - **Recall@k**: how often the right recipe is in the top k (k = 1, 3, 5, 10).
    - **MRR**: how high it ranks on average (first place = 1, second = 0.5, third = 0.33).
-4. The learner runs the notebook: `uv run --with jupyter jupyter notebook homeworks/hw4/hw4_walkthrough.ipynb`.
+4. Before scoring, they check the questions make sense: open `synthetic_queries.jsonl` in `useful apps/stage-7-evaluate-the-parts/search-queries-viewer.html` (or `homeworks/hw4/reference_files/query_viewer.html`). Then they run the notebook: `uv run --with jupyter jupyter notebook homeworks/hw4/hw4_walkthrough.ipynb`.
 5. Have them look at 5 questions where search failed and say why (wording mismatch, too vague, several similar recipes). Optional: query rewriting (`backend/query_rewrite_agent.py`) rewords the question before searching. Compare the scores with and without it.
 
 ## Part B: which agent step fails (HW5)
@@ -31,7 +31,8 @@ Why: in a multi-step agent, you need to know which hand-off between steps breaks
 2. The learner runs the starter script, which draws a heat-map of those transitions:
    `uv run python homeworks/hw5/analysis/transition_heatmaps.py`
 3. Have them find the darkest cell and explain in plain words what it means ("most failures happen when the agent hands the search results to the recipe writer").
-4. Guided version: `uv run --with jupyter jupyter notebook homeworks/hw5/hw5_walkthrough.ipynb`.
+4. Have them read the traces behind the darkest cell in `useful apps/stage-7-evaluate-the-parts/agent-traces-viewer.html` (or `homeworks/hw5/reference_files/trace_viewer.html`) with `labeled_traces.jsonl`. Only the first failure in each trace counts: later failures are often caused by it.
+5. Guided version: `uv run --with jupyter jupyter notebook homeworks/hw5/hw5_walkthrough.ipynb`.
 
 ## The PM takeaway
 

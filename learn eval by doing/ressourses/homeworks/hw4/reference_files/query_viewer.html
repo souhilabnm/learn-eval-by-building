@@ -241,7 +241,7 @@
     <div class="container">
         <div class="upload-section" id="uploadSection">
             <h1>Query Viewer</h1>
-            <p>Upload a JSONL query file to view and navigate through the records</p>
+            <p>Upload a JSONL or JSON query file to view and navigate through the records</p>
             <p style="font-size: 14px; color: #888;">
                 Use with: <code>synthetic_queries.jsonl</code>
             </p>
@@ -275,6 +275,17 @@
     </div>
 
     <script>
+        // Read a .jsonl file (one JSON object per line) or a .json file (one list of objects, or one object)
+        function parseRecords(text) {
+            const trimmed = text.trim();
+            try {
+                const data = JSON.parse(trimmed);
+                return Array.isArray(data) ? data : [data];
+            } catch (err) {
+                return trimmed.split('\n').filter(line => line.trim()).map(line => JSON.parse(line));
+            }
+        }
+
         let records = [];
         let currentIndex = 0;
         let fileName = '';
@@ -291,7 +302,7 @@
             reader.onload = function(e) {
                 const content = e.target.result;
                 try {
-                    records = content.trim().split('\n').map(line => JSON.parse(line));
+                    records = parseRecords(content);
                     currentIndex = 0;
                     showViewer();
                     displayRecord();

@@ -82,8 +82,8 @@ Where your work ends up:
 | 1 Spec | `recipe-bot-spec.md` |
 | 2 System prompt | `backend/system_prompt.md` |
 | 3 Test queries | `data/my_queries.csv` |
-| 4 Traces | `results/results_<time>.json` |
-| 5 Error analysis | your notes sheet + your copy of `failure_mode_taxonomy.md` |
+| 4 Traces | `results/results_<time>.json` (the whole run) + `annotation/traces/trace_bulk_<time>_*.json` (one per question) |
+| 5 Error analysis | notes and categories saved in those trace files by the annotation app + your copy of `failure_mode_taxonomy.md` |
 | 6 Golden set and judge | `data/golden_set.csv`, `data/judge_prompt.md` |
 | 8 Improve | `data/regression_queries.csv` + a before/after table |
 

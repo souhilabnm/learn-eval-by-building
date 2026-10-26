@@ -246,13 +246,13 @@
     <div class="container">
         <div class="upload-section" id="uploadSection">
             <h1>Trace Viewer</h1>
-            <p>Upload a JSONL trace file to view and navigate through the records</p>
+            <p>Upload a JSONL or JSON trace file to view and navigate through the records</p>
             <p style="font-size: 14px; color: #888;">
                 Supported files: <code>raw_traces.jsonl</code> or <code>labeled_traces.jsonl</code>
             </p>
             <div class="file-input-wrapper">
                 <label for="fileInput" class="upload-btn">Choose File</label>
-                <input type="file" id="fileInput" accept=".jsonl">
+                <input type="file" id="fileInput" accept=".jsonl,.json" multiple>
             </div>
         </div>
 
@@ -284,32 +284,38 @@
     </div>
 
     <script>
+        // Read a .jsonl file (one JSON object per line) or a .json file (one list of objects, or one object)
+        function parseRecords(text) {
+            const trimmed = text.trim();
+            try {
+                const data = JSON.parse(trimmed);
+                return Array.isArray(data) ? data : [data];
+            } catch (err) {
+                return trimmed.split('\n').filter(line => line.trim()).map(line => JSON.parse(line));
+            }
+        }
+
         let traces = [];
         let currentIndex = 0;
         let fileName = '';
 
         document.getElementById('fileInput').addEventListener('change', handleFileUpload);
 
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        // One file, or several picked together (for example every trace_bulk_<time>_*.json of one run)
+        async function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            if (files.length === 0) return;
 
-            fileName = file.name;
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                const content = e.target.result;
-                try {
-                    traces = content.trim().split('\n').map(line => JSON.parse(line));
-                    currentIndex = 0;
-                    showViewer();
-                    displayRecord();
-                } catch (error) {
-                    alert('Error parsing JSONL file: ' + error.message);
-                }
-            };
-
-            reader.readAsText(file);
+            fileName = files.length === 1 ? files[0].name : `${files.length} files`;
+            try {
+                const parts = await Promise.all(files.map(file => file.text().then(parseRecords)));
+                traces = parts.flat();
+                currentIndex = 0;
+                showViewer();
+                displayRecord();
+            } catch (error) {
+                alert('Error reading the file: ' + error.message);
+            }
         }
 
         function showViewer() {
@@ -379,6 +385,19 @@
             if (value === null || value === undefined || value === '') {
                 displayValue = 'null';
                 fieldClass = 'null';
+            }
+
+            // Nested fields (annotation traces keep the conversation in "request" and "response")
+            if (value !== null && typeof value === 'object') {
+                displayValue = Array.isArray(value.messages)
+                    ? value.messages.map(m => `${String(m.role).toUpperCase()}: ${m.content}`).join('\n\n')
+                    : JSON.stringify(value, null, 2);
+                return `
+                    <div class="field">
+                        <div class="field-label">${key}</div>
+                        <div class="field-value response-text">${escapeHtml(displayValue)}</div>
+                    </div>
+                `;
             }
 
             // Special formatting for certain fields

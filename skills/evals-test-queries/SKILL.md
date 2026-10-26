@@ -43,7 +43,7 @@ The learner runs, from the project folder:
 uv run python scripts/bulk_test.py --csv data/my_queries.csv
 ```
 
-Without `--csv` it uses `data/sample_queries.csv`. When it finishes it prints a line starting with "Saved" and the new file name in `results/`. On the Gemini free tier, a large file may hit the rate limit (`429`); suggest fewer rows or a pause.
+Without `--csv` it uses `data/sample_queries.csv`. When it finishes it prints two lines starting with "Saved": the new results file in `results/` (all answers in one list, for comparing runs) and the trace files in `annotation/traces/` (`trace_bulk_<time>_001.json` and on, one per query, for labeling in stage 5). Both carry the same `<time>`. On the Gemini free tier, a large file may hit the rate limit (`429`); suggest fewer rows or a pause.
 
 ## Step 4: Read the traces
 
@@ -57,9 +57,9 @@ There are exactly three actions. Give them one at a time and wait for the learne
 
 Do not ask them to re-run queries by hand or run each query twice. That is optional and not part of this stage.
 
-Optional, only if the learner asks: `annotation/traces/` holds a different kind of trace. Files named `trace_2024-...` (ids like `SYN025`) are ready-made sample chats shipped with the course, with empty `open_coding` and `axial_coding_code` fields for the annotation tool. Files named `trace_2026...` are the learner's own browser chats, one file per message. In both, `request` is the conversation sent and `response` is the full conversation with the bot's new answer at the end (the system prompt is the first message). It is a separate place from `results/`; nothing from it goes into the results file, and the bulk test queries do not need to be repeated there.
+Optional, only if the learner asks: `annotation/traces/` holds one file per chat, the format the annotation app reads in stage 5. Files named `trace_bulk_<time>_...` are this bulk run, one per query. Files named `trace_2026...` are the learner's own browser chats, one file per message. The course's 250 ready-made sample chats (`trace_2024-...`, ids like `SYN025`) are kept apart in `annotation/course_samples_extra/`. In each, `request` is what was sent and `response` is the full conversation with the bot's answer at the end (the system prompt is the first message), with empty `open_coding` and `axial_coding_code` fields. It is a separate place from `results/`: the results file is for comparing runs, the trace files are for labeling. Never convert one into the other.
 
-If they want an easier way to read the file, point them to `homeworks/hw2/reference_files/viewer.html`: double-click it, then pick the results file. It shows one question and answer at a time and reads both bulk test `.json` files and `.jsonl` files.
+If they want an easier way to read the answers now, point them to `useful apps/stage-4-capture-traces/results-viewer.html` (or the same file in the repo, `homeworks/hw2/reference_files/viewer.html`): double-click it, then pick the results file. It shows one question and answer at a time. The course's viewers read both `.jsonl` files (one record per line) and `.json` files (one list), such as bulk test results. Stage 5 then opens the same answers one at a time in the annotation app, where they label them.
 
 ## Done when
 

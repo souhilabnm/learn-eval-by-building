@@ -56,7 +56,7 @@ section{display:flex;flex-direction:column;gap:14px}
 .stage .col{min-width:0}
 .stage .k{font:500 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .stage ul,.stage ol{margin:0;padding-left:18px}
-.stage li+li{margin-top:3px}
+.stage li+li{margin-top:8px}
 .tag{display:inline-block;font:500 12px var(--f-mono);padding:2px 8px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
 .tag.hw{background:var(--ok-soft);color:var(--ok)}
 .stage .tag{margin-right:4px}
@@ -97,7 +97,9 @@ code.fp{background:#EFE7F8;color:#5B2E91;overflow-wrap:anywhere}
 .small{font-size:13px;color:var(--muted)}
 .how{grid-column:1/-1;border-top:1px dashed var(--line);padding-top:10px}
 .how ol{margin:0;padding-left:20px}
-.how li+li{margin-top:4px}
+.how li+li{margin-top:14px}
+.note{display:block;font-size:13px;line-height:1.45;color:var(--muted);margin-top:4px}
+.res td:first-child{white-space:nowrap}
 .loc{list-style:none;padding:0!important}
 .loc li+li{margin-top:8px}
 .ex{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:10px 0 0;
@@ -376,6 +378,7 @@ img,svg,pre,table{max-width:100%}
       <button class="tab" type="button" data-sub="guide" aria-pressed="true">How-to guide</button>
       <button class="tab" type="button" data-sub="system" aria-pressed="false">How the system works</button>
       <button class="tab" type="button" data-sub="repo" aria-pressed="false">About the repo</button>
+      <button class="tab" type="button" data-sub="resources" aria-pressed="false">Resources</button>
     </div>
 
     <div class="sub" data-sub="system" hidden>
@@ -414,7 +417,7 @@ img,svg,pre,table{max-width:100%}
             <text x="220" y="76" style="fill:var(--muted)">system_prompt.md</text>
             <text x="370" y="76" style="fill:var(--muted)">sample_queries.csv</text>
             <text x="525" y="76" style="fill:var(--muted)">results/ JSON files</text>
-            <text x="685" y="76" style="fill:var(--muted)">spreadsheet, HW2</text>
+            <text x="685" y="76" style="fill:var(--muted)">annotation app, HW2</text>
             <text x="685" y="212" style="fill:var(--muted)">golden_set.csv</text>
             <text x="525" y="212" style="fill:var(--muted)">HW3 notebook</text>
             <text x="370" y="212" style="fill:var(--muted)">edit prompt, re-run</text>
@@ -544,7 +547,7 @@ OPENAI_API_KEY=paste-your-key-here</pre>
       </div>
       <p class="small"><b>Why this matters:</b> evals can only check what was saved. These four boxes tell you what the chatbot records today, what is missing, and what to ask engineering for.</p>
       <div class="scen">
-        <div class="box"><div class="k">Saved today</div>Every chat in your browser leaves a small record (the question and the answer). Runs from the bulk test leave one file per run.</div>
+        <div class="box"><div class="k">Saved today</div>Every chat in your browser leaves a small record (the question and the answer). Runs from the bulk test leave one results file per run, plus one trace file per question for labeling.</div>
         <div class="box"><div class="k">Not saved today</div>Which AI model answered, which version of your instructions was used, how long it took and what it cost. If the AI provider fails, nothing is saved for that message.</div>
         <div class="box"><div class="k">What a full record adds</div>Those four extras, plus every search or tool step in agents that have them. You do not add this here. You now know to ask engineering for it.</div>
         <div class="box"><div class="k">Good to know</div>The hidden instructions (the system prompt) are read once when the app starts. That is why the app restarts when you save changes to that file.</div>
@@ -621,7 +624,7 @@ OPENAI_API_KEY=paste-your-key-here</pre>
           <div>The test questions, one per row.
             <div class="chg"><b>Change:</b> write requests for the new bot. Keep the first line exactly <code>id,query</code>.</div></div></div>
         <div class="frow"><div class="fname"><code>scripts/bulk_test.py</code><span class="chip same">Reuse as is</span></div>
-          <div>Sends every row of a CSV to the bot and saves the answers in <code>results/results_&lt;time&gt;.json</code>.
+          <div>Sends every row of a CSV to the bot and saves the answers in <code>results/results_&lt;time&gt;.json</code>, plus one trace file per question in <code>annotation/traces/</code> (<code>trace_bulk_&lt;time&gt;_001.json</code> and on) for the annotation app. This copy adds the trace files; the course's original saves only the results file.
             <div class="chg"><b>Change:</b> nothing. Point it at your file with <code>--csv data/your_file.csv</code>.</div></div></div>
         <div class="frow"><div class="fname"><code>results/</code><span class="chip same">Reuse as is</span></div>
           <div>Created by the bulk test. Each run adds one file.
@@ -632,16 +635,16 @@ OPENAI_API_KEY=paste-your-key-here</pre>
         <h3><code>annotation/</code> <span class="chip edit">Reuse + change</span></h3>
         <p>Where chats are recorded, and a tool to label them.</p>
         <div class="frow"><div class="fname"><code>annotation.py</code><span class="chip same">Reuse as is</span></div>
-          <div>A small browser tool to read and label the traces in <code>traces/</code>. Run it with <code>uv run --with python-fasthtml --with monsterui python annotation/annotation.py</code> (it needs two packages the project does not install), then open <code>http://localhost:5001</code>.
+          <div>The course's labeling tool for error analysis (stage 5): one chat at a time, a box for your open-coding note and one for the axial-coding group, saved into that chat's file in <code>traces/</code>. A light-theme copy that reads this folder sits in <code>useful apps/stage-5-error-analysis/annotation-app</code>. Run the original with <code>uv run --with python-fasthtml --with monsterui python annotation/annotation.py</code> (it needs two packages the project does not install), then open <code>http://localhost:5001</code>.
             <div class="chg"><b>Change:</b> nothing.</div></div></div>
         <div class="frow"><div class="fname"><code>traces/</code><span class="chip new">Replace</span></div>
-          <div>One JSON file per chat message: the course's sample traces (<code>trace_2024-01-15_…</code>) plus every chat you have had.
+          <div>One JSON file per chat: every browser chat you have had (<code>trace_2026…</code>) and one file per bulk test question (<code>trace_bulk_…</code>). The course's 250 sample traces (<code>trace_2024-01-15_…</code>) sit in <code>annotation/course_samples_extra/</code>, so the app shows only your own chats.
             <div class="chg"><b>Change:</b> start the new project with this folder empty. Your new chats fill it.</div></div></div>
       </div>
 
       <div class="fgroup">
         <h3><code>homeworks/</code> and <code>lesson-4</code>, <code>lesson-7</code>, <code>lesson-8</code> <span class="chip course">Course only</span></h3>
-        <p>Learning material. The methods carry over; the data is about recipes or other course examples. A copy of these folders sits next to this guide in <code>ressourses/</code>; the Course help links in each stage open it.</p>
+        <p>Learning material. The methods carry over; the data is about recipes or other course examples. A copy of these folders sits next to this guide in <code>ressourses/</code>; the Resources tab links to it, stage by stage.</p>
         <div class="frow"><div class="fname"><code>homeworks/hw1</code> to <code>hw5</code><span class="chip course">Course only</span></div>
           <div>Instructions and walkthrough notebooks for each homework, with recipe data in <code>reference_files/</code> (for example <code>processed_recipes.json</code>, <code>dietary_queries.csv</code>).
             <div class="chg"><b>To reuse:</b> copy a notebook as a template, then swap in your own traces and failure categories.</div></div></div>
@@ -699,6 +702,80 @@ OPENAI_API_KEY=paste-your-key-here</pre>
       <p class="small">Ticks are saved in this browser only.</p>
     </section>
     </div>
+
+    <div class="sub" data-sub="resources" hidden>
+    <section>
+      <h2>Resources</h2>
+      <p class="small">Course material outside this guide: the walkthrough videos, the homework instructions and solutions, and the lesson folders. Use them alongside the stages. Open a solution only after your own attempt.</p>
+    </section>
+
+    <section>
+      <h2>Course material by stage</h2>
+      <p class="small">What the course offers for each stage of the guide: checklists, homework steps, ready-made data and solutions. Files open from <code>ressourses/</code>, a copy of the course folders next to this guide.</p>
+      <div id="resByStage" style="display:flex;flex-direction:column;gap:10px"></div>
+    </section>
+
+    <section id="res-videos">
+      <h2>Videos</h2>
+      <div class="mapwrap"><table class="map res"><thead><tr><th>Video</th><th>Stages</th><th>What you learn</th></tr></thead><tbody>
+        <tr><td><a href="https://youtu.be/h9oAAAYnGx4" target="_blank" rel="noopener">HW1 and HW2 walkthrough</a></td><td>1 to 5</td><td>Writing a first system prompt yourself, for an audience you know well. Picking dimensions, generating combinations, deleting the unrealistic ones, then turning the rest into natural questions with varied wording. Saving every chat as its own trace file, and the annotation app used for open and axial coding.</td></tr>
+        <tr><td><a href="https://youtu.be/AKg27L4E0M8" target="_blank" rel="noopener">Open and axial coding</a></td><td>5</td><td>Open coding done live in the annotation app: notes in full sentences, checked against the system prompt, with product questions along the way. Then an LLM drafts groups from the notes, and the groups are checked, renamed and counted.</td></tr>
+        <tr><td><a href="https://youtu.be/1d5aNfslwHg" target="_blank" rel="noopener">HW3 walkthrough</a></td><td>6</td><td>Making traces with the bot's own code. Why labels made by an LLM must be checked. Train, dev and test splits, and why you should not look at the test set. Picking few-shot examples on purpose. True positive and true negative rates, and what each judge mistake costs a user. Why a perfect score is a warning. Confidence intervals by resampling, and judgy's corrected pass rate. One judge per failure, chosen by how often it happens and how much it hurts.
+          <span class="note">In this video the positive class is FAIL. The HW3 notebook, judgy and this guide count PASS as positive.</span></td></tr>
+        <tr><td><a href="https://youtu.be/GMShL5iC8aY" target="_blank" rel="noopener">HW4 walkthrough</a></td><td>7</td><td>Checking that the recipe data fits the product. Writing test questions in two steps: pull a key fact from a recipe, then write a question only that recipe answers. BM25 search using the app's own code. Recall@k and MRR, and why recall matters most when the results go on to an LLM. Comparing query rewriting strategies.</td></tr>
+        <tr><td><a href="https://youtu.be/z1oISsDUKLA" target="_blank" rel="noopener">HW5 walkthrough</a></td><td>7</td><td>Agents with several steps: why only the first failure in each trace counts. A transition matrix and heat-map from last success to first failure. LLM steps versus tool steps. Reading the traces behind the hottest cells. Counts versus percentages.</td></tr>
+        <tr><td><a href="https://www.loom.com/share/30e5dced1afa467e8714d515694bb3b0" target="_blank" rel="noopener">Phoenix tracing</a></td><td>9, optional</td><td>The optional homework's own video: adding automatic tracing to the chatbot with Arize Phoenix.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section>
+      <h2>Useful apps</h2>
+      <p class="small">The course's small apps, one folder per stage, in <code>useful apps</code> next to this guide. Viewers are read-only: double-click, then pick a <code>.json</code> or <code>.jsonl</code> file. The annotation app is where you write notes. Each folder has a README with the steps.</p>
+      <div class="mapwrap"><table class="map res"><thead><tr><th>Stage</th><th>App</th><th>What for</th></tr></thead><tbody>
+        <tr><td>4 Capture traces</td><td><a href="useful%20apps/stage-4-capture-traces/results-viewer.html" target="_blank" rel="noopener"><code class="fp">results-viewer.html</code></a></td><td>Read a bulk test results file, one question and answer at a time. Also used in stage 8 to compare two runs.</td></tr>
+        <tr><td>5 Error analysis</td><td><code class="fp">annotation-app\annotation.py</code></td><td>Open coding and axial coding on your traces. Start it with the command in <a href="useful%20apps/stage-5-error-analysis/README.md" data-tpl-file><code class="fp">README.md</code></a>.</td></tr>
+        <tr><td>6 Golden set and judge</td><td><a href="useful%20apps/stage-6-golden-set-and-judge/labeled-traces-viewer.html" target="_blank" rel="noopener"><code class="fp">labeled-traces-viewer.html</code></a></td><td>See what PASS and FAIL look like in the course's 101 labeled traces.</td></tr>
+        <tr><td>7 Evaluate the parts</td><td><a href="useful%20apps/stage-7-evaluate-the-parts/search-queries-viewer.html" target="_blank" rel="noopener"><code class="fp">search-queries-viewer.html</code></a><br><a href="useful%20apps/stage-7-evaluate-the-parts/agent-traces-viewer.html" target="_blank" rel="noopener"><code class="fp">agent-traces-viewer.html</code></a></td><td>Check the 200 search test questions; read agent chats with their tool steps.</td></tr>
+      </tbody></table></div>
+      <p class="small" style="margin-top:8px">Stages 1, 2, 3 and 9 have no app of their own: stage 2 is the chat page, stage 3 the bulk test script, and stage 9 sends weekly samples back through the stage 5 annotation app.</p>
+    </section>
+
+    <section>
+      <h2>Homeworks</h2>
+      <p class="small">A copy of each homework sits next to this guide in <code>ressourses/</code>. The originals are in <code>recipe-chatbot\homeworks</code>.</p>
+      <div class="mapwrap"><table class="map res"><thead><tr><th>Homework</th><th>Instructions</th><th>Solution</th><th>What you do</th></tr></thead><tbody>
+        <tr><td>HW1</td><td><a href="ressourses/homeworks/hw1/readme.md" data-tpl-file><code class="fp">readme.md</code></a></td><td>None, on purpose</td><td>Write the system prompt, add 10 or more test queries, run the bulk test.</td></tr>
+        <tr><td>HW2</td><td><a href="ressourses/homeworks/hw2/README.md" data-tpl-file><code class="fp">README.md</code></a></td><td><a href="ressourses/homeworks/hw2/hw2_walkthrough.ipynb" target="_blank" rel="noopener"><code class="fp">hw2_walkthrough.ipynb</code></a></td><td>Build queries from dimensions, then open coding, axial coding and a failure list in <a href="ressourses/homeworks/hw2/reference_files/failure_mode_taxonomy.md" data-tpl-file><code class="fp">failure_mode_taxonomy.md</code></a>.</td></tr>
+        <tr><td>HW3</td><td><a href="ressourses/homeworks/hw3/README.md" data-tpl-file><code class="fp">README.md</code></a></td><td><a href="ressourses/homeworks/hw3/hw3_walkthrough.ipynb" target="_blank" rel="noopener"><code class="fp">hw3_walkthrough.ipynb</code></a></td><td>Label traces, split them, write a judge prompt with few-shot examples, measure TPR and TNR, correct the pass rate with judgy.
+          <span class="note">The notebook's judge is simulated (it copies the true label 85% of the time) and its judgy code is commented out: it shows the steps and the maths, not a real judge run.</span></td></tr>
+        <tr><td>HW4</td><td><a href="ressourses/homeworks/hw4/README.md" data-tpl-file><code class="fp">README.md</code></a></td><td><a href="ressourses/homeworks/hw4/hw4_walkthrough.ipynb" target="_blank" rel="noopener"><code class="fp">hw4_walkthrough.ipynb</code></a></td><td>Build BM25 search over 200 recipes, score it with Recall@k and MRR, optionally rewrite queries and compare.</td></tr>
+        <tr><td>HW5</td><td><a href="ressourses/homeworks/hw5/README.md" data-tpl-file><code class="fp">README.md</code></a></td><td><a href="ressourses/homeworks/hw5/hw5_walkthrough.ipynb" target="_blank" rel="noopener"><code class="fp">hw5_walkthrough.ipynb</code></a></td><td>Count last-success to first-failure transitions in 96 labeled agent traces and draw the heat-map.</td></tr>
+        <tr><td>Optional</td><td><a href="ressourses/homeworks/optional/phoenix-integration/README.md" data-tpl-file><code class="fp">phoenix-integration</code></a></td><td>None</td><td>Add Arize Phoenix tracing to the chatbot. Best after the nine stages.</td></tr>
+      </tbody></table></div>
+      <p class="small" style="margin-top:8px">To open a walkthrough notebook, paste this in a terminal in <code>recipe-chatbot</code> (swap hw2 for hw3, hw4 or hw5):</p>
+      <pre class="ex">uv run --with jupyter jupyter notebook homeworks/hw2/hw2_walkthrough.ipynb</pre>
+    </section>
+
+    <section>
+      <h2>Lessons</h2>
+      <div class="mapwrap"><table class="map res"><thead><tr><th>Folder</th><th>Lesson</th><th>What it teaches</th></tr></thead><tbody>
+        <tr><td><code class="fp">lesson-4</code></td><td>Judging a real product</td><td>100 conversations from NurtureBoss, an apartment-leasing assistant, judged for one failure: claims its tools do not back up. The scripts clean the logs, label them with an LLM, then test a judge that gets few-shot examples and the tool data as evidence. It reports TPR and TNR and lists the false positives to study.</td></tr>
+        <tr><td><code class="fp">lesson-7</code></td><td>Build your own labeling tool
+          <span class="note">Its README calls it Lesson 6.</span></td><td>A small web app for 118 agent chats with tool calls: a note box, several failure modes per chat, arrow keys to move, labels saved to a file. The multi-step version of the annotation app.</td></tr>
+        <tr><td><code class="fp">lesson-8</code></td><td>Model cascade</td><td>A cheap model answers first, with a confidence score; unsure cases go to a bigger model. The thresholds are set so the cheap model's answers agree 99% with the big model's. Shown on SMS spam, with the cost saved.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section>
+      <h2>Tools and data</h2>
+      <ul>
+        <li><code class="fp">recipe-chatbot\annotation\README.md</code>: how the annotation app works.<span class="note">Not copied next to this guide.</span></li>
+        <li><a href="https://github.com/ai-evals-course/judgy" target="_blank" rel="noopener">judgy</a>: corrects a judge's pass rate using its TPR and TNR, and gives a confidence interval (HW3). Already installed in the project.</li>
+        <li><a href="https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions" target="_blank" rel="noopener">Food.com recipes on Kaggle</a>: the full recipe data behind HW4.<span class="note">HW4 also ships 200 processed recipes, so you do not need to download it.</span></li>
+        <li><a href="https://github.com/ai-evals-course/recipe-chatbot" target="_blank" rel="noopener">ai-evals-course/recipe-chatbot</a>: the course's original repository.</li>
+      </ul>
+    </section>
+    </div>
   </main>
 
   <!-- ============ PAGE 3: GLOSSARY ============ -->
@@ -736,7 +813,7 @@ var STAGES = [
     out:"A folder of traces you can search and sort."},
   { t:"Error analysis", hw:"HW2",
     goal:"Find out how the agent actually fails, in your own words.",
-    do:["Read about 100 traces","Open coding: write a short note on each problem","Axial coding: group notes into 4 to 8 failure categories","Count each category"],
+    do:["Read 50 to 100 traces in the annotation app, until nothing new shows up","Open coding: write a note on each problem, in full sentences","Axial coding: an LLM drafts groups from your notes; you check and name 4 to 8","Label each trace with its group and count each group"],
     out:"A failure taxonomy with counts and example traces."},
   { t:"Create a golden set and evals", hw:"HW3",
     goal:"Turn each important failure into an automatic check you can trust.",
@@ -848,15 +925,18 @@ Defaults: If the user leaves out ..., assume ...`,
     recipe:"<code>results/</code> for batch runs and <code>annotation/traces/</code> for browser chats (page 2, stage 4)." },
   { t:"Read and name the failures", sk:["evals"],
     why:"The core skill. You learn how your bot actually fails, in your own words, before writing any automatic check.",
-    how:["Open 50 to 100 records next to a sheet with the columns in the template.",
-         "For each answer ask: would a real user be happy? Does it follow my spec? Write one short note per problem. This is open coding: no categories yet.",
-         "Group similar notes into 4 to 8 named failure types. This is axial coding.",
-         "Count each type. The top two are your first targets.",
+    how:["Open your records in a labeling tool: one chat at a time, a box for your note and one for the category, saved with the record. The Recipe setup has one (page 2, stage 5). Otherwise ask your vibe-coding tool for one, or use a sheet with the columns in the template.",
+         "For each answer ask: would a real user be happy? Does it follow my spec? Write a note on each problem, in full sentences, so someone else or an LLM can read it later. This is open coding: no categories yet.",
+         "Aim for 50 to 100 records. Stop when the last 10 or so only repeat problems you already noted.",
+         "Ask an LLM to suggest groups from your notes, with counts and examples. Then check each group yourself: rename, merge or split until you have 4 to 8 named failure types you could explain to a colleague. This is axial coding. The groups are your decision.",
+         "Label each record with its type and count each type. The top two are your first targets.",
+         "For a bot with several steps or tools, note only the first thing that went wrong in each record: later problems are often caused by it.",
          "For a document bot, note for each failure whether search missed the right passage or the answer ignored it.",
          "Keep every answer you judged. In stage 6 they become the start of your golden set, so you do not label them twice."],
     tpl:`id,what went wrong,category,search or answer?`,
     done:"Failure list with counts and one example record each",
-    ask:"Which failure would hurt a real user most, even if it is rare?" },
+    ask:"Which failure would hurt a real user most, even if it is rare?",
+    recipe:"The course's annotation app in <code>useful apps/stage-5-error-analysis</code>, on the trace files the bulk test saves in <code>recipe-chatbot/annotation/traces/</code> (page 2, stage 5)." },
   { t:"Golden set, checks and a judge", sk:["evals"],
     why:"Turn your top failures into automatic checks, then prove each check agrees with you before you trust it.",
     how:["Build your golden set: start from the answers you already judged in stage 5 and add more until you have about 50, each labeled PASS or FAIL for one failure. It must include both failures and good answers; if failures are rare, run more questions.",
@@ -1024,6 +1104,13 @@ var PM = [
 /* F(): a file or folder, in its own color. A(): an action the learner does. */
 function F(p){ return '<code class="fp">' + p + '</code>'; }
 function A(t){ return '<span class="act">' + t + '</span>'; }
+/* N(): a side note (why, tip, optional detail), shown small and grey under the step */
+function N(t){ return '<span class="note">' + t + '</span>'; }
+/* U(): an app in the "useful apps" folder next to this guide, one folder per stage */
+function U(p, label){ return '<a href="useful%20apps/' + p + '" target="_blank" rel="noopener"><code class="fp">' + (label || p.split("/").pop()) + '</code></a>'; }
+/* RES(): a link to the Resources tab of page 2; anchor (optional) is the id of the block to scroll to */
+function RES(t, anchor){ return '<a href="#" data-goto="resources"' + (anchor ? ' data-anchor="' + anchor + '"' : '') + '>' + (t || "Resources tab") + '</a>'; }
+var VIDEOS = function(){ return RES("Videos", "res-videos"); };
 
 var EXTRA = [
   { loc:["doc"], course:["doc"],
@@ -1040,7 +1127,7 @@ Out of scope: (for example, ordering groceries)`,
   },
   { loc:["local","host","stage","prod"], course:["local"],
     f:"A Python app. The agent's instructions live in "+F("backend/system_prompt.md")+" and your keys in "+F(".env")+".",
-    how:["A system prompt is the hidden instruction the AI reads before every conversation. It sets the agent's role, tone and rules.",
+    how:[N("A system prompt is the hidden instruction the AI reads before every conversation. It sets the agent's role, tone and rules."),
          A("Open")+" "+F("recipe-chatbot/backend/system_prompt.md")+". Windows: right-click &gt; <b>Open with</b> &gt; <b>Notepad</b> (or VS Code). Mac: right-click &gt; <b>Open With</b> &gt; <b>TextEdit</b> (or VS Code). It already holds a short default prompt.",
          A("Replace the default text")+" with five headings: Role, Task, Rules, Format, Defaults (full example below). Each one is a heading of your stage 1 spec, reworded as an instruction to the AI:" +
            '<div class="mapwrap"><table class="map"><thead><tr><th>Your spec (stage 1) says</th><th>Example in the spec</th><th>Becomes in the system prompt</th></tr></thead><tbody>' +
@@ -1050,10 +1137,10 @@ Out of scope: (for example, ordering groceries)`,
            '<tr><td>A good answer looks like</td><td>One complete recipe, clear steps, a serving size</td><td><b>Format:</b> Title, serving size, ingredients list, then numbered steps.</td></tr>' +
            '<tr><td>Not in the spec</td><td>(what to assume when the user leaves something out)</td><td><b>Defaults:</b> If no ingredients are given, assume basic pantry items. If no serving size is given, assume 2 people.</td></tr>' +
            '</tbody></table></div>' +
-           "The spec is for people; the system prompt is the same intent written for the AI. In stages 5 and 6 you judge answers against the spec.",
-         A("Save")+" (Ctrl+S or Cmd+S). Started the server with --reload-include '*.md'? It restarts by itself. Otherwise stop it with Ctrl+C and start it again.",
+           N("The spec is for people; the system prompt is the same intent written for the AI. In stages 5 and 6 you judge answers against the spec."),
+         A("Save")+" (Ctrl+S or Cmd+S)."+N("Started the server with --reload-include '*.md'? It restarts by itself. Otherwise stop it with Ctrl+C and start it again."),
          A("Refresh")+" http://127.0.0.1:8000, ask the same question as before and compare the two answers.",
-         "Change one thing at a time, so you know which edit caused which change."],
+         N("Change one thing at a time, so you know which edit caused which change.")],
     ex:`Role: You are an expert chef helping busy parents cook on weekdays.
 Task: Give one complete recipe that fits the user's request.
 Rules: Respect every diet the user mentions. If asked to order groceries, say you cannot.
@@ -1062,11 +1149,11 @@ Defaults: If no ingredients are given, assume basic pantry items. If no serving 
   },
   { loc:["doc","local"], course:["doc","local"],
     f:"A CSV file (a spreadsheet saved as plain text) with two columns: id and query.",
-    how:[A("Open")+" "+F("data/sample_queries.csv")+" in Notepad or VS Code. Excel works too, but save it back as CSV.",
-         A("Add 20 to 30 requests")+" below the existing rows, one per row, each with a new id (the homework asks for at least 10). Grow it to about 100 before stage 5, which reads 50 to 100 answers. 100 varied requests beat 500 similar ones.",
+    how:[A("Open")+" "+F("data/sample_queries.csv")+" in Notepad or VS Code."+N("Excel works too, but save it back as CSV."),
+         A("Add 20 to 30 requests")+" below the existing rows, one per row, each with a new id."+N("The homework asks for at least 10. Grow the file to about 100 before stage 5, which reads 50 to 100 answers. 100 varied requests beat 500 similar ones."),
          A("Cover different situations:")+" short, long, vague, a diet restriction, missing details, and one that has nothing to do with cooking.",
          A("Save it as a new file,")+" for example "+F("data/my_queries.csv")+". Keep the first line exactly: id,query",
-         A("Run them all at once.")+" Open a terminal in "+F("recipe-chatbot")+" and paste:<pre class=\"ex\">uv run python scripts/bulk_test.py --csv data/my_queries.csv</pre>It sends every question to the bot and saves all questions and answers in one new file in "+F("results/")+". <b>Why:</b> you get (1) answers to read in stage 5, (2) a record to compare against after a prompt change, and (3) your traces, which every later check reads. To run the sample file instead:<pre class=\"ex\">uv run python scripts/bulk_test.py</pre>"],
+         A("Run them all at once.")+" Open a terminal in "+F("recipe-chatbot")+" and paste:<pre class=\"ex\">uv run python scripts/bulk_test.py --csv data/my_queries.csv</pre>It sends every question to the bot and saves all questions and answers in one new file in "+F("results/")+", plus one trace file per question in "+F("annotation/traces/")+"."+N("<b>Why:</b> you get (1) answers to label in stage 5, (2) a record to compare against after a prompt change, and (3) your traces, which every later check reads.")+N("To run the sample file instead:")+"<pre class=\"ex\">uv run python scripts/bulk_test.py</pre>"],
     ex:`id,query
 1,What can I cook with chicken and rice?
 2,I'm vegan and have 15 minutes. Dinner ideas?
@@ -1074,13 +1161,13 @@ Defaults: If no ingredients are given, assume basic pantry items. If no serving 
 4,What's the capital of France?`,
   },
   { loc:["local","stage","prod"], course:["local"],
-    f:"A trace is one question plus the bot's answer. The bulk test already saves them all in one file in "+F("results/")+". Here you run it, read three entries and keep a renamed copy. Real products also record model, prompt version, time and cost; this project does not.",
+    f:"A trace is one question plus the bot's answer. Each bulk test saves them twice: all together in one results file in "+F("results/")+", to compare runs, and one trace file per question in "+F("annotation/traces/")+", to label in stage 5. Here you run it, read three entries and keep a renamed copy. Real products also record model, prompt version, time and cost; this project does not.",
     how:[A("Run the bulk test")+" from stage 3. It prints each question and answer in the terminal.",
-         A("Note the file name")+" on the last line, starting Saved, for example "+F("results/results_20261024_150000.json")+".",
-         A("Open that file")+" from "+F("recipe-chatbot\\results")+" in Notepad or VS Code. Each entry is one trace: an id, the query (the question) and the response (the answer). "+A("Read three entries.")+" This file is your set of traces.",
-         A("Copy the file and rename the copy")+" after your prompt version, for example "+F("v1-first-prompt.json")+". <b>Why:</b> the file does not say which prompt made it, and each bulk test makes a new one. After every prompt change, run again and rename (v2-...). Never edit or delete old copies.",
-         "Not saved here: model name, prompt version, time taken, cost. You do not add them; ask for them when you build or buy a bot.",
-         "Optional, you can skip it: "+F("recipe-chatbot\\annotation\\traces")+" holds a different kind of trace, separate from "+F("results/")+". Files named trace_2024-... (ids like SYN025) are the course's sample chats, with empty open_coding and axial_coding_code fields for the labeling tool. Files named trace_2026... are your own browser chats, one per message. In both, request is the conversation sent and response is the full conversation with the new answer at the end (the system prompt comes first). No need to repeat your bulk test queries there."],
+         A("Note the two lines starting Saved")+" at the end: the results file, for example "+F("results/results_20261024_150000.json")+", and the trace files, for example "+F("trace_bulk_20261024_150000_*.json")+"."+N("Both carry the same time, so you can tell which traces belong to which run."),
+         A("Open the results file")+" from "+F("recipe-chatbot\\results")+" in Notepad or VS Code. Each entry is one trace: an id, the query (the question) and the response (the answer). "+A("Read three entries.")+N("Easier to read: double-click "+U("stage-4-capture-traces/results-viewer.html")+" in "+F("useful apps\\stage-4-capture-traces")+" and pick your results file. It shows one question and answer at a time.")+N("This file is the record of the whole run; the same answers, one per file, are what you label in stage 5."),
+         A("Copy the file and rename the copy")+" after your prompt version, for example "+F("v1-first-prompt.json")+". After every prompt change, run again and rename (v2-...). Never edit or delete old copies."+N("<b>Why:</b> the file does not say which prompt made it, and each bulk test makes a new one."),
+         N("Not saved here: model name, prompt version, time taken, cost. You do not add them; ask for them when you build or buy a bot."),
+         N("Optional, you can skip it: "+F("recipe-chatbot\\annotation\\traces")+" holds one file per chat, the format the course's annotation app reads in stage 5. Files named trace_bulk_... are your bulk test answers, one per question. Files named trace_2026... are your own browser chats, one per message. The course's 250 sample chats (trace_2024-..., ids like SYN025) are kept apart in "+F("annotation\\course_samples_extra")+", so they don't mix with yours. In each file, request is what was sent and response is the full conversation with the answer at the end (the system prompt comes first), with empty open_coding and axial_coding_code fields for your notes.")],
     ex:`[
   {
     "id": "1",
@@ -1089,25 +1176,40 @@ Defaults: If no ingredients are given, assume basic pantry items. If no serving 
   }
 ]`,
   },
-  { loc:["doc","nb","local"], course:["nb","local"],
-    f:"A sheet with columns: id, what went wrong, category. Then a count table: category and how many.",
-    how:[A("Open a results file")+" from stage 4, and "+A("a spreadsheet")+" with the columns id, what went wrong, category.",
-         A("Open")+" "+R("homeworks/hw2/reference_files/viewer.html")+" in your browser to read the answers (raw JSON is hard to scan). Click the file button and pick your file from "+F("recipe-chatbot\\results")+" (for example "+F("results_20261024_222451.json")+"), or "+F("query_response.jsonl")+" from the viewer's folder for 250 ready-made course pairs. It shows one question and answer at a time, with Previous and Next. Keep it on one side of the screen and the sheet on the other. This copy reads both formats; the original in "+F("recipe-chatbot")+" reads only .jsonl.",
-         A("Open coding: write one note per problem,")+" one answer at a time, in your own words. Ask: would a real user be happy? Did it follow my stage 1 spec? Be specific enough that someone else could see it. Good: used butter after the user said vegan. Weak: bad answer. Example: the user asked for a kosher, dairy-free meal from their pantry and the bot listed 10 ingredients without asking what the pantry holds. Note: ignored pantry, assumed ingredients. <b>Do not make categories yet:</b> first find out how the bot really fails.",
-         A("Axial coding: after 50 to 100 notes, group similar ones")+" and name each group, such as ignored the diet or too long.",
-         A("Count each category:")+" add one column per category, put 1 or 0 on each row, and SUM each column. The top two are your first targets.",
-         A("Keep the answers you judged.")+" In stage 6 they become your golden set.",
-         "Optional: a labeling tool instead of the sheet. It does the same open and axial coding, one chat at a time, with a box for the note and one for the category. Save stores them in that chat's file in "+F("annotation/traces")+" and moves to the next. It works on the 250 sample chats (trace_2024 files) or your browser chats, not on your bulk test file: use the sheet for that. "+A("To start it,")+" paste this in a terminal in "+F("recipe-chatbot")+", then open http://localhost:5001. The --with parts add two packages for this run only.<pre class=\"ex\">uv run --with python-fasthtml --with monsterui python annotation/annotation.py</pre>"],
+  { loc:["local","doc"], course:["local"],
+    f:"The course's annotation app (a small FastHTML web page), in "+F("useful apps\\stage-5-error-analysis\\annotation-app")+", on the trace files in "+F("recipe-chatbot\\annotation\\traces")+". Your notes and categories are saved inside each trace file. Then a count per category and your failure list in "+F("failure_mode_taxonomy.md")+".",
+    how:[A("Your traces are already there.")+" Your bulk test from stage 4 saved one file per question in "+F("annotation/traces/")+", named after the run's time, for example "+F("trace_bulk_20261024_150000_001.json")+"."+N("Below, swap 20261024_150000 for the time of your run."),
+         A("Start the app.")+" Open a terminal in "+F("useful apps\\stage-5-error-analysis\\annotation-app")+", paste this, then open http://localhost:5001.<pre class=\"ex\">uv run --project \"../../../../recipe-chatbot\" --with python-fasthtml --with monsterui python annotation.py</pre>"+
+           N("--project uses the chatbot's own Python setup, and the --with parts add two packages for this run only. The app reads and saves the traces in "+F("recipe-chatbot\\annotation\\traces")+", so keep both folders side by side. Stop it with Ctrl+C.")+
+           N("Same app, from the course's own folder: in a terminal in "+F("recipe-chatbot")+", run uv run --with python-fasthtml --with monsterui python annotation/annotation.py. It follows your computer's dark mode; the copy is always light."),
+         A("Find your traces.")+" Your bulk run is shown as bulk followed by its date. Click your first one. The chat is on the left. Click <b>System Prompt</b> to check what you asked the bot to do."+N("The home page lists every file in "+F("annotation\\traces")+" by name: your browser chats (2026...), then your bulk runs. Each trace shows the system prompt it was made with, so chats from before a prompt change show the old prompt.")+N("To keep only the run you're coding, move older chats or runs into "+F("annotation\\old_traces")+". Don't delete them: they're your before for a later comparison."),
+         A("Open coding: write notes in the big text box,")+" one answer at a time, in your own words. Ask: would a real user be happy? Did it follow my stage 1 spec? Leave the category box empty for now. Press Save (or Ctrl+Enter): it saves the note into that trace's file and opens the next one."+
+           N("Write full sentences, specific enough that someone else, or an LLM later, understands them. Good: says \"silky sauce\" without saying how thick, too vague for a beginner. Weak: bad answer.")+
+           N("Several problems in one answer is fine: one per line. No categories yet: first find out how the bot really fails. A ✅ on the home page means the trace has notes."),
+         A("Keep going until nothing new shows up.")+" Aim for 50 to 100 traces."+N("If the last 10 or so only repeat problems you already noted, you have read enough for this round."),
+         A("Axial coding: let an LLM suggest groups, then decide them yourself.")+" In Claude Code, type:<pre class=\"ex\">Read the open_coding notes in annotation/traces/trace_bulk_20261024_150000_*.json. Suggest groups of similar problems, with a count and two example trace ids for each, and say which groups often occur together. Do not change the files.</pre>Then check every group: open its examples, rename unclear names, merge or split until you have 4 to 8, each with a one-sentence definition two people would apply the same way."+
+           N("The groups are yours; the LLM only drafts them. For example, a vague draft name like \"prescriptive issues\" can become \"ambiguous instruction\"."),
+         A("Label each trace with its group.")+" Go through your traces again. In the box above the notes, type the group name the first time; after that it appears in the list for every trace."+
+           N("The box holds one group per trace: if a trace has two problems, pick the most important and keep the other in the note. A second ✅ means the trace has a group."),
+         A("Count each group.")+" In Claude Code, type:<pre class=\"ex\">Count the axial_coding_code values in annotation/traces/trace_bulk_20261024_150000_*.json.</pre>The top two are your first targets."+N("Where your counts differ from the LLM's draft, you and the LLM disagreed: worth a second look."),
+         A("Keep the traces you labeled.")+" In stage 6 they become the start of your golden set.",
+         N("Prefer a spreadsheet? Excel is fine as long as the chats are easy to read. Use the open-coding sheet template with the columns id, what went wrong, category; add one column per group, put 1 or 0 on each row and SUM each column. You can still read the answers in the app.")],
+    ex:`Trace 007, "quick low carb beef snack, 15 minutes"
+Note: Step 4 says "turn off heat if using, sprinkle cheddar". I could not
+tell that cheddar is optional. Optional ingredients should be on their own
+line, not mixed into a step.
+Note: "a splash of soy sauce": no amount, but my prompt says exact measurements.
+Group (added later, in axial coding): ambiguous instruction`,
   },
   { loc:["nb","local","prod"], course:["nb"],
     f:"A golden set (a table of answers with your own PASS or FAIL), a judge that returns PASS or FAIL, and a results table with the judge's true positive and true negative rates.",
     how:[A("Pick one failure")+" from your list, for example: ignores the stated diet.",
-         A("Write one yes or no question")+" about it. One failure per judge.",
+         A("Write one yes or no question")+" about it."+N("One failure per judge."),
          A("Write the judge prompt:")+" give it the user request and the answer, and ask for PASS or FAIL plus one sentence of reason (template below).",
-         A("Build your golden set:")+" a small answer key of real answers you judged yourself. Take about 50 from your results files (a common start, not a rule), with both failures and good answers; if failures are rare, run more queries. In a spreadsheet, add your own PASS or FAIL for the failure you picked. Columns: id, query, response, respects_diet, your note. Save it, for example as "+F("data/golden_set.csv")+".",
-         A("Split it:")+" use about 60 percent while you improve the judge and keep the rest untouched for the final check. The exact split is a judgment call.",
+         A("Build your golden set:")+" a small answer key of real answers you judged yourself. Take about 50 from your results files, with both failures and good answers. In a spreadsheet, add your own PASS or FAIL for the failure you picked. Columns: id, query, response, respects_diet, your note. Save it, for example as "+F("data/golden_set.csv")+"."+N("50 is a common start, not a rule. If failures are rare, run more queries."),
+         A("Split it:")+" use about 60 percent while you improve the judge and keep the rest untouched for the final check."+N("The exact split is a judgment call."),
          A("Run the judge on the golden set")+" and compare its PASS or FAIL with yours.",
-         A("Count how often the judge agrees with you")+" on real failures and on good answers. Low agreement? Rewrite the question and try again."],
+         A("Count how often the judge agrees with you")+" on real failures and on good answers."+N("Low agreement? Rewrite the question and try again.")],
     ex:`You are checking one thing only.
 User request: {query}
 Answer: {response}
@@ -1125,8 +1227,8 @@ Reply with PASS or FAIL, then one sentence explaining why.`,
     f:"A before and after table in a spreadsheet, with a label for each version of the prompt.",
     how:[A("Choose the most frequent failure")+" from your stage 5 counts.",
          A("Change one thing:")+" one sentence in "+F("backend/system_prompt.md")+".",
-         A("Re-run the same query file")+" with the bulk test, then run your checks on the new results file. Changed the judge itself? Check it against your golden set first.",
-         A("Put old and new scores side by side.")+" Keep the change only if the target improved and nothing else got worse.",
+         A("Re-run the same query file")+" with the bulk test, then run your checks on the new results file."+N("Changed the judge itself? Check it against your golden set first."),
+         A("Put old and new scores side by side.")+" Keep the change only if the target improved and nothing else got worse."+N("To compare the answers themselves, open the old and the new results file in "+U("stage-4-capture-traces/results-viewer.html")+", in two browser tabs."),
          A("Add the cases you fixed to your regression set:")+" a CSV of requests that must keep passing."],
   },
   { loc:["prod","doc","local"], course:["local"],
@@ -1135,7 +1237,7 @@ Reply with PASS or FAIL, then one sentence explaining why.`,
          A("Run your checks on them")+" and read the failures yourself.",
          A("Write any new failure type")+" into your category list.",
          A("Add it to the regression set,")+" then repeat from stage 5.",
-         "In a real product, ask engineering for a dashboard of your main checks and an alert when a score drops. Here, practise by sampling the results files you saved."]
+         N("In a real product, ask engineering for a dashboard of your main checks and an alert when a score drops. Here, practise by sampling the results files you saved.")]
   }
 ];
 
@@ -1147,31 +1249,34 @@ function R(p, label){
     ? '<a href="' + href + '" data-tpl-file>' + text + '</a>'
     : '<a href="' + href + '" target="_blank" rel="noopener">' + text + '</a>';
 }
-var VID = function(id){ return '<a href="https://youtu.be/'+id+'" target="_blank" rel="noopener">video</a>'; };
 var HELP = [
   ["<b>Know what to cover:</b> the Part 1 checklist in "+R("homeworks/hw1/readme.md")+" (role, always and never rules, safety clause, creativity level, format). Use it to fill your spec's must-never and good-answer headings."],
   ["<b>Check your prompt is complete:</b> tick the same Part 1 checklist in "+R("homeworks/hw1/readme.md")+". HW1 has no solution notebook, on purpose."],
   ["<b>Get variety, not 100 similar questions:</b> HW2 Part 1 in "+R("homeworks/hw2/README.md")+". Pick 3 or 4 dimensions (cuisine, diet, meal type), combine them, then turn each combination into a natural question.",
    "<b>Ideas for query types:</b> the list in HW1 Part 2 of "+R("homeworks/hw1/readme.md")+" (cuisine, diet, ingredients, time, skill level, vague)."],
   ["<b>Run it the official way:</b> HW1 Part 3 in "+R("homeworks/hw1/readme.md")+".",
-   "<b>See what a richer agent trace looks like</b> (several steps, tool calls): open "+R("homeworks/hw5/reference_files/trace_viewer.html")+" and upload "+F("raw_traces.jsonl")+" from the same folder."],
-  ["<b>Watch it first:</b> Isaac and Hamel doing open and axial coding, "+VID("AKg27L4E0M8")+". The HW2 "+VID("h9oAAAYnGx4")+" covers the whole homework.",
-   "<b>Follow the official steps:</b> HW2 Part 2 in "+R("homeworks/hw2/README.md")+".",
+   "<b>See what a richer agent trace looks like</b> (several steps, tool calls): open "+U("stage-7-evaluate-the-parts/agent-traces-viewer.html")+" and upload "+F("raw_traces.jsonl")+" from "+F("recipe-chatbot\\homeworks\\hw5\\reference_files")+"."],
+  ["<b>Follow the official steps:</b> HW2 Part 2 in "+R("homeworks/hw2/README.md")+".",
+   "<b>Watch it done:</b> the open and axial coding video and the HW2 video, in "+VIDEOS()+".",
    "<b>Write up your failure modes:</b> copy "+R("homeworks/hw2/reference_files/failure_mode_taxonomy.md")+" and replace its sample modes with yours: title, one-sentence definition, 1 or 2 real examples.",
-   "<b>Sheet layout to aim for:</b> "+R("lesson-7/data/traces.csv")+": one row per conversation, the full chat in one cell, a failure mode column.",
+   "<b>How the app works:</b> "+F("recipe-chatbot\\annotation\\README.md")+" (not copied next to this guide).",
+   "<b>More practice data:</b> the course's 250 sample chats (2024-01-15) are in "+F("annotation\\course_samples_extra")+". Move files into "+F("annotation\\traces")+" to see them in the app. Their system prompt is a placeholder, so check them against your own idea of good, not your spec.",
+   "<b>Several groups per chat:</b> "+F("lesson-7/labeling-tool")+" (the course's Lesson 6) lets you pick more than one failure mode per chat. It loads "+R("lesson-7/data/traces.csv")+", 118 agent chats with tool calls, one row each; that file has no label columns. How to start it: "+U("stage-5-error-analysis/README.md","useful apps\\stage-5-error-analysis\\README.md")+".",
    '<b>Check your work after:</b> '+R("homeworks/hw2/hw2_walkthrough.ipynb")+' is the solution. To open any walkthrough notebook, paste this in a terminal in '+F("recipe-chatbot")+':<pre class="ex">uv run --with jupyter jupyter notebook homeworks/hw2/hw2_walkthrough.ipynb</pre>'],
-  ["<b>Follow the official steps:</b> "+R("homeworks/hw3/README.md")+" and its "+VID("1d5aNfslwHg")+". Option 2: about 2400 ready traces to label. Option 3: 101 already labeled, so you focus on the judge.",
-   "<b>Test on hard cases:</b> "+R("homeworks/hw3/reference_files/dietary_queries.csv")+", 60 tricky diet requests. Browse traces with "+R("homeworks/hw3/reference_files/trace_viewer.html","trace_viewer.html")+".",
-   "<b>A second judge, another product:</b> "+F("lesson-4")+" checks a property-manager bot for unsupported claims. "+R("lesson-4/label_substantiation.py","label_substantiation.py")+" makes the labels, "+R("lesson-4/judge_substantiation.py","judge_substantiation.py")+" scores a cheaper judge with TPR and TNR. It labels with an LLM to save time; your golden set is labeled by you.",
-   "<b>Check your work after:</b> "+R("homeworks/hw3/hw3_walkthrough.ipynb")+" is the solution."],
-  ["<b>Search quality:</b> "+R("homeworks/hw4/README.md")+" and its "+VID("GMShL5iC8aY")+". Option 2 or 3 give 200 ready recipes and 200 test queries; browse them with "+R("homeworks/hw4/reference_files/query_viewer.html","query_viewer.html")+".",
-   "<b>Agent steps:</b> "+R("homeworks/hw5/README.md")+" and its "+VID("z1oISsDUKLA")+". 96 labeled traces and a starter script, "+R("homeworks/hw5/analysis/transition_heatmaps.py","analysis/transition_heatmaps.py")+".",
-   "<b>Read failed multi-step chats as a sheet:</b> "+R("lesson-7/data/traces.csv")+" holds the HW5 failures, one row each.",
+  ["<b>Follow the official steps:</b> "+R("homeworks/hw3/README.md")+". Option 2: about 2400 ready traces to label. Option 3: 101 already labeled, so you focus on the judge. Its video is in "+VIDEOS()+".",
+   "<b>Test on hard cases:</b> "+R("homeworks/hw3/reference_files/dietary_queries.csv")+", 60 tricky diet requests.",
+   "<b>See what PASS and FAIL look like:</b> open "+U("stage-6-golden-set-and-judge/labeled-traces-viewer.html")+" and upload "+F("labeled_traces.jsonl")+" from "+F("recipe-chatbot\\homeworks\\hw3\\reference_files")+": 101 traces labeled by hand, each with its reason.",
+   "<b>A second judge, another product:</b> "+F("lesson-4")+" checks a property-manager bot for unsupported claims. "+R("lesson-4/label_substantiation.py","label_substantiation.py")+" makes the labels, "+R("lesson-4/judge_substantiation.py","judge_substantiation.py")+" tests a judge against those labels with TPR and TNR. Its comments mention a cheaper model, but the code uses the same model as the labeler (gpt-4.1). It labels with an LLM to save time; your golden set is labeled by you.",
+   "<b>Check your work after:</b> "+R("homeworks/hw3/hw3_walkthrough.ipynb")+" is the solution. Its judge is simulated (it copies the true label 85% of the time) and its judgy code is commented out, so it shows the steps and the maths, not a real judge run. You write the call to your judge model yourself."],
+  ["<b>Search quality:</b> "+R("homeworks/hw4/README.md")+". Option 2 or 3 give 200 ready recipes and 200 test queries; browse the queries with "+U("stage-7-evaluate-the-parts/search-queries-viewer.html")+".",
+   "<b>Agent steps:</b> "+R("homeworks/hw5/README.md")+". 96 labeled traces and a starter script, "+R("homeworks/hw5/analysis/transition_heatmaps.py","analysis/transition_heatmaps.py")+". Read the traces first in "+U("stage-7-evaluate-the-parts/agent-traces-viewer.html")+".",
+   "<b>Watch it done:</b> the HW4 and HW5 videos, in "+VIDEOS()+".",
+   "<b>Read failed multi-step chats as a sheet:</b> "+R("lesson-7/data/traces.csv")+" holds 118 failed agent chats, one row each, with their tool calls. They are a different set from HW5's 96 labeled traces, so the HW5 heat-map does not cover them.",
    "<b>Check your work after:</b> "+R("homeworks/hw4/hw4_walkthrough.ipynb","hw4_walkthrough.ipynb")+" and "+R("homeworks/hw5/hw5_walkthrough.ipynb","hw5_walkthrough.ipynb")+" are the solutions."],
   ["<b>No homework here:</b> use your HW2 counts and HW3 judge. Change one line of the prompt, rerun, compare.",
    "<b>Optional, advanced: cut cost once quality is fine.</b> "+R("lesson-8/model_cascade.py")+" sends each item to a cheap model first and only to a bigger one when unsure."],
   ["<b>No homework here:</b> sample your saved results files each week.",
-   "<b>Optional: record traces automatically</b> from the running bot with a tracing tool: "+R("homeworks/optional/phoenix-integration/README.md")+" (Arize Phoenix, with a video). Do it after the nine stages."]
+   "<b>Optional: record traces automatically</b> from the running bot with a tracing tool: "+R("homeworks/optional/phoenix-integration/README.md")+" (Arize Phoenix). Do it after the nine stages; its video is in "+VIDEOS()+"."]
 ];
 
 var CHECKS = [
@@ -1212,13 +1317,21 @@ function renderStages(id){
       '<div class="col"><div class="k">Format</div>'+x.f+'</div>'+
       '<div class="col"><div class="k">Your role as PM</div>'+PM[i]+'</div>'+
       '<div class="col how"><div class="k">How, step by step (beginner)</div>'+ol(x.how)+(x.ex?'<pre class="ex" data-ex></pre>':'')+'</div>'+
-      '<div class="col how"><div class="k">Course help (in recipe-chatbot)</div>'+li(HELP[i])+'</div>'+
+      '<div class="col how"><div class="k">Course material</div>Checklists, homework steps, data and solutions for this stage: '+RES("Resources, stage "+(i+1), "res-stage-"+(i+1))+'.</div>'+
       '</div></details>';
   });
   box.innerHTML = h;
   box.querySelectorAll("details").forEach(function(d,i){
     var pre = d.querySelector("pre.ex[data-ex]"); if(pre) pre.textContent = EXTRA[i].ex;
   });
+  addCopy();
+}
+
+/* Resources tab: the course material for each stage (HELP), one block per stage; each stage links to its block */
+function renderResByStage(){
+  document.getElementById("resByStage").innerHTML = STAGES.map(function(st,i){
+    return '<div class="box" id="res-stage-'+(i+1)+'"><div class="k">Stage '+(i+1)+' · '+st.t+(st.hw ? ' · '+st.hw : '')+'</div>'+li(HELP[i])+'</div>';
+  }).join("");
   addCopy();
 }
 
@@ -1428,9 +1541,9 @@ document.querySelectorAll("#pagenav button").forEach(function(b){
   b.onclick = function(){ showPage(b.getAttribute("data-page")); window.scrollTo(0,0); };
 });
 
-/* Page 2 sub-tabs: how-to guide, how the system works, about the repo (several wrappers can share one data-sub) */
+/* Page 2 sub-tabs: how-to guide, how the system works, about the repo, resources (several wrappers can share one data-sub) */
 function showSub(key){
-  if(key !== "repo" && key !== "system") key = "guide";
+  if(key !== "repo" && key !== "system" && key !== "resources") key = "guide";
   document.querySelectorAll("#p-recipe .sub").forEach(function(d){ d.hidden = d.getAttribute("data-sub") !== key; });
   document.querySelectorAll("#subnav button").forEach(function(b){
     b.setAttribute("aria-pressed", b.getAttribute("data-sub") === key ? "true" : "false");
@@ -1441,13 +1554,20 @@ document.querySelectorAll("#subnav button").forEach(function(b){
   b.onclick = function(){ showSub(b.getAttribute("data-sub")); };
 });
 try{ showSub(localStorage.getItem("playbook-sub")); }catch(e){ showSub("guide"); }
-document.querySelectorAll("[data-goto]").forEach(function(b){
-  b.onclick = function(){ showPage("recipe-chatbot"); showSub(b.getAttribute("data-goto")); window.scrollTo(0,0); };
+/* Links and buttons to a page-2 tab; delegated, because the stage lists are drawn after this runs */
+document.addEventListener("click", function(e){
+  var b = e.target.closest && e.target.closest("[data-goto]");
+  if(!b) return;
+  e.preventDefault();
+  showPage("recipe-chatbot"); showSub(b.getAttribute("data-goto"));
+  var target = b.getAttribute("data-anchor") && document.getElementById(b.getAttribute("data-anchor"));
+  if(target) target.scrollIntoView(); else window.scrollTo(0,0);
 });
 
 renderGen();
 renderTemplates();
 renderStages("stagesR");
+renderResByStage();
 renderChecks(CHECKS_GEN, "checkG", "progG", "playbook-checks-gen");
 renderChecks(CHECKS, "check", "prog", "playbook-checks");
 decorate();

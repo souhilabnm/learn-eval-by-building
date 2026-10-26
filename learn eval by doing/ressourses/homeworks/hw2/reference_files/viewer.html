@@ -167,8 +167,8 @@
 
     <div class="upload-section" id="uploadSection">
         <div class="upload-box">
-            <h2>Open your traces</h2>
-            <p>Choose a bulk test results file from <code>recipe-chatbot\results</code> (for example <code>results_20261024_222451.json</code>), You will see one question and answer at a time.</p>
+            <h2>Upload a JSONL or JSON File</h2>
+            <p>Select <code>query_response.jsonl</code>, or a bulk test results file from <code>results/</code> (<code>.json</code>), to view the query/response pairs.</p>
             <input type="file" id="fileInput" accept=".jsonl,.json" />
         </div>
     </div>
@@ -190,6 +190,17 @@
     </div>
 
     <script>
+        // Read a .jsonl file (one JSON object per line) or a .json file (one list of objects, or one object)
+        function parseRecords(text) {
+            const trimmed = text.trim();
+            try {
+                const data = JSON.parse(trimmed);
+                return Array.isArray(data) ? data : [data];
+            } catch (err) {
+                return trimmed.split('\n').filter(line => line.trim()).map(line => JSON.parse(line));
+            }
+        }
+
         let entries = [];
         let currentIndex = 0;
 
@@ -203,12 +214,7 @@
                 try {
                     const text = e.target.result;
 
-                    // A .json file is one list (bulk test results); a .jsonl file has one object per line
-                    entries = text.trim().startsWith('[')
-                        ? JSON.parse(text)
-                        : text.trim().split('\n')
-                            .filter(line => line.trim())
-                            .map(line => JSON.parse(line));
+                    entries = parseRecords(text);
 
                     if (entries.length > 0) {
                         document.getElementById('uploadSection').style.display = 'none';

@@ -2,16 +2,13 @@
 
 ## Contents
 
-- **viewer.html** - Simple HTML viewer to read your bot's answers one at a time
-- **failure_mode_taxonomy.md** - Template for writing up your failure modes
+- **query_response.jsonl** - JSONL file containing query/response pairs from the recipe bot
+- **viewer.html** - Simple HTML viewer to browse the query/response data
 
 ## Usage
 
-Use the viewer for open coding: read answers on one side of the screen and write notes in your sheet on the other.
+Open `viewer.html` in your browser, upload the `query_response.jsonl` file, and use the Previous/Next buttons or arrow keys to navigate through the entries.
 
-1. Run the bulk test. It saves your answers in one file in `results/`, for example `results/results_20261024_222451.json`.
-2. Double-click `viewer.html`. It opens in your browser.
-3. Click the file button and pick your results file.
-4. Use the Previous/Next buttons or arrow keys to move through the answers.
+`viewer.html` was created with AI with the following prompt:
 
-`viewer.html` was created with AI and adapted to open the bulk test results files.
+*"Create a simple self contained html file to view the query_response jsonl file in a reasonable but minimal interface and click through see each of them.  It can't fetch directly without a server, so make it so you can upload a file and have clear instructions to uploade `query_response.jsonl` "*

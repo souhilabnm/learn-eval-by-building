@@ -260,13 +260,13 @@
     <div class="container">
         <div class="upload-section" id="uploadSection">
             <h1>Trace Viewer</h1>
-            <p>Upload a JSONL trace file to view and navigate through the records</p>
+            <p>Upload a JSONL or JSON trace file to view and navigate through the records</p>
             <p style="font-size: 14px; color: #888;">
                 Use with: <code>labeled_traces.jsonl</code> or <code>raw_traces.jsonl</code>
             </p>
             <label class="upload-btn">
                 Choose File
-                <input type="file" id="fileInput" accept=".jsonl,.json">
+                <input type="file" id="fileInput" accept=".jsonl,.json" multiple>
             </label>
         </div>
 
@@ -294,32 +294,38 @@
     </div>
 
     <script>
+        // Read a .jsonl file (one JSON object per line) or a .json file (one list of objects, or one object)
+        function parseRecords(text) {
+            const trimmed = text.trim();
+            try {
+                const data = JSON.parse(trimmed);
+                return Array.isArray(data) ? data : [data];
+            } catch (err) {
+                return trimmed.split('\n').filter(line => line.trim()).map(line => JSON.parse(line));
+            }
+        }
+
         let traces = [];
         let currentIndex = 0;
         let fileName = '';
 
         document.getElementById('fileInput').addEventListener('change', handleFileUpload);
 
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        // One file, or several picked together (for example every trace_bulk_<time>_*.json of one run)
+        async function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            if (files.length === 0) return;
 
-            fileName = file.name;
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                const content = e.target.result;
-                try {
-                    traces = content.trim().split('\n').map(line => JSON.parse(line));
-                    currentIndex = 0;
-                    showViewer();
-                    displayRecord();
-                } catch (error) {
-                    alert('Error parsing JSONL file: ' + error.message);
-                }
-            };
-
-            reader.readAsText(file);
+            fileName = files.length === 1 ? files[0].name : `${files.length} files`;
+            try {
+                const parts = await Promise.all(files.map(file => file.text().then(parseRecords)));
+                traces = parts.flat();
+                currentIndex = 0;
+                showViewer();
+                displayRecord();
+            } catch (error) {
+                alert('Error reading the file: ' + error.message);
+            }
         }
 
         function showViewer() {
@@ -377,24 +383,34 @@
                 html += '</div>';
             }
 
-            // Conversation ID
-            if (record.conversation_id) {
+            // Conversation ID (bulk test results and annotation traces use "id")
+            const conversationId = record.conversation_id || record.id;
+            if (conversationId) {
                 html += `
                     <div class="field">
                         <div class="field-label">Conversation ID</div>
-                        <div class="field-value">${escapeHtml(record.conversation_id)}</div>
+                        <div class="field-value">${escapeHtml(String(conversationId))}</div>
                     </div>
                 `;
             }
 
-            // Messages
-            if (record.messages && Array.isArray(record.messages)) {
+            // Messages: HW5 traces have "messages"; annotation traces keep them in "response";
+            // bulk test results have a "query" and a "response" text
+            let messages = null;
+            if (Array.isArray(record.messages)) {
+                messages = record.messages;
+            } else if (record.response && Array.isArray(record.response.messages)) {
+                messages = record.response.messages;
+            } else if (typeof record.query === 'string') {
+                messages = [{ role: 'user', content: record.query }, { role: 'assistant', content: String(record.response ?? '') }];
+            }
+            if (messages) {
                 html += `
                     <div class="field">
-                        <div class="field-label">Messages (${record.messages.length})</div>
+                        <div class="field-label">Messages (${messages.length})</div>
                         <div class="messages-container">
                 `;
-                record.messages.forEach(msg => {
+                messages.forEach(msg => {
                     const roleClass = msg.role === 'user' ? 'message-user' : 'message-assistant';
                     html += `
                         <div class="message ${roleClass}">

@@ -12,6 +12,7 @@ The learner is a product manager new to AI evals. The point of the course is lea
 - **You:** explain the step, show a short example, review what they wrote and give specific feedback ("rule 3 can't be tested: what would a failing answer look like?"). Don't write their content for them. If they ask, write a partial example and let them finish it.
 - **The learner runs commands** in their own terminal. Give one command per code block, matched to their system (PowerShell on Windows, zsh on Mac).
 - **Exceptions you can do yourself:** environment setup (the `learner-setup` skill), read-only checks that help you give feedback (read their files, count rows, check a CSV header), and helper tools that are not the lesson (for example an HTML viewer for results, which HW1 suggests asking an AI to build).
+- **Drafts the learner decides on:** in stage 5 you may draft failure groups from their open-coding notes, as the course video does with an LLM. They check, rename, merge and choose the final modes.
 
 ## How to run a step
 
@@ -32,16 +33,27 @@ One step per message. Define jargon the first time you use it.
 The learner has a playbook page: https://claude.ai/artifact/UchdQCpJPj7hNkLtCrXuK4. On page 2 ("Real use case: Recipe Chatbot"):
 - the **How-to guide** tab has "Before you start" and the nine stages,
 - the **How the system works** tab has the loop and the diagram of one message,
-- the **About the repo** tab says what each folder is for.
+- the **About the repo** tab says what each folder is for,
+- the **Resources** tab has the course material for each stage (checklists, homework steps, data, solutions), the videos, the homeworks, the lessons and the useful apps.
 
 Point them to the stage you are on so they can read it alongside.
+
+## Useful apps
+
+Next to the guide, the `useful apps` folder (in `learn eval by doing`, beside `recipe-chatbot`) has the course's apps, one folder per stage, each with a README:
+- stage 4: `results-viewer.html`, reads a bulk test results file one question and answer at a time (also used in stage 8 to compare two runs),
+- stage 5: `annotation-app/annotation.py`, the annotation app in light theme, reading and saving `recipe-chatbot/annotation/traces`,
+- stage 6: `labeled-traces-viewer.html`, the course's 101 labeled traces (what PASS and FAIL look like),
+- stage 7: `search-queries-viewer.html` (HW4) and `agent-traces-viewer.html` (HW5).
+
+The viewers are read-only and read `.json` (one list) and `.jsonl` (one record per line) files; the trace viewers can open several files at once. If the learner doesn't have that folder, the same viewers are in `homeworks/*/reference_files/` and the annotation app in `annotation/`.
 
 ## Commands that need extra packages
 
 The project does not install Jupyter or the annotation tool's packages. Use `--with` so uv adds them for that run only:
 
 - Notebook: `uv run --with jupyter jupyter notebook homeworks/hw2/hw2_walkthrough.ipynb` (swap in hw3, hw4 or hw5)
-- Annotation tool: `uv run --with python-fasthtml --with monsterui python annotation/annotation.py`, then open http://localhost:5001. It shows the browser chats in `annotation/traces/`, not the bulk-test results.
+- Annotation tool: `uv run --with python-fasthtml --with monsterui python annotation/annotation.py`, then open http://localhost:5001. It shows every trace file in `annotation/traces/`: the browser chats and one file per bulk-test query (`trace_bulk_<time>_...`). The course's 250 sample traces are in `annotation/course_samples_extra/`, and the learner's older chats and runs can be moved to `annotation/old_traces/` (git ignores both `traces/` and `old_traces/`). The light-theme copy in `useful apps/stage-5-error-analysis/annotation-app` is started from that folder with `uv run --project "../../../../recipe-chatbot" --with python-fasthtml --with monsterui python annotation.py`; `--project` keeps the chatbot's Python 3.13, since another Python can fail to install `pyyaml`.
 
 ## Starting the chatbot
 
@@ -55,8 +67,8 @@ The project does not install Jupyter or the annotation tool's packages. Use `--w
 | 1 Spec | `recipe-bot-spec.md` in the project folder (or a Google Doc they paste in) |
 | 2 System prompt | `backend/system_prompt.md` |
 | 3 Test queries | `data/my_queries.csv` (header `id,query`) |
-| 4 Traces | `results/results_<time>.json` from bulk runs; `annotation/traces/` from browser chats |
-| 5 Error analysis | a notes sheet (CSV, Excel or Google Sheets) and their own copy of `homeworks/hw2/reference_files/failure_mode_taxonomy.md` |
+| 4 Traces | each bulk run writes `results/results_<time>.json` (all answers, for comparing runs) and `annotation/traces/trace_bulk_<time>_*.json` (one per query, for labeling); browser chats go to `annotation/traces/` too |
+| 5 Error analysis | `open_coding` and `axial_coding_code` in `annotation/traces/trace_bulk_<time>_*.json` (or a notes sheet, if they chose one), and their own copy of `homeworks/hw2/reference_files/failure_mode_taxonomy.md` |
 | 6 Golden set and judge | `data/golden_set.csv`, `data/judge_prompt.md` |
 | 8 Improve | `data/regression_queries.csv`, and a before/after table |
 
