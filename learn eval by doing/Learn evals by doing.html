@@ -229,7 +229,7 @@ img,svg,pre,table{max-width:100%}
         <div class="box path">
           <div class="k">Path A · recommended</div>
           <h3>Borrow the Recipe Chatbot setup</h3>
-          <p>Clone it, let Claude Code install it, then change five files to make it your topic. You also get <code>/evals-coach</code>, which guides you stage by stage.</p>
+          <p>Clone the course repo (it has the chatbot in <code>recipe-chatbot</code>), let Claude Code install it, then change five files to make it your topic. You also get <code>/evals-coach</code>, which guides you stage by stage.</p>
           <ol>
             <li>Follow <b>Before you start</b> on page 2.</li>
             <li>Then follow <b>Shortest path to a new chatbot</b> in <b>About the repo</b> on page 2.</li>
@@ -460,10 +460,11 @@ img,svg,pre,table{max-width:100%}
       <div class="box">
         <ol>
           <li><span class="act">Create a course folder</span> (any name, any place).</li>
-          <li><span class="act">Clone the project.</span> In the Claude app: <b>Code</b> tab &gt; new session &gt; select your course folder. Type:
-            <pre class="ex">Clone https://github.com/souhilabnm/recipe-chatbot.git into this folder</pre>
-            You get a <code class="fp">recipe-chatbot</code> folder inside your course folder.</li>
-          <li><span class="act">Open the project.</span> <b>Code</b> tab &gt; new session &gt; select <code class="fp">recipe-chatbot</code>.</li>
+          <li><span class="act">Clone the course repo.</span> In the Claude app: <b>Code</b> tab &gt; new session &gt; select your course folder. Type:
+            <pre class="ex">Clone https://github.com/souhilabnm/learn-eval-by-building.git into this folder</pre>
+            You get a <code class="fp">learn-eval-by-building</code> folder with <code class="fp">learn eval by doing</code> (this guide, templates, apps) and <code class="fp">recipe-chatbot</code> (the chatbot you work on) side by side. Keep them together: the annotation app and the coach point from one to the other.</li>
+          <li><span class="act">Open this guide from your copy.</span> In <code class="fp">learn-eval-by-building</code>, double-click <code class="fp">index.html</code>. Template and course-material links then open your local files.</li>
+          <li><span class="act">Open the chatbot folder.</span> <b>Code</b> tab &gt; new session &gt; select <code class="fp">learn-eval-by-building/recipe-chatbot</code>. Every step below runs in this folder.</li>
           <li><span class="act">Set it up.</span> Type:
             <pre class="ex">/learner-setup</pre>
             It installs everything and creates <code class="fp">.env</code>. Done when you see <code>Setup OK</code>.</li>
@@ -559,8 +560,8 @@ OPENAI_API_KEY=paste-your-key-here</pre>
       <h2>Where this repo comes from</h2>
       <div class="scen">
         <div class="box"><div class="k">Original</div><a href="https://github.com/ai-evals-course/recipe-chatbot">ai-evals-course/recipe-chatbot</a><br><span class="small">The course's own repository. The homeworks, lessons and sample data come from here.</span></div>
-        <div class="box"><div class="k">Your copy (fork)</div><a href="https://github.com/souhilabnm/recipe-chatbot">souhilabnm/recipe-chatbot</a><br><span class="small">Forked from the original. This is the link learners clone in "Before you start".</span></div>
-        <div class="box"><div class="k">What a fork means</div>A copy under your own GitHub account. You can change it freely without touching the original. Updates to the original do not arrive by themselves: use <b>Sync fork</b> on your GitHub page to pull them in.</div>
+        <div class="box"><div class="k">Your copy</div><a href="https://github.com/souhilabnm/learn-eval-by-building">souhilabnm/learn-eval-by-building</a>, folder <code>recipe-chatbot</code><br><span class="small">The original plus this course's changes (system prompt, bulk test that saves traces, recipe builder, coach skills). This is the repo learners clone in "Before you start". The older fork <a href="https://github.com/souhilabnm/recipe-chatbot">souhilabnm/recipe-chatbot</a> does not have these changes.</span></div>
+        <div class="box"><div class="k">Why one repo</div>The guide, its templates and apps, and the chatbot are kept in one repo so they stay in step: clone once and everything the guide links to is on your computer. Updates to the course's original repo do not arrive by themselves.</div>
       </div>
     </section>
 
