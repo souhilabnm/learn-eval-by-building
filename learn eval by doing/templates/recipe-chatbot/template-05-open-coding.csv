@@ -1,0 +1,3 @@
+id,what went wrong,category
+007 (example: delete this row),"""a splash of soy sauce"": no amount, but my prompt asks for exact measurements",missing quantities
+019 (example: delete this row),"Cheddar is mixed into step 4, so I cannot tell it is optional",ambiguous instruction

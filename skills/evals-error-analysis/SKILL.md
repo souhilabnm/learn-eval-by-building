@@ -23,7 +23,7 @@ Why: the course reads and labels traces in a small app, one chat at a time, with
 
 Results and traces are separate on purpose: `results/` holds one file per run for the before/after comparison in stage 8; `annotation/traces/` holds one file per chat for labeling. Never convert one into the other, and never edit the results files.
 
-They start the app (commands in the coaching rules: the original in `annotation/`, or the light-theme copy in `useful apps/stage-5-error-analysis/annotation-app`, same traces either way) and open http://localhost:5001. The home page lists files by name: their browser chats (2026...), then their bulk runs, shown as `bulk <date>` with the question. They click the first trace of the run they're coding. Save (or Ctrl+Enter) moves to the next file.
+They start the app in `useful apps/stage-5-error-analysis/annotation-app` (command in the coaching rules) and open http://localhost:5001. The home page lists files by name: their browser chats (2026...), then their bulk runs, shown as `bulk <date>` with the question. They click the first trace of the run they're coding. Save (or Ctrl+Enter) moves to the next file.
 
 Each trace shows the system prompt it was made with, so older chats show an older prompt. If older chats or runs get in the way, they move them (never delete) into `annotation/old_traces/`: they're the "before" for stage 8. A run where some questions failed (for example a `429` rate limit) has gaps in its numbering; have them rerun with `--workers 2` and code the complete run.
 
@@ -76,7 +76,7 @@ When they ask, count the `axial_coding_code` values across their `trace_bulk_<ti
 
 ## Other data and tools
 
-- **More data:** the course's 250 sample chats (`trace_2024-01-15_...`, ids like `SYN025`) are in `annotation/course_samples_extra/`; they move some into `annotation/traces/` to open them in the app. Their system prompt is a placeholder, so they can't be checked against the learner's spec. Browse the same pairs in `homeworks/hw2/reference_files/viewer.html` with `query_response.jsonl`; the course's viewers read both `.jsonl` and `.json` files. To read a whole bulk run outside the app, `homeworks/hw3/reference_files/trace_viewer.html` (or the HW5 one) can open all its `trace_bulk_<time>_*.json` files at once: select them together in the file picker.
+- **More data:** the course's 250 sample chats (`trace_2024-01-15_...`, ids like `SYN025`) are in `annotation/course_samples_extra/`; they move some into `annotation/traces/` to open them in the app. Their system prompt is a placeholder, so they can't be checked against the learner's spec. Browse the same pairs in `useful apps/stage-4-capture-traces/results-viewer.html` with `homeworks/hw2/reference_files/query_response.jsonl`; the course's viewers read both `.jsonl` and `.json` files. To read a whole bulk run outside the app, `useful apps/stage-6-golden-set-and-judge/labeled-traces-viewer.html` (or `stage-7-evaluate-the-parts/agent-traces-viewer.html`) can open all its `trace_bulk_<time>_*.json` files at once: select them together in the file picker.
 - **Several categories per chat:** `lesson-7/labeling-tool` (the course's Lesson 6) has a multi-select. It loads `lesson-7/data/traces.csv`, 118 agent chats with tool calls; that file has no label columns.
 - **Multi-step chats (HW5):** note only the first failure in each trace; later failures are often caused by it.
 
@@ -90,4 +90,4 @@ These match "Read 100 traces and wrote notes" and "Failure taxonomy with counts"
 
 ## Next
 
-Invoke `evals-llm-judge`.
+Invoke `evals-component-checks` (stage 7). Stage 6, the LLM judge, is not covered yet.

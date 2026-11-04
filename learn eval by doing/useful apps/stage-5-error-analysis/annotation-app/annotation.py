@@ -4,8 +4,9 @@ import os
 import json
 import glob
 
-# Copy of recipe-chatbot/annotation/annotation.py. The only change: it reads the traces in
-# recipe-chatbot/annotation/traces (next to this guide's folder), not a traces folder beside this file.
+# Copy of recipe-chatbot/annotation/annotation.py, the one learners run. Changes: it reads the traces in
+# recipe-chatbot/annotation/traces (next to this guide's folder), not a traces folder beside this file,
+# and it always uses the light theme.
 DATASET_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "recipe-chatbot", "annotation", "traces"))
 if not os.path.isdir(DATASET_DIR):
     raise SystemExit(f"Traces folder not found: {DATASET_DIR}\nKeep 'learn eval by doing' and 'recipe-chatbot' in the same folder.")

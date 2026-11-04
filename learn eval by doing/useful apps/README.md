@@ -14,8 +14,8 @@ Two kinds:
 | 4 Capture traces | `stage-4-capture-traces/results-viewer.html` | Read a bulk test results file, one question and answer at a time. |
 | 5 Error analysis | `stage-5-error-analysis/annotation-app/annotation.py` | Open coding and axial coding on your traces, saved in `recipe-chatbot/annotation/traces`. |
 | 6 Golden set and judge | `stage-6-golden-set-and-judge/labeled-traces-viewer.html` | See what PASS and FAIL look like in the course's labeled traces. |
-| 7 Evaluate the parts | `stage-7-evaluate-the-parts/search-queries-viewer.html`, `agent-traces-viewer.html` | Check the search test questions; read agent chats with tool steps. |
+| 7 Evaluate the parts | `stage-7-evaluate-the-parts/search-queries-viewer.html`, `recipes-viewer.html`, `agent-traces-viewer.html` | Check the search test questions; check your own recipes before search uses them; read agent chats with tool steps. |
 | 8 Improve and re-run | none | Compare two results files in the stage 4 viewer, side by side. |
 | 9 Monitor and repeat | none | Weekly samples go back through the stage 5 annotation app. |
 
-The viewers are copies of the ones in `recipe-chatbot/homeworks/*/reference_files/`, renamed to say what they show. The annotation app is a copy of `recipe-chatbot/annotation/annotation.py` that reads the repo's traces folder.
+The viewers are copies of the ones in `recipe-chatbot/homeworks/*/reference_files/`, renamed to say what they show. `recipes-viewer.html` is the HW4 query viewer adapted to show recipes. The annotation app is a copy of `recipe-chatbot/annotation/annotation.py` that reads the repo's traces folder.

@@ -1,9 +1,11 @@
 ---
 name: evals-llm-judge
-description: Stage 6 of the evals playbook (HW3). Coaches the learner to turn one failure mode into a check: a code check for objective failures, or an LLM judge validated against a hand-labeled golden set with TPR/TNR and judgy bias correction. Use when the learner asks about golden sets, labeling, LLM-as-judge, judge prompts, TPR/TNR, judgy or HW3.
+description: Stage 6 of the evals playbook (HW3). Coaches the learner to turn one failure mode into a check: a code check for objective failures, or an LLM judge validated against a hand-labeled golden set with TPR/TNR and judgy bias correction. NOT COVERED YET in this version of the course: do not invoke it from other skills, and only run it if the course author asks for it by name.
 ---
 
 # Stage 6: golden set and LLM judge
+
+> **Not covered yet.** This stage is set aside in this version of the course and shown only on the playbook's "4. Not covered yet" tab. If a learner reaches this skill, tell them in one line that it comes in a later version, and invoke `evals-component-checks` (stage 7) instead.
 
 Read `.claude/skills/evals-coach/coaching-rules.md` first.
 
@@ -11,7 +13,7 @@ Read `.claude/skills/evals-coach/coaching-rules.md` first.
 
 The learner needs a failure taxonomy from stage 5. If they don't have one, say so and invoke `evals-error-analysis`.
 
-HW3 uses dietary adherence ("asked for vegan, got a vegan recipe?") because its rules are clear. They may follow HW3 or pick a failure mode from their own taxonomy. Ready-made HW3 data in `homeworks/hw3/reference_files/`: `raw_traces.jsonl` (about 2,400 traces), `labeled_traces.jsonl` (101 labeled), `dietary_queries.csv` (60 hard queries). Before they label their own, have them open `labeled_traces.jsonl` in `useful apps/stage-6-golden-set-and-judge/labeled-traces-viewer.html` (or `homeworks/hw3/reference_files/trace_viewer.html`) to see what PASS and FAIL look like, with a reason for each.
+HW3 uses dietary adherence ("asked for vegan, got a vegan recipe?") because its rules are clear. They may follow HW3 or pick a failure mode from their own taxonomy. Ready-made HW3 data in `homeworks/hw3/reference_files/`: `raw_traces.jsonl` (about 2,400 traces), `labeled_traces.jsonl` (101 labeled), `dietary_queries.csv` (60 hard queries). Before they label their own, have them open `labeled_traces.jsonl` in `useful apps/stage-6-golden-set-and-judge/labeled-traces-viewer.html` to see what PASS and FAIL look like, with a reason for each.
 
 ## Step 1: Pick one failure and the cheapest check
 

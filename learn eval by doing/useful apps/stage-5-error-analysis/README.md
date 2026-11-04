@@ -11,7 +11,7 @@ It shows every file in `recipe-chatbot\annotation\traces`: your browser chats (2
 
 Older chats or runs you don't want in the list: move them to `recipe-chatbot\annotation\old_traces` (keep them for a before/after comparison). The course's 250 sample chats are in `recipe-chatbot\annotation\course_samples_extra`; move some into `traces` to practise on them.
 
-`annotation-app\annotation.py` is a copy of `recipe-chatbot\annotation\annotation.py` with two changes: it reads and writes the traces in `recipe-chatbot\annotation\traces`, so your notes land in the same files either way, and it always uses the light theme. Keep `learn eval by doing` and `recipe-chatbot` in the same folder (here `E:\learn eval`).
+`annotation-app\annotation.py` is a copy of `recipe-chatbot\annotation\annotation.py` with two changes: it reads and writes the traces in `recipe-chatbot\annotation\traces`, and it always uses the light theme. Use this copy, not the original. Keep `learn eval by doing` and `recipe-chatbot` in the same folder (here `E:\learn eval`).
 
 1. Run the bulk test first, so your traces exist. In a terminal in `recipe-chatbot`:
 
@@ -26,12 +26,6 @@ Older chats or runs you don't want in the list: move them to `recipe-chatbot\ann
    ```
 
    `--project` uses the chatbot's own Python setup; without it, uv may pick a newer Python and fail to install a package.
-
-   Or, from `recipe-chatbot`, start the original instead (same result):
-
-   ```
-   uv run --with python-fasthtml --with monsterui python annotation/annotation.py
-   ```
 
 3. Open http://localhost:5001. Your run is at the bottom, shown as "bulk" and its date. Stop the app with Ctrl+C.
 

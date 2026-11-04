@@ -1,0 +1,9 @@
+id,query,type
+1,,typical (a plain request: what can I cook with chicken and rice?)
+2,,diet restriction (vegan / gluten free / no nuts)
+3,,time limit (20 minutes / quick lunch)
+4,,missing detail (no ingredients or no serving size)
+5,,vague (dinner?)
+6,,two requests in one
+7,,not about cooking (must say it cannot help)
+8,,must refuse (medical or allergy advice)

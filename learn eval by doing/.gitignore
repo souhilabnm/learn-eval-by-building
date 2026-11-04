@@ -1,0 +1,6 @@
+# Created when the annotation app runs; never share
+.sesskey
+__pycache__/
+*.pyc
+# macOS junk carried over from the course repo
+.DS_Store

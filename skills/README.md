@@ -60,18 +60,18 @@ You don't need skill names. Plain phrases route you to the right place:
 | "help me with HW1" / "how do I write the spec?" | `evals-spec-and-prompt` (stages 1–2) |
 | "test queries", "bulk test", "traces" | `evals-test-queries` (stages 3–4) |
 | "HW2", "error analysis", "open coding", "failure modes" | `evals-error-analysis` (stage 5) |
-| "HW3", "golden set", "LLM judge", "TPR/TNR" | `evals-llm-judge` (stage 6) |
-| "HW4", "HW5", "retrieval", "Recall@k", "heat-map" | `evals-component-checks` (stage 7) |
+| "RAG", "my recipes", "recipe links", "search test", "HW4", "HW5" | `evals-component-checks` (stage 7: answer from your own recipes) |
+| "HW3", "golden set", "LLM judge" | not covered yet: the coach says so and carries on (`evals-llm-judge` is kept for later) |
 | "improve the bot", "regression set", "monitoring" | `evals-improve-and-monitor` (stages 8–9) |
 
-You can also call one directly with a slash command, for example `/evals-coach` or `/evals-llm-judge`.
+You can also call one directly with a slash command, for example `/evals-coach` or `/evals-component-checks`.
 
 ## 4. What to expect
 
 - **One step per message.** Claude explains the step and why it matters, tells you exactly what to do, then waits for you to say "done".
-- **You write, Claude reviews.** You write the spec, prompt, queries, notes, labels and judge prompt. Claude reads them and gives specific feedback. If you ask, it writes a partial example for you to finish.
+- **You write, Claude reviews.** You write the spec, prompt, queries, notes, labels, recipe links and test questions. Claude reads them and gives specific feedback. If you ask, it writes a partial example for you to finish.
 - **You run the commands** in your own terminal, one command per block, matched to Windows or Mac.
-- **No skipping.** Each stage checks for the previous stage's output first. Ask for HW3 without a failure taxonomy and you're sent back to error analysis.
+- **No skipping.** Each stage checks for the previous stage's output first. Ask for stage 7 without a failure taxonomy and you're sent back to error analysis.
 - **Stop anytime.** Run `/evals-coach` later and it picks up where your files say you are.
 - **Your work is never deleted.** Results, traces and labels are kept so you can compare runs.
 
@@ -84,7 +84,7 @@ Where your work ends up:
 | 3 Test queries | `data/my_queries.csv` |
 | 4 Traces | `results/results_<time>.json` (the whole run) + `annotation/traces/trace_bulk_<time>_*.json` (one per question) |
 | 5 Error analysis | notes and categories saved in those trace files by the annotation app + your copy of `failure_mode_taxonomy.md` |
-| 6 Golden set and judge | `data/golden_set.csv`, `data/judge_prompt.md` |
+| 7 RAG | `data/recipe_links.txt`, `data/my_recipes.json` (built by `scripts/build_recipes.py`), your copy of `template-07-search-test.csv` |
 | 8 Improve | `data/regression_queries.csv` + a before/after table |
 
 ## 5. Reuse the pattern
@@ -109,7 +109,7 @@ skills/
 ├── evals-spec-and-prompt/SKILL.md     stages 1–2
 ├── evals-test-queries/SKILL.md        stages 3–4
 ├── evals-error-analysis/SKILL.md      stage 5
-├── evals-llm-judge/SKILL.md           stage 6
-├── evals-component-checks/SKILL.md    stage 7
+├── evals-llm-judge/SKILL.md           stage 6 (not covered yet)
+├── evals-component-checks/SKILL.md    stage 7 (RAG on your own recipes)
 └── evals-improve-and-monitor/SKILL.md stages 8–9
 ```

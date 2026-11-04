@@ -9,7 +9,7 @@ Read `.claude/skills/evals-coach/coaching-rules.md` first.
 
 ## Before you start
 
-The learner needs failure counts (stage 5) and at least one check they trust (stage 6). If either is missing, say so and invoke `evals-error-analysis` or `evals-llm-judge`.
+The learner needs failure counts (stage 5) and their stage 7 test sheet. If either is missing, say so and invoke `evals-error-analysis` or `evals-component-checks`. Stage 6 (LLM judge) is not covered yet, so they measure by reading and counting, not with a judge.
 
 ## Step 1: Pick one target (stage 8)
 
@@ -28,11 +28,11 @@ One edit to `backend/system_prompt.md` that targets the failure, such as a clear
 ## Step 4: Re-run and compare
 
 1. They run the same query file again: `uv run python scripts/bulk_test.py --csv data/my_queries.csv`.
-2. They run the same checks on the new results (code check, or judge).
+2. They check the new answers the same way as before: read and count the target failure, and re-run their stage 7 test questions if they changed the recipes, search or the parts of the prompt about recipes.
 3. They fill a before/after table: version, rate for the target failure, rates for the other failures.
 4. To compare the answers themselves, they open the old and the new results file in `useful apps/stage-4-capture-traces/results-viewer.html`, in two browser tabs.
 
-Keep the change only if the target improved and nothing else got worse. If they changed the judge itself, they check it against the golden set again first.
+Keep the change only if the target improved and nothing else got worse.
 
 ## Step 5: Regression set
 

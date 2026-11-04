@@ -186,6 +186,7 @@ img,svg,pre,table{max-width:100%}
       <button class="tab" type="button" data-page="general" aria-pressed="true">1. Playbook for any topic</button>
       <button class="tab" type="button" data-page="recipe-chatbot" aria-pressed="false">2. Real use case: Recipe Chatbot</button>
       <button class="tab" type="button" data-page="glossary" aria-pressed="false">3. Glossary</button>
+      <button class="tab" type="button" data-page="later" aria-pressed="false">4. Not covered yet</button>
     </div>
   </header>
 
@@ -195,7 +196,7 @@ img,svg,pre,table{max-width:100%}
       <h2>What you practise here</h2>
       <p class="small">This page is for learning evals by doing them on a chatbot about a topic you choose. Building the chatbot is not the lesson: any simple bot that saves its answers is enough.</p>
       <div class="skills">
-        <div class="box"><span class="tag sk-evals">Evals</span><p>Read real answers and name the failures against your definition of good, then turn them into checks and an LLM judge you have tested against your own labels. Some of it you do by hand (naming failures, labeling), some is automatic (code checks and a judge).</p></div>
+        <div class="box"><span class="tag sk-evals">Evals</span><p>Read real answers and name the failures against your definition of good, then fix them and check the fix worked. Automatic checks and an LLM judge come later: see <b>4. Not covered yet</b>.</p></div>
         <div class="box"><span class="tag sk-obs">Observability</span><p>Record every run so you can see why an answer went wrong.</p></div>
         <div class="box"><span class="tag sk-rag">RAG</span><p>When the bot answers from documents, test the search apart from the writing.</p></div>
         <div class="box"><span class="tag sk-iter">Iteration</span><p>Change one thing, re-run, compare, keep it only if the numbers improve.</p></div>
@@ -262,7 +263,7 @@ img,svg,pre,table{max-width:100%}
       <h2>The loop, and where the evals happen</h2>
       <p class="small">Green boxes are where you evaluate: by hand first, then automatically. Orange is where runs are recorded, the data every eval reads. Grey boxes set things up. You never finish: new conversations start the next round.</p>
       <div class="diagram">
-        <svg viewBox="0 0 760 360" role="img" aria-label="Loop. Setup: define good, get a bot, test questions. Recording: record runs, which every eval reads. Evals by hand: error analysis and golden set. Automatic evals: checks and judge, with an optional search test for document bots. Evals re-run: improve and compare, keep watching. Keep watching feeds new runs back into record runs.">
+        <svg viewBox="0 0 760 360" role="img" aria-label="Loop. Setup: define good, get a bot, test questions. Recording: record runs, which every eval reads. Evals by hand: error analysis. Golden set, checks and judge: not covered yet. Search test for document bots. Evals re-run: improve and compare, keep watching. Keep watching feeds new runs back into record runs.">
           <defs>
             <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker>
           </defs>
@@ -272,8 +273,8 @@ img,svg,pre,table{max-width:100%}
             <rect x="310" y="30" width="120" height="66" rx="6" fill="var(--surface)" stroke="var(--line)"/>
             <rect x="460" y="30" width="130" height="66" rx="6" fill="var(--warn-soft)" stroke="var(--warn)"/>
             <rect x="620" y="30" width="130" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
-            <rect x="620" y="160" width="130" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
-            <rect x="460" y="160" width="130" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="620" y="160" width="130" height="66" rx="6" fill="var(--surface)" stroke="var(--line)" stroke-dasharray="5 4"/>
+            <rect x="460" y="160" width="130" height="66" rx="6" fill="var(--surface)" stroke="var(--line)" stroke-dasharray="5 4"/>
             <rect x="310" y="160" width="120" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
             <rect x="160" y="160" width="120" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
             <rect x="460" y="256" width="130" height="50" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-dasharray="5 4"/>
@@ -296,8 +297,8 @@ img,svg,pre,table{max-width:100%}
             <text x="370" y="80" style="fill:var(--muted)">what evals run on</text>
             <text x="525" y="80" style="fill:var(--warn)">what evals read</text>
             <text x="685" y="80" style="fill:var(--ok)">EVAL · by hand</text>
-            <text x="685" y="210" style="fill:var(--ok)">EVAL · your labels</text>
-            <text x="525" y="210" style="fill:var(--ok)">EVAL · automatic</text>
+            <text x="685" y="210" style="fill:var(--muted)">not covered yet</text>
+            <text x="525" y="210" style="fill:var(--muted)">not covered yet</text>
             <text x="370" y="210" style="fill:var(--ok)">EVAL · re-run</text>
             <text x="220" y="210" style="fill:var(--ok)">EVAL · new chats</text>
             <text x="525" y="296" style="fill:var(--ok)">EVAL · RAG only</text>
@@ -325,13 +326,13 @@ img,svg,pre,table{max-width:100%}
 
     <section>
       <h2>Templates and filled-in examples</h2>
-      <p class="small">One file per stage, in the same folder as this guide. Make a copy for your project before you fill it in. <b>Sheets</b> (.csv) open in Excel or Google Sheets (File &gt; Import). <b>Docs</b> (.md) are plain text: open them in Notepad or TextEdit, or paste them into a Google Doc. Next to each blank template are two filled-in examples for made-up bots, a <b>city trip planner</b> and an <b>HR policy bot</b>, each following one story from stage 1 to 9. Checking them is up to you: open them after you have tried the stage yourself. Click any file to read it here; <b>Save a copy</b> downloads it.</p>
+      <p class="small">One file per stage, in <code>templates/any-topic</code> next to this guide. Make a copy for your project before you fill it in. <b>Doing the Recipe Chatbot?</b> Use <code>templates/recipe-chatbot</code> instead: same file names, made for that repo's paths and scripts, linked from each stage on page 2. <b>Sheets</b> (.csv) open in Excel or Google Sheets (File &gt; Import). <b>Docs</b> (.md) are plain text: open them in Notepad or TextEdit, or paste them into a Google Doc. Next to each blank template are two filled-in examples for made-up bots, a <b>city trip planner</b> and an <b>HR policy bot</b>, each following one story from stage 1 to 9. Checking them is up to you: open them after you have tried the stage yourself. Click any file to read it here; <b>Save a copy</b> downloads it.</p>
       <div class="tplgrid" id="tpls"></div>
     </section>
 
     <section>
-      <h2>The nine stages, on your own topic</h2>
-      <p class="small">Each stage says what to do and links a blank template, plus two filled-in examples (a city trip planner and an HR policy bot) to check your work against. Stage numbers match page 2 and <code>/evals-coach</code>.</p>
+      <h2>The stages, on your own topic</h2>
+      <p class="small">Each stage says what to do and links a blank template, plus two filled-in examples (a city trip planner and an HR policy bot) to check your work against. Stage numbers match page 2 and <code>/evals-coach</code>. Stage 6 (golden set and LLM judge) is in <b>4. Not covered yet</b>.</p>
       <div class="btnrow"><button class="tab" data-open="stagesG" type="button">Expand all</button><button class="tab" data-close="stagesG" type="button">Collapse all</button></div>
       <div id="stagesG" style="display:flex;flex-direction:column;gap:10px"></div>
     </section>
@@ -348,10 +349,7 @@ img,svg,pre,table{max-width:100%}
       <div class="rules">
         <div class="box"><div class="k">Look before you automate</div>Read real traces first. Metrics you invent before reading data usually measure the wrong thing.</div>
         <div class="box"><div class="k">One failure, one check</div>Each judge or code check tests a single failure mode with a pass or fail answer. Avoid 1-to-5 scores.</div>
-        <div class="box"><div class="k">Trust the judge only after testing it</div>Compare the LLM judge with your own labels on a held-out set. Track true positive and true negative rates.</div>
-        <div class="box"><div class="k">Make a golden set early</div>Label a sample of real answers yourself. It is the answer key that tells you whether your judge can be trusted. About 50 is a rough starting point; what matters is having enough failures and enough good answers in it.</div>
         <div class="box"><div class="k">Keep a regression set</div>Every failure you fix becomes a permanent test case, so it cannot quietly return.</div>
-        <div class="box"><div class="k">Cheaper first</div>Use code checks (format, length, required fields) before any LLM judge.</div>
         <div class="box"><div class="k">You own quality</div>The person who knows what a good answer is decides the failure categories. On your own topic, that is you.</div>
       </div>
     </section>
@@ -368,7 +366,7 @@ img,svg,pre,table{max-width:100%}
       <div class="hwgrid">
         <div class="box"><div class="k">HW1</div>Prompt engineering</div>
         <div class="box"><div class="k">HW2</div>Error analysis and failure taxonomy</div>
-        <div class="box"><div class="k">HW3</div>LLM-as-judge evaluation</div>
+        <div class="box"><div class="k">HW3</div>LLM-as-judge evaluation <span class="small">(not covered yet)</span></div>
         <div class="box"><div class="k">HW4</div>Search (retrieval) evaluation</div>
         <div class="box"><div class="k">HW5</div>Agent failure analysis</div>
       </div>
@@ -386,7 +384,7 @@ img,svg,pre,table{max-width:100%}
       <h2>The loop for this project, and where the evals happen</h2>
       <p class="small">The same loop as page 1, with the real file or tool you use at each step. Green boxes are where you evaluate; orange is where runs are saved, the files every eval reads.</p>
       <div class="diagram">
-        <svg viewBox="0 0 760 370" role="img" aria-label="Recipe Chatbot loop. Setup: spec document, system_prompt.md, sample_queries.csv. Recording: bulk run saves results JSON files, which every eval reads. Evals by hand: error analysis in a spreadsheet (HW2) and golden_set.csv. Automatic eval: LLM judge in the HW3 notebook, with an optional parts test in HW4 and HW5. Evals re-run: improve by editing the prompt and re-running, and a weekly sample. The weekly sample feeds new runs back into the bulk run.">
+        <svg viewBox="0 0 760 370" role="img" aria-label="Recipe Chatbot loop. Setup: spec document, system_prompt.md, sample_queries.csv. Recording: bulk run saves results JSON files, which every eval reads. Evals by hand: error analysis (HW2). Golden set and LLM judge (HW3): not covered yet. RAG test: search and answer checked on your own recipes. Evals re-run: improve by editing the prompt and re-running, and a weekly sample. The weekly sample feeds new runs back into the bulk run.">
           <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
           <g stroke-width="1.5">
             <rect x="10" y="30" width="120" height="74" rx="6" fill="var(--surface)" stroke="var(--line)"/>
@@ -394,8 +392,8 @@ img,svg,pre,table{max-width:100%}
             <rect x="310" y="30" width="120" height="74" rx="6" fill="var(--surface)" stroke="var(--line)"/>
             <rect x="460" y="30" width="130" height="74" rx="6" fill="var(--warn-soft)" stroke="var(--warn)"/>
             <rect x="620" y="30" width="130" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
-            <rect x="620" y="166" width="130" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
-            <rect x="460" y="166" width="130" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
+            <rect x="620" y="166" width="130" height="74" rx="6" fill="var(--surface)" stroke="var(--line)" stroke-dasharray="5 4"/>
+            <rect x="460" y="166" width="130" height="74" rx="6" fill="var(--surface)" stroke="var(--line)" stroke-dasharray="5 4"/>
             <rect x="310" y="166" width="120" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
             <rect x="160" y="166" width="120" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
             <rect x="460" y="270" width="130" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-dasharray="5 4"/>
@@ -410,7 +408,7 @@ img,svg,pre,table{max-width:100%}
             <text x="525" y="192">6b LLM judge</text>
             <text x="370" y="192">8 Improve</text>
             <text x="220" y="192">9 Monitor</text>
-            <text x="525" y="294">7 Parts test</text>
+            <text x="525" y="294">7 RAG test</text>
           </g>
           <g font-size="11" text-anchor="middle">
             <text x="70" y="76" style="fill:var(--muted)">spec document</text>
@@ -419,20 +417,20 @@ img,svg,pre,table{max-width:100%}
             <text x="525" y="76" style="fill:var(--muted)">results/ JSON files</text>
             <text x="685" y="76" style="fill:var(--muted)">annotation app, HW2</text>
             <text x="685" y="212" style="fill:var(--muted)">golden_set.csv</text>
-            <text x="525" y="212" style="fill:var(--muted)">HW3 notebook</text>
+            <text x="525" y="212" style="fill:var(--muted)">HW3</text>
             <text x="370" y="212" style="fill:var(--muted)">edit prompt, re-run</text>
             <text x="220" y="212" style="fill:var(--muted)">weekly sample</text>
-            <text x="525" y="312" style="fill:var(--muted)">HW4 search, HW5 steps</text>
+            <text x="525" y="312" style="fill:var(--muted)">your recipes, top 3</text>
             <text x="70" y="94" style="fill:var(--muted)">what evals check</text>
             <text x="220" y="94" style="fill:var(--muted)">something to test</text>
             <text x="370" y="94" style="fill:var(--muted)">what evals run on</text>
             <text x="525" y="94" style="fill:var(--warn)">what evals read</text>
             <text x="685" y="94" style="fill:var(--ok)">EVAL · by hand</text>
-            <text x="685" y="230" style="fill:var(--ok)">EVAL · your labels</text>
-            <text x="525" y="230" style="fill:var(--ok)">EVAL · automatic</text>
+            <text x="685" y="230" style="fill:var(--muted)">not covered yet</text>
+            <text x="525" y="230" style="fill:var(--muted)">not covered yet</text>
             <text x="370" y="230" style="fill:var(--ok)">EVAL · re-run</text>
             <text x="220" y="230" style="fill:var(--ok)">EVAL · new chats</text>
-            <text x="525" y="328" style="fill:var(--ok)">EVAL · optional</text>
+            <text x="525" y="328" style="fill:var(--ok)">EVAL · search + answer</text>
           </g>
           <g stroke="var(--muted)" stroke-width="1.8" fill="none" marker-end="url(#ah2)">
             <path d="M130 67H158"/><path d="M280 67H308"/><path d="M430 67H458"/><path d="M590 67H618"/>
@@ -539,9 +537,9 @@ OPENAI_API_KEY=paste-your-key-here</pre>
           <text x="694" y="442" text-anchor="end" style="fill:var(--ok)">later, evals read these files</text>
           <rect x="15" y="458" width="750" height="132" rx="8" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="1.5"/>
           <text x="31" y="482" font-weight="600" style="fill:var(--ok)">EVALS HAPPEN HERE: after the chat, on the saved files (offline)</text>
-          <text x="31" y="508"><tspan font-weight="600">Answer level:</tspan> you read and label each saved answer (HW2). An LLM judge gives PASS or FAIL per answer (HW3).</text>
-          <text x="31" y="532"><tspan font-weight="600">Run level:</tspan> score a whole bulk test run, then compare runs before and after a prompt change (HW3).</text>
-          <text x="31" y="556"><tspan font-weight="600">Part level:</tspan> search quality (HW4) and each agent step (HW5). These parts are not in this simple chat.</text>
+          <text x="31" y="508"><tspan font-weight="600">Answer level:</tspan> you read and label each saved answer (HW2). Later: an LLM judge gives PASS or FAIL per answer (HW3).</text>
+          <text x="31" y="532"><tspan font-weight="600">Run level:</tspan> score a whole bulk test run, then compare runs before and after a prompt change.</text>
+          <text x="31" y="556"><tspan font-weight="600">Part level:</tspan> once search is connected (stage 7): did search find the right recipe, and did the answer stick to it?</text>
           <text x="31" y="578" style="fill:var(--muted)">In a live product, the same checks also run on a weekly sample of real chats (monitoring).</text>
         </svg>
       </div>
@@ -600,7 +598,7 @@ OPENAI_API_KEY=paste-your-key-here</pre>
           <div>The hidden instructions ("You are an expert chef..."). The only thing that turns a general model into a recipe bot.
             <div class="chg"><b>Change:</b> write the new bot's role, rules, format and defaults. Start from your stage 1 spec.</div></div></div>
         <div class="frow"><div class="fname"><code>retrieval.py</code><span class="chip edit">Reuse + change</span></div>
-          <div>BM25 search over a recipe file. Not used by the chat page; it is for HW4. Only needed if the new bot answers from your own documents.
+          <div>BM25 search over a recipe file. Not used by the chat page yet: in stage 7 you connect it to the chat so the bot answers from your own recipes.
             <div class="chg"><b>Change:</b> point it at your documents. It expects recipe fields (<code>name</code>, <code>ingredients</code>, <code>steps</code>, <code>tags</code>), so rename them to your fields.</div></div></div>
         <div class="frow"><div class="fname"><code>query_rewrite_agent.py</code><span class="chip edit">Reuse + change</span></div>
           <div>Rewords a user's question into better search words before searching. Goes with <code>retrieval.py</code>.
@@ -635,7 +633,7 @@ OPENAI_API_KEY=paste-your-key-here</pre>
         <h3><code>annotation/</code> <span class="chip edit">Reuse + change</span></h3>
         <p>Where chats are recorded, and a tool to label them.</p>
         <div class="frow"><div class="fname"><code>annotation.py</code><span class="chip same">Reuse as is</span></div>
-          <div>The course's labeling tool for error analysis (stage 5): one chat at a time, a box for your open-coding note and one for the axial-coding group, saved into that chat's file in <code>traces/</code>. A light-theme copy that reads this folder sits in <code>useful apps/stage-5-error-analysis/annotation-app</code>. Run the original with <code>uv run --with python-fasthtml --with monsterui python annotation/annotation.py</code> (it needs two packages the project does not install), then open <code>http://localhost:5001</code>.
+          <div>The course's labeling tool for error analysis (stage 5): one chat at a time, a box for your open-coding note and one for the axial-coding group, saved into that chat's file in <code>traces/</code>. Don't run it from here: use the light-theme copy in <code>useful apps/stage-5-error-analysis/annotation-app</code>, which reads and saves this same <code>traces/</code> folder. The command is in that folder's <code>README.md</code>.
             <div class="chg"><b>Change:</b> nothing.</div></div></div>
         <div class="frow"><div class="fname"><code>traces/</code><span class="chip new">Replace</span></div>
           <div>One JSON file per chat: every browser chat you have had (<code>trace_2026…</code>) and one file per bulk test question (<code>trace_bulk_…</code>). The course's 250 sample traces (<code>trace_2024-01-15_…</code>) sit in <code>annotation/course_samples_extra/</code>, so the app shows only your own chats.
@@ -690,7 +688,8 @@ OPENAI_API_KEY=paste-your-key-here</pre>
 
     <div class="sub" data-sub="guide">
     <section>
-      <h2>The nine stages, applied</h2>
+      <h2>The stages, applied</h2>
+      <p class="small">Stage 6 (golden set and LLM judge, HW3) is not covered yet: it is in <b>4. Not covered yet</b>. Go from stage 5 straight to stage 7.</p>
       <div class="btnrow"><button class="tab" data-open="stagesR" type="button">Expand all</button><button class="tab" data-close="stagesR" type="button">Collapse all</button></div>
       <div id="stagesR" style="display:flex;flex-direction:column;gap:10px"></div>
     </section>
@@ -720,8 +719,6 @@ OPENAI_API_KEY=paste-your-key-here</pre>
       <div class="mapwrap"><table class="map res"><thead><tr><th>Video</th><th>Stages</th><th>What you learn</th></tr></thead><tbody>
         <tr><td><a href="https://youtu.be/h9oAAAYnGx4" target="_blank" rel="noopener">HW1 and HW2 walkthrough</a></td><td>1 to 5</td><td>Writing a first system prompt yourself, for an audience you know well. Picking dimensions, generating combinations, deleting the unrealistic ones, then turning the rest into natural questions with varied wording. Saving every chat as its own trace file, and the annotation app used for open and axial coding.</td></tr>
         <tr><td><a href="https://youtu.be/AKg27L4E0M8" target="_blank" rel="noopener">Open and axial coding</a></td><td>5</td><td>Open coding done live in the annotation app: notes in full sentences, checked against the system prompt, with product questions along the way. Then an LLM drafts groups from the notes, and the groups are checked, renamed and counted.</td></tr>
-        <tr><td><a href="https://youtu.be/1d5aNfslwHg" target="_blank" rel="noopener">HW3 walkthrough</a></td><td>6</td><td>Making traces with the bot's own code. Why labels made by an LLM must be checked. Train, dev and test splits, and why you should not look at the test set. Picking few-shot examples on purpose. True positive and true negative rates, and what each judge mistake costs a user. Why a perfect score is a warning. Confidence intervals by resampling, and judgy's corrected pass rate. One judge per failure, chosen by how often it happens and how much it hurts.
-          <span class="note">In this video the positive class is FAIL. The HW3 notebook, judgy and this guide count PASS as positive.</span></td></tr>
         <tr><td><a href="https://youtu.be/GMShL5iC8aY" target="_blank" rel="noopener">HW4 walkthrough</a></td><td>7</td><td>Checking that the recipe data fits the product. Writing test questions in two steps: pull a key fact from a recipe, then write a question only that recipe answers. BM25 search using the app's own code. Recall@k and MRR, and why recall matters most when the results go on to an LLM. Comparing query rewriting strategies.</td></tr>
         <tr><td><a href="https://youtu.be/z1oISsDUKLA" target="_blank" rel="noopener">HW5 walkthrough</a></td><td>7</td><td>Agents with several steps: why only the first failure in each trace counts. A transition matrix and heat-map from last success to first failure. LLM steps versus tool steps. Reading the traces behind the hottest cells. Counts versus percentages.</td></tr>
         <tr><td><a href="https://www.loom.com/share/30e5dced1afa467e8714d515694bb3b0" target="_blank" rel="noopener">Phoenix tracing</a></td><td>9, optional</td><td>The optional homework's own video: adding automatic tracing to the chatbot with Arize Phoenix.</td></tr>
@@ -734,8 +731,7 @@ OPENAI_API_KEY=paste-your-key-here</pre>
       <div class="mapwrap"><table class="map res"><thead><tr><th>Stage</th><th>App</th><th>What for</th></tr></thead><tbody>
         <tr><td>4 Capture traces</td><td><a href="useful%20apps/stage-4-capture-traces/results-viewer.html" target="_blank" rel="noopener"><code class="fp">results-viewer.html</code></a></td><td>Read a bulk test results file, one question and answer at a time. Also used in stage 8 to compare two runs.</td></tr>
         <tr><td>5 Error analysis</td><td><code class="fp">annotation-app\annotation.py</code></td><td>Open coding and axial coding on your traces. Start it with the command in <a href="useful%20apps/stage-5-error-analysis/README.md" data-tpl-file><code class="fp">README.md</code></a>.</td></tr>
-        <tr><td>6 Golden set and judge</td><td><a href="useful%20apps/stage-6-golden-set-and-judge/labeled-traces-viewer.html" target="_blank" rel="noopener"><code class="fp">labeled-traces-viewer.html</code></a></td><td>See what PASS and FAIL look like in the course's 101 labeled traces.</td></tr>
-        <tr><td>7 Evaluate the parts</td><td><a href="useful%20apps/stage-7-evaluate-the-parts/search-queries-viewer.html" target="_blank" rel="noopener"><code class="fp">search-queries-viewer.html</code></a><br><a href="useful%20apps/stage-7-evaluate-the-parts/agent-traces-viewer.html" target="_blank" rel="noopener"><code class="fp">agent-traces-viewer.html</code></a></td><td>Check the 200 search test questions; read agent chats with their tool steps.</td></tr>
+        <tr><td>7 Evaluate the parts</td><td><a href="useful%20apps/stage-7-evaluate-the-parts/search-queries-viewer.html" target="_blank" rel="noopener"><code class="fp">search-queries-viewer.html</code></a><br><a href="useful%20apps/stage-7-evaluate-the-parts/recipes-viewer.html" target="_blank" rel="noopener"><code class="fp">recipes-viewer.html</code></a><br><a href="useful%20apps/stage-7-evaluate-the-parts/agent-traces-viewer.html" target="_blank" rel="noopener"><code class="fp">agent-traces-viewer.html</code></a></td><td>Check your own recipes (<code>my_recipes.json</code>) before search uses them. Optional: browse the course's 200 HW4 search questions; read agent chats with their tool steps (HW5).</td></tr>
       </tbody></table></div>
       <p class="small" style="margin-top:8px">Stages 1, 2, 3 and 9 have no app of their own: stage 2 is the chat page, stage 3 the bulk test script, and stage 9 sends weekly samples back through the stage 5 annotation app.</p>
     </section>
@@ -746,20 +742,17 @@ OPENAI_API_KEY=paste-your-key-here</pre>
       <div class="mapwrap"><table class="map res"><thead><tr><th>Homework</th><th>Instructions</th><th>Solution</th><th>What you do</th></tr></thead><tbody>
         <tr><td>HW1</td><td><a href="ressourses/homeworks/hw1/readme.md" data-tpl-file><code class="fp">readme.md</code></a></td><td>None, on purpose</td><td>Write the system prompt, add 10 or more test queries, run the bulk test.</td></tr>
         <tr><td>HW2</td><td><a href="ressourses/homeworks/hw2/README.md" data-tpl-file><code class="fp">README.md</code></a></td><td><a href="ressourses/homeworks/hw2/hw2_walkthrough.ipynb" target="_blank" rel="noopener"><code class="fp">hw2_walkthrough.ipynb</code></a></td><td>Build queries from dimensions, then open coding, axial coding and a failure list in <a href="ressourses/homeworks/hw2/reference_files/failure_mode_taxonomy.md" data-tpl-file><code class="fp">failure_mode_taxonomy.md</code></a>.</td></tr>
-        <tr><td>HW3</td><td><a href="ressourses/homeworks/hw3/README.md" data-tpl-file><code class="fp">README.md</code></a></td><td><a href="ressourses/homeworks/hw3/hw3_walkthrough.ipynb" target="_blank" rel="noopener"><code class="fp">hw3_walkthrough.ipynb</code></a></td><td>Label traces, split them, write a judge prompt with few-shot examples, measure TPR and TNR, correct the pass rate with judgy.
-          <span class="note">The notebook's judge is simulated (it copies the true label 85% of the time) and its judgy code is commented out: it shows the steps and the maths, not a real judge run.</span></td></tr>
         <tr><td>HW4</td><td><a href="ressourses/homeworks/hw4/README.md" data-tpl-file><code class="fp">README.md</code></a></td><td><a href="ressourses/homeworks/hw4/hw4_walkthrough.ipynb" target="_blank" rel="noopener"><code class="fp">hw4_walkthrough.ipynb</code></a></td><td>Build BM25 search over 200 recipes, score it with Recall@k and MRR, optionally rewrite queries and compare.</td></tr>
         <tr><td>HW5</td><td><a href="ressourses/homeworks/hw5/README.md" data-tpl-file><code class="fp">README.md</code></a></td><td><a href="ressourses/homeworks/hw5/hw5_walkthrough.ipynb" target="_blank" rel="noopener"><code class="fp">hw5_walkthrough.ipynb</code></a></td><td>Count last-success to first-failure transitions in 96 labeled agent traces and draw the heat-map.</td></tr>
         <tr><td>Optional</td><td><a href="ressourses/homeworks/optional/phoenix-integration/README.md" data-tpl-file><code class="fp">phoenix-integration</code></a></td><td>None</td><td>Add Arize Phoenix tracing to the chatbot. Best after the nine stages.</td></tr>
       </tbody></table></div>
-      <p class="small" style="margin-top:8px">To open a walkthrough notebook, paste this in a terminal in <code>recipe-chatbot</code> (swap hw2 for hw3, hw4 or hw5):</p>
+      <p class="small" style="margin-top:8px">To open a walkthrough notebook, paste this in a terminal in <code>recipe-chatbot</code> (swap hw2 for hw4 or hw5):</p>
       <pre class="ex">uv run --with jupyter jupyter notebook homeworks/hw2/hw2_walkthrough.ipynb</pre>
     </section>
 
     <section>
       <h2>Lessons</h2>
       <div class="mapwrap"><table class="map res"><thead><tr><th>Folder</th><th>Lesson</th><th>What it teaches</th></tr></thead><tbody>
-        <tr><td><code class="fp">lesson-4</code></td><td>Judging a real product</td><td>100 conversations from NurtureBoss, an apartment-leasing assistant, judged for one failure: claims its tools do not back up. The scripts clean the logs, label them with an LLM, then test a judge that gets few-shot examples and the tool data as evidence. It reports TPR and TNR and lists the false positives to study.</td></tr>
         <tr><td><code class="fp">lesson-7</code></td><td>Build your own labeling tool
           <span class="note">Its README calls it Lesson 6.</span></td><td>A small web app for 118 agent chats with tool calls: a note box, several failure modes per chat, arrow keys to move, labels saved to a file. The multi-step version of the annotation app.</td></tr>
         <tr><td><code class="fp">lesson-8</code></td><td>Model cascade</td><td>A cheap model answers first, with a confidence score; unsure cases go to a bigger model. The thresholds are set so the cheap model's answers agree 99% with the big model's. Shown on SMS spam, with the cost saved.</td></tr>
@@ -770,12 +763,21 @@ OPENAI_API_KEY=paste-your-key-here</pre>
       <h2>Tools and data</h2>
       <ul>
         <li><code class="fp">recipe-chatbot\annotation\README.md</code>: how the annotation app works.<span class="note">Not copied next to this guide.</span></li>
-        <li><a href="https://github.com/ai-evals-course/judgy" target="_blank" rel="noopener">judgy</a>: corrects a judge's pass rate using its TPR and TNR, and gives a confidence interval (HW3). Already installed in the project.</li>
+        <li><a href="https://www.productcompass.pm/p/how-to-build-a-rag-chatbot" target="_blank" rel="noopener">How to build a RAG chatbot</a> (Paweł Huryn, The Product Compass): the method stage 7 follows.</li>
         <li><a href="https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions" target="_blank" rel="noopener">Food.com recipes on Kaggle</a>: the full recipe data behind HW4.<span class="note">HW4 also ships 200 processed recipes, so you do not need to download it.</span></li>
         <li><a href="https://github.com/ai-evals-course/recipe-chatbot" target="_blank" rel="noopener">ai-evals-course/recipe-chatbot</a>: the course's original repository.</li>
       </ul>
     </section>
     </div>
+  </main>
+
+  <!-- ============ PAGE 4: NOT COVERED YET ============ -->
+  <main id="p-later" hidden>
+    <section>
+      <h2>Not covered yet</h2>
+      <p class="small">Parts of the course this guide sets aside for now. They come back in a later version.</p>
+      <div class="box"><div class="k">Stage 6 · Golden set, code checks and an LLM judge</div>Turning your most important failures into automatic checks you can trust: an answer key you label yourself, simple code checks, and a second AI model that grades each answer PASS or FAIL. For now, go from stage 5 straight to stage 7.</div>
+    </section>
   </main>
 
   <!-- ============ PAGE 3: GLOSSARY ============ -->
@@ -819,11 +821,11 @@ var STAGES = [
     goal:"Turn each important failure into an automatic check you can trust.",
     do:["Build your golden set: label a sample of traces yourself (about 50 is a common start), with a pass or fail for each failure","Objective failure: write a code check","Subjective failure: write an LLM judge with one pass or fail question","Measure the judge against your golden set and correct the bias"],
     out:"A golden set and a set of checks with a known error rate."},
-  { t:"Evaluate the parts", hw:"HW4, HW5",
-    goal:"Test components separately so you know where to fix.",
-    do:["Score retrieval alone","Score each tool alone","Score each handoff between steps"],
-    out:"Per-component scores."},
-  { t:"Improve and re-run", hw:"HW1, HW3",
+  { t:"Answer from your own recipes (RAG)", hw:"Paweł's method",
+    goal:"Make the bot answer only from recipes you chose, then test search and answer separately so you know which one to fix.",
+    do:["Turn your recipe links into one recipe file","Make the recipes searchable and connect search to the chat","Test with questions of three kinds: exact, vague, not in your data","Check each answer in three parts: question, what search found, answer"],
+    out:"A bot that answers from your recipes, and a test sheet that says whether search or the answer is the weak part."},
+  { t:"Improve and re-run", hw:"HW1",
     goal:"Change one thing, measure, keep it only if the numbers improve.",
     do:["Fix the most frequent or most costly failure first","Change prompt, retrieval, tools, or model","Re-run all checks and compare with the last run","Add fixed cases to the regression set"],
     out:"A before and after table."},
@@ -864,7 +866,7 @@ var GEN = [
   { t:"Define what good means", sk:["def"],
     why:"You cannot score an answer until you have written down what a good one looks like. Every later check is measured against this page.",
     how:["Write one sentence: who uses your bot, and for what.",
-         "Answer the five headings in the template, one or two sentences each.",
+         "Answer the five headings in "+TG("template-01-spec.md")+", one or two sentences each.",
          "Under them, write 10 requests exactly as a real user would type them. Messy and vague is good.",
          "Ask someone who knows the topic to read it and tell you what is missing."],
     tpl:`Who uses it:
@@ -877,7 +879,7 @@ Out of scope:`,
   { t:"Get a bot to test", sk:["setup"],
     why:"You need something that answers, but the bot is not the lesson. Its job is to produce answers you can study.",
     how:["Choose a path from <b>Then get a bot to test</b> above: borrow the Recipe Chatbot setup, vibe-code your own, or use one you have.",
-         "Turn your spec into the system prompt using the template: each spec heading becomes one instruction.",
+         "Turn your spec into the system prompt using "+TG("template-02-system-prompt.md")+": each spec heading becomes one instruction.",
          "Check the minimum kit: editable instructions, every run saved, batch runs.",
          "Ask 5 questions you know the answers to. If it answers at all, move on. Do not polish it yet: polishing before you have measured anything is guessing."],
     tpl:`Role: You are a ... helping ... (from Who uses it)
@@ -890,7 +892,7 @@ Defaults: If the user leaves out ..., assume ...`,
     recipe:"Page 2, <b>Before you start</b>, then <b>Shortest path to a new chatbot</b> in <b>About the repo</b>." },
   { t:"Write test questions", sk:["setup"],
     why:"Your evals are only as good as the questions you test with. Real users are vaguer, ruder and stranger than you expect.",
-    how:["Start a sheet with the columns id, query, type.",
+    how:["Start a sheet from "+TG("template-03-test-questions.csv")+", which has the columns id, query, type.",
          "Write 20 to 30 typical requests. Then add awkward ones: very short, missing details, two requests in one, off-topic, and ones the bot must refuse.",
          "Name 2 or 3 dimensions that matter for your topic (for example user type, difficulty, constraint) and make sure each combination appears at least once.",
          "Ask an AI for 50 more in the same style. Read every one and delete the unrealistic ones.",
@@ -907,7 +909,7 @@ Defaults: If the user leaves out ..., assume ...`,
   { t:"Record every run", sk:["obs"],
     why:"Evals can only check what was saved. If a step is not recorded, you cannot tell why an answer went wrong.",
     how:["Run all your test questions through the bot in one batch.",
-         "Open a few saved records and check each one holds the fields in the template.",
+         "Open a few saved records and check each one holds the fields in "+TG("template-04-trace-record.md")+".",
          "If a field is missing, add it now: ask your vibe-coding tool, or whoever built the bot. For a document bot, the retrieved passages matter most.",
          "Keep every run's file and never overwrite it. You will compare before and after later.",
          "Test it: pick one bad answer. Can you tell from the record alone why it happened? If not, record more."],
@@ -925,25 +927,25 @@ Defaults: If the user leaves out ..., assume ...`,
     recipe:"<code>results/</code> for batch runs and <code>annotation/traces/</code> for browser chats (page 2, stage 4)." },
   { t:"Read and name the failures", sk:["evals"],
     why:"The core skill. You learn how your bot actually fails, in your own words, before writing any automatic check.",
-    how:["Open your records in a labeling tool: one chat at a time, a box for your note and one for the category, saved with the record. The Recipe setup has one (page 2, stage 5). Otherwise ask your vibe-coding tool for one, or use a sheet with the columns in the template.",
+    how:["Open your records in a labeling tool: one chat at a time, a box for your note and one for the category, saved with the record. The Recipe setup has one (page 2, stage 5). Otherwise ask your vibe-coding tool for one, or use a sheet with the columns in "+TG("template-05-open-coding.csv")+".",
          "For each answer ask: would a real user be happy? Does it follow my spec? Write a note on each problem, in full sentences, so someone else or an LLM can read it later. This is open coding: no categories yet.",
          "Aim for 50 to 100 records. Stop when the last 10 or so only repeat problems you already noted.",
          "Ask an LLM to suggest groups from your notes, with counts and examples. Then check each group yourself: rename, merge or split until you have 4 to 8 named failure types you could explain to a colleague. This is axial coding. The groups are your decision.",
-         "Label each record with its type and count each type. The top two are your first targets.",
+         "Label each record with its type and count each type into "+TG("template-05-failure-counts.csv")+". The top two are your first targets.",
          "For a bot with several steps or tools, note only the first thing that went wrong in each record: later problems are often caused by it.",
          "For a document bot, note for each failure whether search missed the right passage or the answer ignored it.",
-         "Keep every answer you judged. In stage 6 they become the start of your golden set, so you do not label them twice."],
+         "Keep every answer you judged. You will reuse them, so you do not label them twice."],
     tpl:`id,what went wrong,category,search or answer?`,
     done:"Failure list with counts and one example record each",
     ask:"Which failure would hurt a real user most, even if it is rare?",
     recipe:"The course's annotation app in <code>useful apps/stage-5-error-analysis</code>, on the trace files the bulk test saves in <code>recipe-chatbot/annotation/traces/</code> (page 2, stage 5)." },
   { t:"Golden set, checks and a judge", sk:["evals"],
     why:"Turn your top failures into automatic checks, then prove each check agrees with you before you trust it.",
-    how:["Build your golden set: start from the answers you already judged in stage 5 and add more until you have about 50, each labeled PASS or FAIL for one failure. It must include both failures and good answers; if failures are rare, run more questions.",
+    how:["Build your golden set in "+TG("template-06-golden-set.csv")+": start from the answers you already judged in stage 5 and add more until you have about 50, each labeled PASS or FAIL for one failure. It must include both failures and good answers; if failures are rare, run more questions.",
          "Split it: about 60 percent to improve the judge with, the rest kept aside for the final check.",
          "Objective failure (format, length, missing citation): write a code check. No AI needed.",
-         "Subjective failure (ignored budget, unsupported claim): write an LLM judge with one yes or no question, using the template.",
-         "Run the judge on your golden set and count how often it agrees with you on failures and on good answers (true positive and true negative rates). If agreement is low, rewrite the question and repeat."],
+         "Subjective failure (ignored budget, unsupported claim): write an LLM judge with one yes or no question, using "+TG("template-06-judge-prompt.md")+".",
+         "Run the judge on your golden set and count how often it agrees with you on failures and on good answers (true positive and true negative rates), row by row in "+TG("template-06-judge-agreement.csv")+". If agreement is low, rewrite the question and repeat."],
     tpl:`You are checking one thing only.
 User request: {query}
 Answer: {response}
@@ -957,20 +959,20 @@ Reply with PASS or FAIL, then one sentence explaining why.`,
     why:"When a document bot is wrong, first find out whether search found the right passage. Rewriting the instructions does not help if search failed.",
     how:["No documents in your bot? Skip to stage 8, or add 5 to 20 documents now to practise RAG.",
          "Write 20 to 30 questions where you know which document holds the answer. An AI can draft them from each document; read and fix every one.",
-         "For each question, check whether that document is in the top 5 results (recall@5) and how high it sits (MRR).",
+         "For each question, check whether that document is in the top 5 results (recall@5) and how high it sits (MRR). One row per question in "+TG("template-07-search-test.csv")+".",
          "Separately, judge whether the answer is supported by what was retrieved (faithfulness).",
          "Keep the two scores apart. The lower one is where to work."],
     tpl:`question,expected_doc_id,in_top_5,rank,answer_supported`,
     done:"Search score and faithfulness score, kept separate",
     ask:"For your worst answers, was search or writing to blame?",
-    recipe:"<code>backend/retrieval.py</code> and "+R("homeworks/hw4/hw4_walkthrough.ipynb")+"." },
+    recipe:"Page 2, stage 7: the bot answers from recipes you chose (worked example: an Algerian chef with 15 Algerian recipes), tested with Paweł Huryn's Question, Context, Answer method." },
   { t:"Improve one thing and compare", sk:["iter","evals"],
     why:"Change one thing, measure, keep it only if the numbers improve. Change two things at once and you cannot tell which one helped.",
     how:["Pick the most frequent or most harmful failure from stage 5.",
          "Change one thing: a sentence in the instructions, a search setting, or how many passages are passed in.",
          "Re-run the same test questions, then the same checks.",
-         "Put before and after side by side. Keep the change only if the target improved and nothing else got worse.",
-         "Add the cases you fixed to a regression set: questions that must keep passing."],
+         "Put before and after side by side in "+TG("template-08-before-after.csv")+". Keep the change only if the target improved and nothing else got worse.",
+         "Add the cases you fixed to a regression set, "+TG("template-08-regression-set.csv")+": questions that must keep passing."],
     tpl:`change,target failure,before,after,other checks,keep?`,
     done:"Before and after table for one change",
     done2:"Regression set created",
@@ -980,7 +982,7 @@ Reply with PASS or FAIL, then one sentence explaining why.`,
     how:["Each week, or after each change, get 20 new conversations. A practice bot has no real users, so make them: ask 3 or 4 friends to use the bot for a week, or write 20 fresh questions you have never tested and run them as a batch.",
          "Run your checks on them and read the failures yourself.",
          "Found a new failure type? Add it to your list and go back to stage 5.",
-         "Track a few numbers over time: each check's pass rate and how often the bot refuses or says it does not know."],
+         "Track a few numbers over time in "+TG("template-09-weekly-review.csv")+": each check's pass rate and how often the bot refuses or says it does not know."],
     tpl:`week,sample size,check,pass rate,new failure types,action`,
     done:"Two rounds of review done",
     ask:"What would make you trust this bot enough to put it in front of real users?" }
@@ -998,9 +1000,11 @@ var TFILES = [
   [["template-08-before-after.csv","Sheet","Before and after"],["template-08-regression-set.csv","Sheet","Regression set"]],
   [["template-09-weekly-review.csv","Sheet","Weekly review"]]
 ];
-function fileList(files){
+/* Two sets of templates, same file names: any-topic/ for page 1, recipe-chatbot/ for page 2 */
+function fileList(files, set){
   return '<ul class="loc">' + files.map(function(f){
-    return '<li><a href="templates/'+f[0]+'" data-tpl-file>'+f[2]+'</a> <span class="chip '+(f[1]==="Sheet"?"same":"edit")+'">'+f[1]+'</span><br><code>templates/'+f[0]+'</code></li>';
+    var p = 'templates/'+set+'/'+f[0];
+    return '<li><a href="'+p+'" data-tpl-file>'+f[2]+'</a> <span class="chip '+(f[1]==="Sheet"?"same":"edit")+'">'+f[1]+'</span><br><code>'+p+'</code></li>';
   }).join("") + '</ul>';
 }
 /* Template and example links open in a viewer; Save a copy goes through the downloads capability (in claude.ai a plain download link is blocked) */
@@ -1054,36 +1058,38 @@ var TOPICS = [["travel","City trip planner"],["policy","HR policy bot"]];
 function exList(i){
   return '<ul class="loc">' + TOPICS.map(function(t){
     return '<li><b>'+t[1]+'</b><br>' + TFILES[i].map(function(f){
-      return '<a href="templates/example-'+t[0]+'-'+f[0].slice(9)+'" data-tpl-file>'+f[2]+'</a>';
+      return '<a href="templates/any-topic/example-'+t[0]+'-'+f[0].slice(9)+'" data-tpl-file>'+f[2]+'</a>';
     }).join(" · ") + '</li>';
   }).join("") + '</ul><p class="small" style="margin-top:6px">Try the stage yourself first, then compare.</p>';
 }
 
+/* Stages moved to the "Not covered yet" page (index = stage - 1). They keep their number everywhere. */
+var LATER = [5];
+function isLater(i){ return LATER.indexOf(i) > -1; }
 function renderTemplates(){
   document.getElementById("tpls").innerHTML = GEN.map(function(x,i){
-    return '<div class="box"><div class="k">Stage '+(i+1)+' · '+x.t+'</div>'+fileList(TFILES[i])+'<div class="k" style="margin-top:10px">Filled-in examples</div>'+exList(i)+'</div>';
+    if(isLater(i)) return "";
+    return '<div class="box"><div class="k">Stage '+(i+1)+' · '+x.t+'</div>'+fileList(TFILES[i], "any-topic")+'<div class="k" style="margin-top:10px">Filled-in examples</div>'+exList(i)+'</div>';
   }).join("");
 }
 
-function renderGen(){
-  var h = "";
-  GEN.forEach(function(x,i){
-    h += '<details class="stage"'+(i===0?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+x.t+'</span>'+
+function genCard(x,i,open){
+    return '<details class="stage" data-i="'+i+'"'+(open?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+x.t+'</span>'+
       x.sk.map(function(k){ return '<span class="tag sk-'+k+'">'+SKILL[k]+'</span>'; }).join(" ")+
       '<span class="chev">&#9656;</span></summary><div class="body">'+
       (x.opt ? '<div class="col scn"><div class="k">Optional</div>'+x.opt+'</div>' : '')+
       '<div class="col" style="grid-column:1/-1"><div class="k">Why</div>'+x.why+'</div>'+
       '<div class="col how" style="border-top:0;padding-top:0"><div class="k">Do it on your project</div>'+ol(x.how)+'</div>'+
-      '<div class="col" style="grid-column:1/-1"><div class="k">Template to fill in</div>'+fileList(TFILES[i])+'<p class="small" style="margin-top:8px">Preview:</p><pre class="ex" data-tpl></pre></div>'+
+      '<div class="col" style="grid-column:1/-1"><div class="k">Template to fill in</div>'+fileList(TFILES[i], "any-topic")+'<p class="small" style="margin-top:8px">Preview:</p><pre class="ex" data-tpl></pre></div>'+
       '<div class="col"><div class="k">Filled-in examples</div>'+exList(i)+'</div>'+
       '<div class="col"><div class="k">Done when</div>'+x.done+(x.done2?'<br>'+x.done2:'')+'</div>'+
       '<div class="col"><div class="k">Check yourself</div>'+x.ask+'</div>'+
       (x.recipe ? '<div class="col"><div class="k">Using the Recipe setup?</div>'+x.recipe+'</div>' : '')+
       '</div></details>';
-  });
-  var box = document.getElementById("stagesG");
-  box.innerHTML = h;
-  box.querySelectorAll("details").forEach(function(d,i){ d.querySelector("pre[data-tpl]").textContent = GEN[i].tpl; });
+}
+function renderGen(){
+  document.getElementById("stagesG").innerHTML = GEN.map(function(x,i){ return isLater(i) ? "" : genCard(x,i,i===0); }).join("");
+  document.querySelectorAll("#stagesG details").forEach(function(d){ d.querySelector("pre[data-tpl]").textContent = GEN[+d.getAttribute("data-i")].tpl; });
   document.getElementById("vibe").textContent = VIBE;
   addCopy();
 }
@@ -1108,6 +1114,9 @@ function A(t){ return '<span class="act">' + t + '</span>'; }
 function N(t){ return '<span class="note">' + t + '</span>'; }
 /* U(): an app in the "useful apps" folder next to this guide, one folder per stage */
 function U(p, label){ return '<a href="useful%20apps/' + p + '" target="_blank" rel="noopener"><code class="fp">' + (label || p.split("/").pop()) + '</code></a>'; }
+/* T(): a Recipe Chatbot template (page 2), TG(): a template for any topic (page 1); both open in the viewer */
+function T(f, label){ return '<a href="templates/recipe-chatbot/' + f + '" data-tpl-file><code class="fp">' + (label || f) + '</code></a>'; }
+function TG(f, label){ return '<a href="templates/any-topic/' + f + '" data-tpl-file><code class="fp">' + (label || f) + '</code></a>'; }
 /* RES(): a link to the Resources tab of page 2; anchor (optional) is the id of the block to scroll to */
 function RES(t, anchor){ return '<a href="#" data-goto="resources"' + (anchor ? ' data-anchor="' + anchor + '"' : '') + '>' + (t || "Resources tab") + '</a>'; }
 var VIDEOS = function(){ return RES("Videos", "res-videos"); };
@@ -1116,7 +1125,7 @@ var EXTRA = [
   { loc:["doc"], course:["doc"],
     f:"A one-page text (Google Doc or Markdown) plus a list of example requests (text file or spreadsheet).",
     how:[A("Open a new Google Doc or Notepad file")+" and name it "+F("recipe-bot-spec")+".",
-         A("Copy the five headings below")+" and answer each in one or two sentences.",
+         A("Copy the five headings below")+" and answer each in one or two sentences."+N("Already written out for you: "+T("template-01-spec.md")+". Open it, Save a copy, and fill it in."),
          A("Write 10 requests")+" under them, exactly as a real user would type them. Messy and vague is good.",
          A("Ask someone who cooks to read it")+" and tell you what is missing."],
     ex:`Who uses it: (for example, busy parents cooking on weekdays)
@@ -1127,9 +1136,9 @@ Out of scope: (for example, ordering groceries)`,
   },
   { loc:["local","host","stage","prod"], course:["local"],
     f:"A Python app. The agent's instructions live in "+F("backend/system_prompt.md")+" and your keys in "+F(".env")+".",
-    how:[N("A system prompt is the hidden instruction the AI reads before every conversation. It sets the agent's role, tone and rules."),
+    how:[N("The system prompt is the hidden instruction the AI reads before every chat: its role, tone and rules."),
          A("Open")+" "+F("recipe-chatbot/backend/system_prompt.md")+". Windows: right-click &gt; <b>Open with</b> &gt; <b>Notepad</b> (or VS Code). Mac: right-click &gt; <b>Open With</b> &gt; <b>TextEdit</b> (or VS Code). It already holds a short default prompt.",
-         A("Replace the default text")+" with five headings: Role, Task, Rules, Format, Defaults (full example below). Each one is a heading of your stage 1 spec, reworded as an instruction to the AI:" +
+         A("Replace the default text")+" with five headings: Role, Task, Rules, Format, Defaults (full example below, and the same five headings ready to fill in: "+T("template-02-system-prompt.md")+"). Each one is a heading of your stage 1 spec, reworded as an instruction to the AI:" +
            '<div class="mapwrap"><table class="map"><thead><tr><th>Your spec (stage 1) says</th><th>Example in the spec</th><th>Becomes in the system prompt</th></tr></thead><tbody>' +
            '<tr><td>Who uses it</td><td>Busy parents cooking on weekdays</td><td><b>Role:</b> You are an expert chef helping busy parents cook on weekdays.</td></tr>' +
            '<tr><td>Job</td><td>Suggest a recipe for what they want to cook</td><td><b>Task:</b> Give one complete recipe that fits the user\'s request.</td></tr>' +
@@ -1137,10 +1146,10 @@ Out of scope: (for example, ordering groceries)`,
            '<tr><td>A good answer looks like</td><td>One complete recipe, clear steps, a serving size</td><td><b>Format:</b> Title, serving size, ingredients list, then numbered steps.</td></tr>' +
            '<tr><td>Not in the spec</td><td>(what to assume when the user leaves something out)</td><td><b>Defaults:</b> If no ingredients are given, assume basic pantry items. If no serving size is given, assume 2 people.</td></tr>' +
            '</tbody></table></div>' +
-           N("The spec is for people; the system prompt is the same intent written for the AI. In stages 5 and 6 you judge answers against the spec."),
-         A("Save")+" (Ctrl+S or Cmd+S)."+N("Started the server with --reload-include '*.md'? It restarts by itself. Otherwise stop it with Ctrl+C and start it again."),
+           N("The spec is for people, the prompt for the AI. Later stages judge answers against the spec."),
+         A("Save")+" (Ctrl+S or Cmd+S)."+N("Restart the server (Ctrl+C, then start it again), unless you started it with --reload-include '*.md'."),
          A("Refresh")+" http://127.0.0.1:8000, ask the same question as before and compare the two answers.",
-         N("Change one thing at a time, so you know which edit caused which change.")],
+         N("Change one thing at a time, so you know what caused what.")],
     ex:`Role: You are an expert chef helping busy parents cook on weekdays.
 Task: Give one complete recipe that fits the user's request.
 Rules: Respect every diet the user mentions. If asked to order groceries, say you cannot.
@@ -1149,11 +1158,11 @@ Defaults: If no ingredients are given, assume basic pantry items. If no serving 
   },
   { loc:["doc","local"], course:["doc","local"],
     f:"A CSV file (a spreadsheet saved as plain text) with two columns: id and query.",
-    how:[A("Open")+" "+F("data/sample_queries.csv")+" in Notepad or VS Code."+N("Excel works too, but save it back as CSV."),
-         A("Add 20 to 30 requests")+" below the existing rows, one per row, each with a new id."+N("The homework asks for at least 10. Grow the file to about 100 before stage 5, which reads 50 to 100 answers. 100 varied requests beat 500 similar ones."),
+    how:[A("Open")+" "+F("data/sample_queries.csv")+" in Notepad or VS Code."+N("Excel works too; save it as CSV.")+N("Starting a sheet of your own instead? "+T("template-03-test-questions.csv")+" has the columns."),
+         A("Add 20 to 30 requests")+" below the existing rows, one per row, each with a new id."+N("Grow it to about 100 before stage 5. Varied requests beat many similar ones."),
          A("Cover different situations:")+" short, long, vague, a diet restriction, missing details, and one that has nothing to do with cooking.",
          A("Save it as a new file,")+" for example "+F("data/my_queries.csv")+". Keep the first line exactly: id,query",
-         A("Run them all at once.")+" Open a terminal in "+F("recipe-chatbot")+" and paste:<pre class=\"ex\">uv run python scripts/bulk_test.py --csv data/my_queries.csv</pre>It sends every question to the bot and saves all questions and answers in one new file in "+F("results/")+", plus one trace file per question in "+F("annotation/traces/")+"."+N("<b>Why:</b> you get (1) answers to label in stage 5, (2) a record to compare against after a prompt change, and (3) your traces, which every later check reads.")+N("To run the sample file instead:")+"<pre class=\"ex\">uv run python scripts/bulk_test.py</pre>"],
+         A("Run them all at once.")+" Open a terminal in "+F("recipe-chatbot")+" and paste:<pre class=\"ex\">uv run python scripts/bulk_test.py --csv data/my_queries.csv</pre>It sends every question to the bot and saves all questions and answers in one new file in "+F("results/")+", plus one trace file per question in "+F("annotation/traces/")+"."+N("<b>Why:</b> these are the answers you label in stage 5 and compare after each prompt change.")+N("Sample file instead:")+"<pre class=\"ex\">uv run python scripts/bulk_test.py</pre>"],
     ex:`id,query
 1,What can I cook with chicken and rice?
 2,I'm vegan and have 15 minutes. Dinner ideas?
@@ -1163,11 +1172,9 @@ Defaults: If no ingredients are given, assume basic pantry items. If no serving 
   { loc:["local","stage","prod"], course:["local"],
     f:"A trace is one question plus the bot's answer. Each bulk test saves them twice: all together in one results file in "+F("results/")+", to compare runs, and one trace file per question in "+F("annotation/traces/")+", to label in stage 5. Here you run it, read three entries and keep a renamed copy. Real products also record model, prompt version, time and cost; this project does not.",
     how:[A("Run the bulk test")+" from stage 3. It prints each question and answer in the terminal.",
-         A("Note the two lines starting Saved")+" at the end: the results file, for example "+F("results/results_20261024_150000.json")+", and the trace files, for example "+F("trace_bulk_20261024_150000_*.json")+"."+N("Both carry the same time, so you can tell which traces belong to which run."),
-         A("Open the results file")+" from "+F("recipe-chatbot\\results")+" in Notepad or VS Code. Each entry is one trace: an id, the query (the question) and the response (the answer). "+A("Read three entries.")+N("Easier to read: double-click "+U("stage-4-capture-traces/results-viewer.html")+" in "+F("useful apps\\stage-4-capture-traces")+" and pick your results file. It shows one question and answer at a time.")+N("This file is the record of the whole run; the same answers, one per file, are what you label in stage 5."),
-         A("Copy the file and rename the copy")+" after your prompt version, for example "+F("v1-first-prompt.json")+". After every prompt change, run again and rename (v2-...). Never edit or delete old copies."+N("<b>Why:</b> the file does not say which prompt made it, and each bulk test makes a new one."),
-         N("Not saved here: model name, prompt version, time taken, cost. You do not add them; ask for them when you build or buy a bot."),
-         N("Optional, you can skip it: "+F("recipe-chatbot\\annotation\\traces")+" holds one file per chat, the format the course's annotation app reads in stage 5. Files named trace_bulk_... are your bulk test answers, one per question. Files named trace_2026... are your own browser chats, one per message. The course's 250 sample chats (trace_2024-..., ids like SYN025) are kept apart in "+F("annotation\\course_samples_extra")+", so they don't mix with yours. In each file, request is what was sent and response is the full conversation with the answer at the end (the system prompt comes first), with empty open_coding and axial_coding_code fields for your notes.")],
+         A("Note the two lines starting Saved")+" at the end: the results file, for example "+F("results/results_20261024_150000.json")+", and the trace files, for example "+F("trace_bulk_20261024_150000_*.json")+".",
+         A("Open the results file")+" from "+F("recipe-chatbot\\results")+" in Notepad or VS Code. Each entry is one trace: an id, the query (the question) and the response (the answer). "+A("Read three entries.")+N("Easier to read: open "+U("stage-4-capture-traces/results-viewer.html")+" and pick your results file.")+N("What a trace should record, field by field: "+T("template-04-trace-record.md")+". Use it to check nothing is missing."),
+         A("Copy the file and rename the copy")+" after your prompt version, for example "+F("v1-first-prompt.json")+". After every prompt change, run again and rename (v2-...). Never edit or delete old copies."+N("<b>Why:</b> the file doesn't say which prompt made it.")],
     ex:`[
   {
     "id": "1",
@@ -1178,66 +1185,70 @@ Defaults: If no ingredients are given, assume basic pantry items. If no serving 
   },
   { loc:["local","doc"], course:["local"],
     f:"The course's annotation app (a small FastHTML web page), in "+F("useful apps\\stage-5-error-analysis\\annotation-app")+", on the trace files in "+F("recipe-chatbot\\annotation\\traces")+". Your notes and categories are saved inside each trace file. Then a count per category and your failure list in "+F("failure_mode_taxonomy.md")+".",
-    how:[A("Your traces are already there.")+" Your bulk test from stage 4 saved one file per question in "+F("annotation/traces/")+", named after the run's time, for example "+F("trace_bulk_20261024_150000_001.json")+"."+N("Below, swap 20261024_150000 for the time of your run."),
+    how:[A("Your traces are already there.")+" Your bulk test from stage 4 saved one file per question in "+F("annotation/traces/")+", named after the run's time, for example "+F("trace_bulk_20261024_150000_001.json")+"."+N("In the commands below, replace [date of your run] with the date your run was created, for example 10/26/2026."),
          A("Start the app.")+" Open a terminal in "+F("useful apps\\stage-5-error-analysis\\annotation-app")+", paste this, then open http://localhost:5001.<pre class=\"ex\">uv run --project \"../../../../recipe-chatbot\" --with python-fasthtml --with monsterui python annotation.py</pre>"+
-           N("--project uses the chatbot's own Python setup, and the --with parts add two packages for this run only. The app reads and saves the traces in "+F("recipe-chatbot\\annotation\\traces")+", so keep both folders side by side. Stop it with Ctrl+C.")+
-           N("Same app, from the course's own folder: in a terminal in "+F("recipe-chatbot")+", run uv run --with python-fasthtml --with monsterui python annotation/annotation.py. It follows your computer's dark mode; the copy is always light."),
-         A("Find your traces.")+" Your bulk run is shown as bulk followed by its date. Click your first one. The chat is on the left. Click <b>System Prompt</b> to check what you asked the bot to do."+N("The home page lists every file in "+F("annotation\\traces")+" by name: your browser chats (2026...), then your bulk runs. Each trace shows the system prompt it was made with, so chats from before a prompt change show the old prompt.")+N("To keep only the run you're coding, move older chats or runs into "+F("annotation\\old_traces")+". Don't delete them: they're your before for a later comparison."),
+           N("Keep learn eval by doing and recipe-chatbot side by side: the app reads and saves the traces in recipe-chatbot. Stop it with Ctrl+C."),
+         A("Find your traces.")+" Your bulk run is shown as bulk followed by its date. Click your first one. The chat is on the left. Click <b>System Prompt</b> to check what you asked the bot to do."+N("Each trace shows the prompt it was made with. To list only this run, move older files into "+F("annotation\\old_traces")+"; don't delete them."),
          A("Open coding: write notes in the big text box,")+" one answer at a time, in your own words. Ask: would a real user be happy? Did it follow my stage 1 spec? Leave the category box empty for now. Press Save (or Ctrl+Enter): it saves the note into that trace's file and opens the next one."+
-           N("Write full sentences, specific enough that someone else, or an LLM later, understands them. Good: says \"silky sauce\" without saying how thick, too vague for a beginner. Weak: bad answer.")+
-           N("Several problems in one answer is fine: one per line. No categories yet: first find out how the bot really fails. A ✅ on the home page means the trace has notes."),
-         A("Keep going until nothing new shows up.")+" Aim for 50 to 100 traces."+N("If the last 10 or so only repeat problems you already noted, you have read enough for this round."),
-         A("Axial coding: let an LLM suggest groups, then decide them yourself.")+" In Claude Code, type:<pre class=\"ex\">Read the open_coding notes in annotation/traces/trace_bulk_20261024_150000_*.json. Suggest groups of similar problems, with a count and two example trace ids for each, and say which groups often occur together. Do not change the files.</pre>Then check every group: open its examples, rename unclear names, merge or split until you have 4 to 8, each with a one-sentence definition two people would apply the same way."+
-           N("The groups are yours; the LLM only drafts them. For example, a vague draft name like \"prescriptive issues\" can become \"ambiguous instruction\"."),
-         A("Label each trace with its group.")+" Go through your traces again. In the box above the notes, type the group name the first time; after that it appears in the list for every trace."+
-           N("The box holds one group per trace: if a trace has two problems, pick the most important and keep the other in the note. A second ✅ means the trace has a group."),
-         A("Count each group.")+" In Claude Code, type:<pre class=\"ex\">Count the axial_coding_code values in annotation/traces/trace_bulk_20261024_150000_*.json.</pre>The top two are your first targets."+N("Where your counts differ from the LLM's draft, you and the LLM disagreed: worth a second look."),
-         A("Keep the traces you labeled.")+" In stage 6 they become the start of your golden set.",
-         N("Prefer a spreadsheet? Excel is fine as long as the chats are easy to read. Use the open-coding sheet template with the columns id, what went wrong, category; add one column per group, put 1 or 0 on each row and SUM each column. You can still read the answers in the app.")],
-    ex:`Trace 007, "quick low carb beef snack, 15 minutes"
-Note: Step 4 says "turn off heat if using, sprinkle cheddar". I could not
-tell that cheddar is optional. Optional ingredients should be on their own
-line, not mixed into a step.
-Note: "a splash of soy sauce": no amount, but my prompt says exact measurements.
-Group (added later, in axial coding): ambiguous instruction`,
+           N("Be specific: \"says silky sauce but not how thick\" beats \"bad answer\". One problem per line. ✅ means the trace has notes."),
+         A("Keep going until nothing new shows up.")+" Aim for 50 to 100 traces."+N("Stop when the last 10 only repeat problems you already noted."),
+         A("Axial coding, part 1: ask Claude to suggest groups.")+" You now have many separate notes. Many of them describe the same kind of problem in different words (for example \"no amount for soy sauce\" and \"no amount for salt\" are both \"missing quantities\"). Axial coding means putting notes about the same kind of problem into one named group. You do <b>not</b> do this in the annotation app. Go to <b>Claude Code</b> and paste this message:<pre class=\"ex\">Read the open_coding notes in the json files inside annotation/traces/ created on [date of your run]. Suggest groups of similar problems, with a count and two example trace ids for each, and say which groups often occur together. Then create the file annotation\\failure_mode_taxonomy.md. It is my failure mode taxonomy: one section per group, each with a title, a one-sentence definition and 1 or 2 real examples (the user query and what the bot answered, quoted from the traces). Use the same format as the template homeworks/hw2/reference_files/failure_mode_taxonomy.md, but replace its sample modes with mine. Do not change the trace json files.</pre>Claude answers with a draft list, for example: <i>\"Missing quantities (12 traces), examples trace 004 and 019. Ignores diet (7 traces), examples 007 and 031.\"</i> It also writes the draft file <b>annotation\\failure_mode_taxonomy.md</b> (a list of your failure modes, each with a definition and real examples). This is only a first draft."+
+           N("Nothing is saved at this point. Claude only reads your notes; it does not change your files."),
+         A("Axial coding, part 2: you check the draft and decide the final groups.")+" For each group Claude suggested: (a) open its two example traces in the annotation app and ask <i>do these two really have the same problem?</i>; (b) if the name is unclear, give it a clearer one; (c) if two groups are really the same problem, merge them; (d) if one group mixes two different problems, split it. Stop when you have <b>4 to 8 groups</b>. Then write one sentence for each saying exactly what counts as that problem. The test: two different people reading your sentence would put the same trace in the same group. Write them in your own copy of "+F("failure_mode_taxonomy.md")+" with a <b>Title</b>, a one-sentence <b>Definition</b> and 1 or 2 real <b>Examples</b>."+
+           N("The LLM only drafts; the groups are yours. This is the part of the work that teaches you the most."),
+         A("Label each trace with its group.")+" Back in the annotation app (http://localhost:5001), open your first trace again. Above the big notes box there is a smaller box called the category box. Type the name of the group that fits this trace best, then press Save (or Ctrl+Enter), which opens the next trace. The first time you type a group name it is saved; from then on it appears in a list, so you just pick it. Repeat for every trace you wrote notes on."+
+           N("One group per trace. If a trace has two problems, choose the more important one for the category box and leave the other in your note. On the home page, one ✅ means the trace has notes; a second ✅ means it also has a group."),
+         A("Count each group.")+" Once every trace has a group, go back to <b>Claude Code</b> and paste this message:<pre class=\"ex\">Count the axial_coding_code values in traces json files created [date of your run] in the folder annotation/traces/</pre>Claude answers with a count per group, for example: <i>missing quantities 14, ignores diet 9, too vague 6</i>. The two groups with the highest counts are the first things you will fix. Also ask yourself: which group would hurt a real user most, even if it is rare? That one matters too."+
+           N("Write the counts down in "+T("template-05-failure-counts.csv")+": one row per group, with its count and one example trace id. That sheet is your stage 5 output: stage 8 starts from it.")+
+           N("You can also compare with the draft counts Claude gave you in the first part. A big difference means you and Claude disagreed about some traces: worth a look."),
+         A("Keep the traces you labeled.")+" Do not delete or move them. You will reuse these traces, with your notes and groups, so you will not have to label them twice."],
+    note:"<b>Prefer a spreadsheet?</b> This is not a step: it is the other way to do the whole stage. Instead of the annotation app you can use Excel or Google Sheets with "+T("template-05-open-coding.csv")+
+      ", one row per answer: your open-coding note (point 4) in <i>what went wrong</i>, the group (point 8) in <i>category</i>. The template already has the columns and two example rows, so you do not have to build the table yourself.",
   },
   { loc:["nb","local","prod"], course:["nb"],
     f:"A golden set (a table of answers with your own PASS or FAIL), a judge that returns PASS or FAIL, and a results table with the judge's true positive and true negative rates.",
-    how:[A("Pick one failure")+" from your list, for example: ignores the stated diet.",
-         A("Write one yes or no question")+" about it."+N("One failure per judge."),
-         A("Write the judge prompt:")+" give it the user request and the answer, and ask for PASS or FAIL plus one sentence of reason (template below).",
-         A("Build your golden set:")+" a small answer key of real answers you judged yourself. Take about 50 from your results files, with both failures and good answers. In a spreadsheet, add your own PASS or FAIL for the failure you picked. Columns: id, query, response, respects_diet, your note. Save it, for example as "+F("data/golden_set.csv")+"."+N("50 is a common start, not a rule. If failures are rare, run more queries."),
-         A("Split it:")+" use about 60 percent while you improve the judge and keep the rest untouched for the final check."+N("The exact split is a judgment call."),
+    how:[A("Pick one failure")+" from your list, for example: ignores the stated diet. Open your stage 5 counts ("+T("template-05-failure-counts.csv")+" or "+F("annotation/failure_mode_taxonomy.md")+") and take the most frequent one, unless a rarer one would hurt users more."+N("No app for this step or the next one: both are writing."),
+         A("Write one yes or no question")+" about it, on the Question line of your copy of "+T("template-06-judge-prompt.md")+", saved as "+F("data/judge_prompt.md")+". Phrase it so that YES means PASS, and check that two people would answer it the same way for the same trace."+N("One failure per judge."),
+         A("Write the judge prompt:")+" give it the user request and the answer, and ask for PASS or FAIL plus one sentence of reason (the wording to copy is below)."+N("Same file as point 2. It also holds your PASS and FAIL definitions, the borderline cases you decided, and the agreement table you fill in at point 7."),
+         A("Build your golden set:")+" a small answer key of real answers you judged yourself. Take about 50 from your results files, with both failures and good answers. In a spreadsheet, add your own PASS or FAIL for the failure you picked. Use the columns in "+T("template-06-golden-set.csv")+" and save it, for example as "+F("data/golden_set.csv")+"."+N("50 is a start; if failures are rare, run more queries."),
+         A("Split it:")+" use about 60 percent while you improve the judge and keep the rest untouched for the final check.",
          A("Run the judge on the golden set")+" and compare its PASS or FAIL with yours.",
-         A("Count how often the judge agrees with you")+" on real failures and on good answers."+N("Low agreement? Rewrite the question and try again.")],
+         A("Count how often the judge agrees with you")+" on real failures and on good answers."+N("Row by row, your label next to the judge's: "+T("template-06-judge-agreement.csv")+". Put the two rates in the version table in "+T("template-06-judge-prompt.md")+", one row per version.")+N("Low agreement? Rewrite the question and try again.")],
     ex:`You are checking one thing only.
 User request: {query}
 Answer: {response}
 Question: Does the answer respect every diet restriction the user mentioned?
 Reply with PASS or FAIL, then one sentence explaining why.`,
   },
-  { loc:["nb","stage"], course:["nb"],
-    f:"A score table, one row per component (search, each tool, each step).",
-    how:[A("List the parts of your agent:")+" the search step, each tool, each hand-off between steps.",
-         A("Test each part on its own:")+" given a correct input, does it do its job?",
-         A("For search:")+" take questions where you know which document holds the answer, and check that it appears in the top results.",
-         A("Fill a table")+" with the columns part, test, score. Work on the lowest score first."],
+  { loc:["local","stage"], course:["local"],
+    f:"Your recipe file "+F("data/my_recipes.json")+", a bot that answers only from it, and a test sheet with one row per question.",
+    how:[A("Pick 10 to 20 recipes the bot will know")+" and put one link per line in "+F("recipe-chatbot\\data\\recipe_links.txt")+"."+N("Worked example: an Algerian chef. 15 Algerian recipes (chorba frik, mderbel, tchouktchouka and more) from one French recipe site; the bot answers in English. Any cuisine and any language work.")+N("Also note 3 dishes you leave out on purpose (in the example: couscous). They become test questions in point 5."),
+         A("Turn the links into a recipe file:")+" run "+F("uv run python scripts/build_recipes.py")+" from "+F("recipe-chatbot")+". It reads each page (its recipe card, or the page text), translates it to English, keeps the dish's own name, and saves "+F("data/my_recipes.json")+". "+A("Then check every recipe")+" in "+U("stage-7-evaluate-the-parts/recipes-viewer.html")+": compare a few with their source page and note wrong names, missing steps, odd tags or guessed times."+N("Re-run it whenever you change the links. A link that fails is skipped and named at the end. The recipes file is in .gitignore: the text belongs to the source sites."),
+         A("Make the recipes searchable:")+" keyword search (BM25, in "+F("backend/retrieval.py")+") returns the 3 recipes closest to each question.",
+         A("Connect search to the chat")+" so the bot reads those 3 recipes before it answers. Then update "+F("backend/system_prompt.md")+": the persona (in the example, an Algerian chef), answer only from the recipes given, name the recipe used, say you do not have it when no recipe fits, always answer in English."+N("You build points 3 and 4 yourself with Claude Code. The prompt to paste is being tested on the worked example first and will be added here."),
+         A("Write 20 to 30 test questions,")+" each from one recipe you know, of three kinds: "+A("exact")+" (names the dish), "+A("vague")+" (describes it without the name: \"a green wheat soup with lamb\"), and "+A("not in your data")+" (one of the dishes you left out). Fill one row per question in "+T("template-07-search-test.csv")+"."+N("For a not-in-data question the expected recipe is none, and the right answer is \"I don't have that recipe\". Giving a recipe anyway is a fail."),
+         A("Check each answer in three parts")+" (Paweł's Question, Context, Answer): did search return the right recipe in the top 3? Did the answer use only what search returned? Is the answer correct?"+N("Keep the search column and the answer columns apart: they point to different fixes."),
+         A("Fix the weaker part first, then re-run the same questions.")+" Search missed vague questions: try hybrid search (keywords plus meaning) or query rewriting. Answer added things not in the recipe: tighten the prompt."+N("Detailed fix steps come after the test is tried on the worked example.")],
+    ex:`question,kind,expected_recipe_id,in_top_3,rank,uses_only_found_recipes,correct,notes
+How do I make chorba frik?,exact,(id of chorba frik in my_recipes.json),,,,,
+I want a soup with green cracked wheat and lamb,vague,(id of chorba frik),,,,,
+Give me a couscous recipe,not in data,none,,,,,should say it does not have it`,
   },
   { loc:["local","stage"], course:["local"],
     f:"A before and after table in a spreadsheet, with a label for each version of the prompt.",
     how:[A("Choose the most frequent failure")+" from your stage 5 counts.",
          A("Change one thing:")+" one sentence in "+F("backend/system_prompt.md")+".",
-         A("Re-run the same query file")+" with the bulk test, then run your checks on the new results file."+N("Changed the judge itself? Check it against your golden set first."),
-         A("Put old and new scores side by side.")+" Keep the change only if the target improved and nothing else got worse."+N("To compare the answers themselves, open the old and the new results file in "+U("stage-4-capture-traces/results-viewer.html")+", in two browser tabs."),
-         A("Add the cases you fixed to your regression set:")+" a CSV of requests that must keep passing."],
+         A("Re-run the same query file")+" with the bulk test, then run your checks on the new results file."+N("Changed the recipes or search? Re-run your stage 7 test questions too."),
+         A("Put old and new scores side by side.")+" Keep the change only if the target improved and nothing else got worse."+N("One row per change in "+T("template-08-before-after.csv")+": what you changed, the failure you targeted, before, after, the other checks, and whether you kept it.")+N("To compare answers, open both results files in "+U("stage-4-capture-traces/results-viewer.html")+"."),
+         A("Add the cases you fixed to your regression set:")+" a CSV of requests that must keep passing."+N("Use "+T("template-08-regression-set.csv")+" and re-run it after every later change.")],
   },
   { loc:["prod","doc","local"], course:["local"],
     f:"A weekly review sheet (sample, findings, actions) and a small dashboard of the main checks.",
-    how:[A("Once a week, pick 20 recent conversations")+" at random.",
+    how:[A("Once a week, pick 20 recent conversations")+" at random."+N("Keep one row per week in "+T("template-09-weekly-review.csv")+": sample size, each check's pass rate, any new failure type, and what you did about it."),
          A("Run your checks on them")+" and read the failures yourself.",
          A("Write any new failure type")+" into your category list.",
          A("Add it to the regression set,")+" then repeat from stage 5.",
-         N("In a real product, ask engineering for a dashboard of your main checks and an alert when a score drops. Here, practise by sampling the results files you saved.")]
+         N("In a real product, ask engineering for a dashboard and an alert when a score drops.")]
   }
 ];
 
@@ -1263,17 +1274,12 @@ var HELP = [
    "<b>More practice data:</b> the course's 250 sample chats (2024-01-15) are in "+F("annotation\\course_samples_extra")+". Move files into "+F("annotation\\traces")+" to see them in the app. Their system prompt is a placeholder, so check them against your own idea of good, not your spec.",
    "<b>Several groups per chat:</b> "+F("lesson-7/labeling-tool")+" (the course's Lesson 6) lets you pick more than one failure mode per chat. It loads "+R("lesson-7/data/traces.csv")+", 118 agent chats with tool calls, one row each; that file has no label columns. How to start it: "+U("stage-5-error-analysis/README.md","useful apps\\stage-5-error-analysis\\README.md")+".",
    '<b>Check your work after:</b> '+R("homeworks/hw2/hw2_walkthrough.ipynb")+' is the solution. To open any walkthrough notebook, paste this in a terminal in '+F("recipe-chatbot")+':<pre class="ex">uv run --with jupyter jupyter notebook homeworks/hw2/hw2_walkthrough.ipynb</pre>'],
-  ["<b>Follow the official steps:</b> "+R("homeworks/hw3/README.md")+". Option 2: about 2400 ready traces to label. Option 3: 101 already labeled, so you focus on the judge. Its video is in "+VIDEOS()+".",
-   "<b>Test on hard cases:</b> "+R("homeworks/hw3/reference_files/dietary_queries.csv")+", 60 tricky diet requests.",
-   "<b>See what PASS and FAIL look like:</b> open "+U("stage-6-golden-set-and-judge/labeled-traces-viewer.html")+" and upload "+F("labeled_traces.jsonl")+" from "+F("recipe-chatbot\\homeworks\\hw3\\reference_files")+": 101 traces labeled by hand, each with its reason.",
-   "<b>A second judge, another product:</b> "+F("lesson-4")+" checks a property-manager bot for unsupported claims. "+R("lesson-4/label_substantiation.py","label_substantiation.py")+" makes the labels, "+R("lesson-4/judge_substantiation.py","judge_substantiation.py")+" tests a judge against those labels with TPR and TNR. Its comments mention a cheaper model, but the code uses the same model as the labeler (gpt-4.1). It labels with an LLM to save time; your golden set is labeled by you.",
-   "<b>Check your work after:</b> "+R("homeworks/hw3/hw3_walkthrough.ipynb")+" is the solution. Its judge is simulated (it copies the true label 85% of the time) and its judgy code is commented out, so it shows the steps and the maths, not a real judge run. You write the call to your judge model yourself."],
-  ["<b>Search quality:</b> "+R("homeworks/hw4/README.md")+". Option 2 or 3 give 200 ready recipes and 200 test queries; browse the queries with "+U("stage-7-evaluate-the-parts/search-queries-viewer.html")+".",
-   "<b>Agent steps:</b> "+R("homeworks/hw5/README.md")+". 96 labeled traces and a starter script, "+R("homeworks/hw5/analysis/transition_heatmaps.py","analysis/transition_heatmaps.py")+". Read the traces first in "+U("stage-7-evaluate-the-parts/agent-traces-viewer.html")+".",
-   "<b>Watch it done:</b> the HW4 and HW5 videos, in "+VIDEOS()+".",
-   "<b>Read failed multi-step chats as a sheet:</b> "+R("lesson-7/data/traces.csv")+" holds 118 failed agent chats, one row each, with their tool calls. They are a different set from HW5's 96 labeled traces, so the HW5 heat-map does not cover them.",
-   "<b>Check your work after:</b> "+R("homeworks/hw4/hw4_walkthrough.ipynb","hw4_walkthrough.ipynb")+" and "+R("homeworks/hw5/hw5_walkthrough.ipynb","hw5_walkthrough.ipynb")+" are the solutions."],
-  ["<b>No homework here:</b> use your HW2 counts and HW3 judge. Change one line of the prompt, rerun, compare.",
+  [], /* stage 6: not covered yet */
+  ["<b>The method this stage follows:</b> Paweł Huryn, "+'<a href="https://www.productcompass.pm/p/how-to-build-a-rag-chatbot" target="_blank" rel="noopener">How to build a RAG chatbot</a>'+" (The Product Compass). Written for PMs: build the recipe file, search, connect it to the chat, then test each answer as Question, Context, Answer.",
+   "<b>Check your recipe file:</b> open "+F("data/my_recipes.json")+" in "+U("stage-7-evaluate-the-parts/recipes-viewer.html")+". It counts the recipes and marks any missing name, ingredients or steps in red."+N("The build script uses your model and key from .env."),
+   "<b>Optional, more technical: the course's version.</b> "+R("homeworks/hw4/README.md")+" scores search on 200 ready recipes and 200 test queries with Recall@k and MRR; browse the queries with "+U("stage-7-evaluate-the-parts/search-queries-viewer.html")+". Its video is in "+VIDEOS()+", its solution in "+R("homeworks/hw4/hw4_walkthrough.ipynb","hw4_walkthrough.ipynb")+".",
+   "<b>Optional, for agents with several steps:</b> "+R("homeworks/hw5/README.md")+". 96 labeled traces and a starter script, "+R("homeworks/hw5/analysis/transition_heatmaps.py","analysis/transition_heatmaps.py")+". Read the traces first in "+U("stage-7-evaluate-the-parts/agent-traces-viewer.html")+". "+R("lesson-7/data/traces.csv")+" holds 118 more failed agent chats as a sheet (a different set, not covered by the heat-map). Solution: "+R("homeworks/hw5/hw5_walkthrough.ipynb","hw5_walkthrough.ipynb")+"."],
+  ["<b>No homework here:</b> use your stage 5 counts and your stage 7 test sheet. Change one line of the prompt, rerun, compare.",
    "<b>Optional, advanced: cut cost once quality is fine.</b> "+R("lesson-8/model_cascade.py")+" sends each item to a cheap model first and only to a bigger one when unsure."],
   ["<b>No homework here:</b> sample your saved results files each week.",
    "<b>Optional: record traces automatically</b> from the running bot with a tracing tool: "+R("homeworks/optional/phoenix-integration/README.md")+" (Arize Phoenix). Do it after the nine stages; its video is in "+VIDEOS()+"."]
@@ -1286,9 +1292,9 @@ var CHECKS = [
   "Traces are saved as JSON",
   "Read 100 traces and wrote notes",
   "Failure taxonomy with counts",
-  "Code checks for objective failures",
-  "Golden set labeled by me (both failures and good answers)",
-  "LLM judge checked against my golden set",
+  "Recipe file built from my own links and checked",
+  "Bot answers only from my recipes",
+  "Stage 7 test sheet: search and answer checked for each question",
   "Before and after table for one improvement",
   "Regression set created",
   "Weekly monitoring routine set"
@@ -1301,28 +1307,27 @@ function ol(a){ return "<ol>" + a.map(function(x){return "<li>"+x+"</li>"}).join
 var STAGE_SK = [["def"],["setup"],["setup"],["obs"],["evals"],["evals"],["rag","evals"],["iter","evals"],["obs","iter","evals"]];
 
 /* Page 2 stages (Recipe Chatbot) */
-function renderStages(id){
-  var box = document.getElementById(id), openSet = {}, first = box.children.length === 0;
-  box.querySelectorAll("details").forEach(function(d,i){ if(d.open) openSet[i]=1; });
-  var h = "";
-  STAGES.forEach(function(st,i){
-    var x = EXTRA[i], isOpen = first ? i === 0 : openSet[i];
-    h += '<details class="stage"'+(isOpen?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+st.t+'</span>'+
+function stageCard(i, isOpen){
+    var st = STAGES[i], x = EXTRA[i];
+    return '<details class="stage" data-i="'+i+'"'+(isOpen?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+st.t+'</span>'+
       STAGE_SK[i].map(function(k){ return '<span class="tag sk-'+k+'">'+SKILL[k]+'</span>'; }).join(" ")+" "+
       (st.hw ? '<span class="tag hw">'+st.hw+'</span>' : '')+'<span class="chev">&#9656;</span></summary><div class="body">'+
+      (st.later ? '<div class="col scn" style="grid-column:1/-1"><div class="k">Later</div>'+st.later+'</div>' : '')+
       '<div class="col"><div class="k">Goal</div>'+st.goal+'</div>'+
       '<div class="col"><div class="k">Do this</div>'+li(st.do)+'</div>'+
       '<div class="col"><div class="k">You end with</div>'+st.out+'</div>'+
       locHtml(x, true)+
       '<div class="col"><div class="k">Format</div>'+x.f+'</div>'+
       '<div class="col"><div class="k">Your role as PM</div>'+PM[i]+'</div>'+
-      '<div class="col how"><div class="k">How, step by step (beginner)</div>'+ol(x.how)+(x.ex?'<pre class="ex" data-ex></pre>':'')+'</div>'+
-      '<div class="col how"><div class="k">Course material</div>Checklists, homework steps, data and solutions for this stage: '+RES("Resources, stage "+(i+1), "res-stage-"+(i+1))+'.</div>'+
+      '<div class="col how"><div class="k">How, step by step (beginner)</div>'+ol(x.how)+(x.note?'<div class="note" style="margin-top:14px">'+x.note+'</div>':'')+(x.ex?'<pre class="ex" data-ex></pre>':'')+'</div>'+
+      '<div class="col"><div class="k">Template to fill in</div>'+fileList(TFILES[i], "recipe-chatbot")+'<p class="small" style="margin-top:8px">Made for this repo: its file paths, the columns its scripts expect, and recipe examples. The steps above say where each one comes in. Click one to preview it, then Save a copy.</p></div>'+
+      '<div class="col how"><div class="k">Course material</div>'+'Checklists, homework steps, data and solutions for this stage: '+RES("Resources, stage "+(i+1), "res-stage-"+(i+1))+'.'+'</div>'+
       '</div></details>';
-  });
-  box.innerHTML = h;
-  box.querySelectorAll("details").forEach(function(d,i){
-    var pre = d.querySelector("pre.ex[data-ex]"); if(pre) pre.textContent = EXTRA[i].ex;
+}
+function renderStages(id){
+  document.getElementById(id).innerHTML = STAGES.map(function(st,i){ return isLater(i) ? "" : stageCard(i, i===0); }).join("");
+  document.querySelectorAll("#"+id+" details").forEach(function(d){
+    var pre = d.querySelector("pre.ex[data-ex]"); if(pre) pre.textContent = EXTRA[+d.getAttribute("data-i")].ex;
   });
   addCopy();
 }
@@ -1330,6 +1335,7 @@ function renderStages(id){
 /* Resources tab: the course material for each stage (HELP), one block per stage; each stage links to its block */
 function renderResByStage(){
   document.getElementById("resByStage").innerHTML = STAGES.map(function(st,i){
+    if(isLater(i)) return "";
     return '<div class="box" id="res-stage-'+(i+1)+'"><div class="k">Stage '+(i+1)+' · '+st.t+(st.hw ? ' · '+st.hw : '')+'</div>'+li(HELP[i])+'</div>';
   }).join("");
   addCopy();
@@ -1367,21 +1373,32 @@ function addCopy(){
   });
 }
 
-var CHECKS_GEN = [];
-GEN.forEach(function(x){ CHECKS_GEN.push(x.done); if(x.done2) CHECKS_GEN.push(x.done2); });
+var CHECKS_GEN = [], CHECKS_GEN_OLD = [];
+GEN.forEach(function(x,i){
+  CHECKS_GEN_OLD.push(x.done); if(x.done2) CHECKS_GEN_OLD.push(x.done2);
+  if(isLater(i)) return;
+  CHECKS_GEN.push(x.done); if(x.done2) CHECKS_GEN.push(x.done2);
+});
+/* Before stage 6 moved, ticks were saved by position in these lists; they are now saved by text */
+var CHECKS_OLD = ["Wrote a spec and 10 example requests","Version 0 runs end to end","Test query set of 100+ inputs saved","Traces are saved as JSON","Read 100 traces and wrote notes","Failure taxonomy with counts","Code checks for objective failures","Golden set labeled by me (both failures and good answers)","LLM judge checked against my golden set","Before and after table for one improvement","Regression set created","Weekly monitoring routine set"];
 
-function renderChecks(list, boxId, progId, key){
-  var saved = {};
-  try { saved = JSON.parse(localStorage.getItem(key) || "{}"); } catch(e){}
+function renderChecks(list, boxId, progId, key, oldList){
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem(key + "-v2") || "null"); } catch(e){}
+  if(!saved){
+    saved = {};
+    try { var old = JSON.parse(localStorage.getItem(key) || "{}"); Object.keys(old).forEach(function(i){ if(old[i] && oldList[i]) saved[oldList[i]] = true; }); } catch(e){}
+  }
+  key = key + "-v2";
   var box = document.getElementById(boxId);
   box.innerHTML = "";
   function prog(){ document.getElementById(progId).textContent = box.querySelectorAll("input:checked").length + " of " + list.length + " done"; }
   list.forEach(function(c,i){
     var l = document.createElement("label");
     var cb = document.createElement("input");
-    cb.type = "checkbox"; cb.checked = !!saved[i];
+    cb.type = "checkbox"; cb.checked = !!saved[c];
     cb.onchange = function(){
-      saved[i] = cb.checked;
+      saved[c] = cb.checked;
       try{localStorage.setItem(key, JSON.stringify(saved))}catch(e){}
       prog();
     };
@@ -1414,8 +1431,8 @@ var GLOSS = {
   "error analysis": {g:1, n:"Error analysis", d:"Reading 50 to 100 saved answers and writing down what went wrong, so you learn how your bot actually fails (stage 5). The first eval, done by hand.", a:["error analysis"]},
   "open coding": {g:1, n:"Open coding", d:"The first pass of error analysis: one short free-form note per problem, with no categories yet.", a:["open coding"]},
   "axial coding": {g:1, n:"Axial coding", d:"The second pass: grouping your open-coding notes into 4 to 8 named failure types.", a:["axial coding"]},
-  "failure taxonomy": {g:1, n:"Failure taxonomy (failure list)", d:"Your named list of failure types with counts and an example each. The output of stage 5 and the input to stage 6.", a:["failure taxonomy","taxonomy","failure list"]},
-  "golden set": {g:1, n:"Golden set", d:"About 50 real answers you have labeled PASS or FAIL yourself, with both failures and good answers in it. Your answer key for testing whether a judge can be trusted (stage 6).", a:["golden set","golden record","golden records"]},
+  "failure taxonomy": {g:1, n:"Failure taxonomy (failure list)", d:"Your named list of failure types with counts and an example each. The output of stage 5 and the starting point of stage 8.", a:["failure taxonomy","taxonomy","failure list"]},
+  "golden set": {g:1, n:"Golden set", d:"About 50 real answers you have labeled PASS or FAIL yourself, with both failures and good answers in it. Your answer key for testing whether a judge can be trusted (not covered yet).", a:["golden set","golden record","golden records"]},
 
   "eval": {g:2, n:"Eval", d:"Short for evaluation. A repeatable test of how well the bot does on one thing. It can be done by hand (you read and label) or automatically (a code check or LLM judge).", a:["evals","eval"]},
   "code check": {g:2, n:"Code check", d:"An automatic check written as a simple rule, with no AI: length, format, a required section. Cheap and exact, so use one whenever a failure can be checked this way.", a:["code check","code checks"]},
@@ -1527,7 +1544,7 @@ window.addEventListener("scroll", hideTip, {passive:true});
 })();
 
 /* ---------- Three pages (open with #general, #recipe-chatbot or #glossary) ---------- */
-var PAGE_IDS = {"general":"p-general","recipe-chatbot":"p-recipe","glossary":"p-glossary"};
+var PAGE_IDS = {"general":"p-general","recipe-chatbot":"p-recipe","glossary":"p-glossary","later":"p-later"};
 function showPage(key){
   if(!PAGE_IDS[key]) key = "general";
   Object.keys(PAGE_IDS).forEach(function(k){ document.getElementById(PAGE_IDS[k]).hidden = (k !== key); });
@@ -1568,8 +1585,8 @@ renderGen();
 renderTemplates();
 renderStages("stagesR");
 renderResByStage();
-renderChecks(CHECKS_GEN, "checkG", "progG", "playbook-checks-gen");
-renderChecks(CHECKS, "check", "prog", "playbook-checks");
+renderChecks(CHECKS_GEN, "checkG", "progG", "playbook-checks-gen", CHECKS_GEN_OLD);
+renderChecks(CHECKS, "check", "prog", "playbook-checks", CHECKS_OLD);
 decorate();
 var startKey = (location.hash || "").replace("#","");
 if(!PAGE_IDS[startKey]){ try{ startKey = localStorage.getItem("playbook-page") || "general"; }catch(e){ startKey = "general"; } }
