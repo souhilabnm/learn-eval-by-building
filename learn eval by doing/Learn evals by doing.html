@@ -230,8 +230,7 @@ ol.steps li.step{display:grid;grid-template-columns:22px 1.6em minmax(0,1fr);gap
   <header>
     <div class="eyebrow">Reusable playbook · v1.0 · November 2026</div>
     <h1>Learn evals by doing them</h1>
-    <p class="lede">Learn evals, observability, RAG and iteration by working on a real chatbot from your course, the Recipe Chatbot, one stage at a time. The Glossary explains every term. A playbook for a chatbot on any topic comes later.</p>
-    <div class="box vbox"><div class="k">What v1.0 covers</div>Stages 1 to 5 (spec, test queries, capture answers, error analysis) and the first part of stage 7: turning your recipes into a recipe file and making them searchable. <b>Coming in v2:</b> connecting search to the chat, testing the RAG (rest of stage 7), improving the system prompt (stage 8) and monitoring (stage 9). Those parts are greyed out and marked <span class="chip soon">Coming in v2</span>.</div>
+    <p class="lede">Learn evals, observability, RAG and iteration by working on a real chatbot.</p>
     <div class="tabs pagenav" id="pagenav" role="group" aria-label="Page">
       <button class="tab" type="button" data-page="recipe-chatbot" aria-pressed="true">Recipe Chatbot</button>
       <button class="tab" type="button" data-page="glossary" aria-pressed="false">Glossary</button>
@@ -407,8 +406,8 @@ ol.steps li.step{display:grid;grid-template-columns:22px 1.6em minmax(0,1fr);gap
 
   <!-- ============ PAGE 2: RECIPE CHATBOT ============ -->
   <main id="p-recipe" hidden>
-    <section>
-      <h2>The use case</h2>
+    <section id="overviewSec">
+      <h2>Project overview</h2>
       <div class="box">
         <p>The Recipe Chatbot is a small AI agent from your AI evaluations course. A person types what they want to cook and it replies with a recipe. It is a good practice project because it is simple enough to understand fully and still fails in interesting ways.</p>
         <p style="margin-top:8px">Under the hood: a web page for chatting (frontend), a Python server that receives each message (FastAPI), and a library that calls the AI model (LiteLLM). The course has five homeworks that follow the nine stages of this guide.</p>
@@ -743,7 +742,6 @@ OPENAI_API_KEY=paste-your-key-here</pre>
         <div class="wprogline"><span class="k">Your progress</span><span class="prog" id="wprog"></span></div>
         <div class="wbar" role="progressbar" aria-label="Actions done" aria-valuemin="0" aria-valuemax="100" id="wbar"><span id="wfill"></span></div>
         <nav class="stepper" id="stepper" aria-label="Stages"></nav>
-        <p class="small">Tick each action when you have done it. Ticks are saved in this browser only. Stage 6 (golden set and LLM judge) is not covered yet, so stage 5 leads to stage 7. Greyed stages come in v2.</p>
       </div>
       <div id="wpanels"></div>
       <div class="wnav"><button class="tab" type="button" id="wprev">&larr; Previous</button><span class="small" id="wpos"></span><button class="tab primary" type="button" id="wnext">Next &rarr;</button></div>
@@ -1358,27 +1356,9 @@ function ol(a){ return "<ol>" + a.map(function(x){return "<li>"+x+"</li>"}).join
 /* Page 2 stages (Recipe Chatbot): the skill each stage practises, same names as page 1 */
 var STAGE_SK = [["def"],["setup"],["setup"],["obs"],["evals"],["evals"],["rag","evals"],["iter","evals"],["obs","iter","evals"]];
 
-/* Page 2 stages (Recipe Chatbot) */
-function stageCard(i, isOpen){
-    var st = STAGES[i], x = EXTRA[i];
-    return '<details class="stage" data-i="'+i+'"'+(isOpen?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+st.t+'</span>'+soonChip(SOON_COURSE,i)+
-      STAGE_SK[i].map(function(k){ return '<span class="tag sk-'+k+'">'+SKILL[k]+'</span>'; }).join(" ")+" "+
-      (st.hw ? '<span class="tag hw">'+st.hw+'</span>' : '')+'<span class="chev">&#9656;</span></summary><div class="body">'+
-      (st.later ? '<div class="col scn" style="grid-column:1/-1"><div class="k">Later</div>'+st.later+'</div>' : '')+
-      '<div class="col"><div class="k">Goal</div>'+st.goal+'</div>'+
-      '<div class="col"><div class="k">Do this</div>'+li(st.do)+'</div>'+
-      '<div class="col"><div class="k">You end with</div>'+st.out+'</div>'+
-      locHtml(x, true)+
-      '<div class="col"><div class="k">Format</div>'+x.f+'</div>'+
-      '<div class="col"><div class="k">Your role as PM</div>'+PM[i]+'</div>'+
-      '<div class="col how"><div class="k">How, step by step (beginner)</div>'+ol(x.how)+(x.note?'<div class="note" style="margin-top:14px">'+x.note+'</div>':'')+(x.ex?'<pre class="ex" data-ex></pre>':'')+'</div>'+
-      '<div class="col"><div class="k">Template to fill in</div>'+fileList(TFILES[i], "recipe-chatbot")+'<p class="small" style="margin-top:8px">Made for this repo: its file paths, the columns its scripts expect, and recipe examples. The steps above say where each one comes in. Click one to preview it, then Save a copy.</p></div>'+
-      '<div class="col how"><div class="k">Course material</div>'+'Checklists, homework steps, data and solutions for this stage: '+RES("Resources, stage "+(i+1), "res-stage-"+(i+1))+'.'+'</div>'+
-      '</div></details>';
-}
 /* ---------- Stage-by-stage view: one screen per stage, a checkbox beside every action ---------- */
 var SHORT = ["Define the job","Version 0","Test inputs","Capture traces","Error analysis","Golden set","RAG: your recipes","Improve","Monitor"];
-var STEP_KEY = "recipe-steps-v1", PANEL_KEY = "recipe-panel-v1";
+var STEP_KEY = "recipe-steps-v1", PANEL_KEY = "recipe-panel-v2";
 var stepsDone = {};
 try { stepsDone = JSON.parse(localStorage.getItem(STEP_KEY) || "{}") || {}; } catch(e){ stepsDone = {}; }
 function saveSteps(){ try{ localStorage.setItem(STEP_KEY, JSON.stringify(stepsDone)); }catch(e){} }
@@ -1402,22 +1382,32 @@ function stagePanel(i){
       x.how.map(function(h, n){ return stepRow(key, n, h); }).join("") + '</ol>' +
       (x.note ? '<div class="note" style="margin-top:14px">' + x.note + '</div>' : '') + (x.ex ? '<pre class="ex" data-ex></pre>' : '') + '</div>' +
     '<div class="sgrid">' +
-      '<div class="col"><div class="k">Template to fill in</div>' + fileList(TFILES[i], "recipe-chatbot") + '<p class="small" style="margin-top:8px">Made for this repo. The steps above say where each one comes in. Click one to preview it, then Save a copy.</p></div>' +
+      '<div class="col"><div class="k">Template to fill in</div>' + fileList(TFILES[i], "recipe-chatbot") + '</div>' +
       '<div class="col"><div class="k">Your role as PM</div>' + PM[i] + '</div>' +
       '<div class="col"><div class="k">Format</div>' + x.f + '</div>' +
-      '<div class="col"><div class="k">The stage in short</div>' + li(st.do) + '</div>' +
-      locHtml(x, true) +
       '<div class="col"><div class="k">Course material</div>Checklists, homework steps, data and solutions for this stage: ' + RES("Resources, stage " + (i + 1), "res-stage-" + (i + 1)) + '.</div>' +
     '</div></article>';
 }
 /* Panels in order: setup, then every stage not moved to "Not covered yet". SOON_COURSE stages are greyed and cannot be opened. */
 var PANELS = [], curPanel = 0;
+var LEARN_HTML = '<article class="spanel" data-intro="learn" hidden><div class="shead"><h2>What you\'ll learn</h2></div>' +
+  '<div class="skills">' +
+  '<div class="box"><span class="tag sk-evals">Evals</span><p>Read the bot\'s real answers, name what went wrong against your definition of good, fix it and check the fix worked.</p></div>' +
+  '<div class="box"><span class="tag sk-obs">Observability</span><p>Save every run so you can see why an answer went wrong.</p></div>' +
+  '<div class="box"><span class="tag sk-rag">RAG</span><p>Make the bot answer from recipes you chose, and test the search apart from the answer.</p></div>' +
+  '<div class="box"><span class="tag sk-iter">Iteration</span><p>Change one thing, re-run, compare, and keep it only if the results improve.</p></div>' +
+  '</div></article>';
 function renderWizard(){
   var wrap = document.getElementById("wpanels");
   var setup = document.getElementById("setupSec");
   var html = STAGES.map(function(st, i){ return isLater(i) ? "" : stagePanel(i); }).join("");
-  wrap.innerHTML = '<article class="spanel" data-key="s0" hidden><div class="shead"><span class="n">Stage 0</span></div></article>' + html;
-  var p0 = wrap.firstElementChild;
+  wrap.innerHTML = LEARN_HTML + '<article class="spanel" data-intro="overview" hidden><div class="shead"></div></article>' +
+    '<article class="spanel" data-key="s0" hidden><div class="shead"><span class="n">Stage 0</span></div></article>' + html;
+  var ov = document.getElementById("overviewSec"), pv = wrap.children[1];
+  ov.parentNode.removeChild(ov);
+  pv.querySelector(".shead").appendChild(ov.querySelector("h2"));
+  pv.appendChild(ov);
+  var p0 = wrap.children[2];
   setup.parentNode.removeChild(setup);
   var h = setup.querySelector("h2"); h.textContent = "Before you start: set up";
   p0.querySelector(".shead").appendChild(h);
@@ -1432,11 +1422,13 @@ function renderWizard(){
   });
   PANELS = [].map.call(wrap.querySelectorAll(".spanel"), function(a){
     var i = a.hasAttribute("data-i") ? +a.getAttribute("data-i") : -1;
-    return { el: a, i: i, soon: SOON_COURSE.indexOf(i) > -1, label: i < 0 ? "Setup" : SHORT[i], num: i < 0 ? 0 : i + 1 };
+    var intro = a.getAttribute("data-intro");
+    return { el: a, i: i, intro: !!intro, soon: SOON_COURSE.indexOf(i) > -1, num: intro ? "" : (i < 0 ? 0 : i + 1),
+      label: intro === "learn" ? "What you'll learn" : intro === "overview" ? "Project overview" : i < 0 ? "Setup" : SHORT[i] };
   });
   document.getElementById("stepper").innerHTML = PANELS.map(function(p, k){
     return '<button class="sstep" type="button" data-panel="' + k + '"' + (p.soon ? ' disabled aria-disabled="true" title="Coming in v2"' : '') + '>' +
-      '<span class="sn">' + p.num + '</span><span>' + p.label + '</span><span class="sc"></span></button>';
+      (p.intro ? '' : '<span class="sn">' + p.num + '</span>') + '<span>' + p.label + '</span><span class="sc"></span></button>';
   }).join("");
   document.getElementById("stepper").onclick = function(e){
     var b = e.target.closest("[data-panel]"); if(b && !b.disabled) showPanel(+b.getAttribute("data-panel"), true);
@@ -1462,9 +1454,10 @@ function showPanel(k, scroll){
   document.querySelectorAll("#stepper .sstep").forEach(function(b, j){ if(j === k) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
   var prev = document.getElementById("wprev"), next = document.getElementById("wnext"), nx = PANELS[k + 1];
   prev.disabled = k === 0;
-  prev.innerHTML = k === 0 ? "&larr; Previous" : "&larr; " + (PANELS[k - 1].num ? "Stage " + PANELS[k - 1].num : "Setup");
+  function nm(p){ return p.i >= 0 ? "Stage " + p.num : p.label; }
+  prev.innerHTML = k === 0 ? "&larr; Previous" : "&larr; " + nm(PANELS[k - 1]);
   next.disabled = !nx || nx.soon;
-  next.innerHTML = !nx ? "Last stage" : nx.soon ? "Stage " + nx.num + ": coming in v2" : "Stage " + nx.num + " &rarr;";
+  next.innerHTML = !nx ? "Last stage" : nx.soon ? nm(nx) + ": coming in v2" : nm(nx) + " &rarr;";
   var avail = PANELS.filter(function(p){ return !p.soon; }).length;
   document.getElementById("wpos").textContent = (k + 1) + " of " + avail + " in v1";
   try{ localStorage.setItem(PANEL_KEY, String(k)); }catch(e){}
@@ -1477,7 +1470,7 @@ function updateProgress(){
     if(!p.soon){ all += n; done += d; }
     var sp = p.el.querySelector("[data-sprog]"); if(sp) sp.textContent = n ? "· " + d + " of " + n + " done" : "";
     var b = btns[k];
-    if(b){ b.querySelector(".sc").textContent = p.soon ? "v2" : (n && d === n ? "✓" : d + "/" + n); b.classList.toggle("full", !p.soon && n > 0 && d === n); }
+    if(b){ b.querySelector(".sc").textContent = p.soon ? "v2" : !n ? "" : (d === n ? "✓" : d + "/" + n); b.classList.toggle("full", !p.soon && n > 0 && d === n); }
   });
   var pct = all ? Math.round(done / all * 100) : 0;
   document.getElementById("wfill").style.width = pct + "%";
