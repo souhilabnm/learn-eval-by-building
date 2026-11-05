@@ -142,6 +142,8 @@ a{color:var(--accent);overflow-wrap:anywhere}
 .chip.same{background:var(--ok-soft);color:var(--ok)}
 .chip.edit{background:var(--accent-soft);color:var(--accent)}
 .chip.new{background:var(--warn-soft);color:var(--warn)}
+.chip.soon{background:var(--warn-soft);color:var(--warn);margin-left:6px}
+.vbox{border-left:3px solid var(--accent)}
 .chip.course{background:var(--bg);color:var(--muted);border-color:var(--line)}
 .legend{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
 .legend span.small{margin-left:6px}
@@ -179,9 +181,10 @@ img,svg,pre,table{max-width:100%}
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Reusable playbook</div>
+    <div class="eyebrow">Reusable playbook · v1.0 · November 2026</div>
     <h1>Learn evals by doing them</h1>
     <p class="lede">Page 1 walks you through evals, observability, RAG and iteration on a chatbot about any topic you choose. Page 2 is the worked example from your course, the Recipe Chatbot, whose setup you can borrow. Page 3 explains every term.</p>
+    <div class="box vbox"><div class="k">What v1.0 covers</div>Stages 1 to 5 (spec, test queries, capture answers, error analysis) and the first part of stage 7: turning your recipes into a recipe file and making them searchable. <b>Coming in v2:</b> connecting search to the chat, testing the RAG (rest of stage 7), improving the system prompt (stage 8) and monitoring (stage 9). Those parts are shown as a preview and marked <span class="chip soon">Coming in v2</span>.</div>
     <div class="tabs pagenav" id="pagenav" role="group" aria-label="Page">
       <button class="tab" type="button" data-page="general" aria-pressed="true">1. Playbook for any topic</button>
       <button class="tab" type="button" data-page="recipe-chatbot" aria-pressed="false">2. Real use case: Recipe Chatbot</button>
@@ -1067,6 +1070,10 @@ function exList(i){
 /* Stages moved to the "Not covered yet" page (index = stage - 1). They keep their number everywhere. */
 var LATER = [5];
 function isLater(i){ return LATER.indexOf(i) > -1; }
+/* v1.0: stages not covered yet in this version (index = stage - 1). Page 1 stage 7 is all testing; page 2 stage 7 is partly in v1. */
+var SOON_GEN = [6,7,8], SOON_COURSE = [7,8];
+var SOON = '<span class="chip soon">Coming in v2</span>';
+function soonChip(list, i){ return list.indexOf(i) > -1 ? SOON : (list === SOON_COURSE && i === 6 ? '<span class="chip soon">v1: points 1 to 3</span>' : ""); }
 function renderTemplates(){
   document.getElementById("tpls").innerHTML = GEN.map(function(x,i){
     if(isLater(i)) return "";
@@ -1075,7 +1082,7 @@ function renderTemplates(){
 }
 
 function genCard(x,i,open){
-    return '<details class="stage" data-i="'+i+'"'+(open?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+x.t+'</span>'+
+    return '<details class="stage" data-i="'+i+'"'+(open?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+x.t+'</span>'+soonChip(SOON_GEN,i)+
       x.sk.map(function(k){ return '<span class="tag sk-'+k+'">'+SKILL[k]+'</span>'; }).join(" ")+
       '<span class="chev">&#9656;</span></summary><div class="body">'+
       (x.opt ? '<div class="col scn"><div class="k">Optional</div>'+x.opt+'</div>' : '')+
@@ -1226,10 +1233,10 @@ Reply with PASS or FAIL, then one sentence explaining why.`,
     how:[A("Pick 10 to 20 recipes the bot will know")+" and put one link per line in "+F("recipe-chatbot\\data\\recipe_links.txt")+"."+N("Worked example: an Algerian chef. 15 Algerian recipes (chorba frik, mderbel, tchouktchouka and more) from one French recipe site; the bot answers in English. Any cuisine and any language work.")+N("Also note 3 dishes you leave out on purpose (in the example: couscous). They become test questions in point 5."),
          A("Turn the links into a recipe file:")+" run "+F("uv run python scripts/build_recipes.py")+" from "+F("recipe-chatbot")+". It reads each page (its recipe card, or the page text), translates it to English, keeps the dish's own name, and saves "+F("data/my_recipes.json")+". "+A("Then check every recipe")+" in "+U("stage-7-evaluate-the-parts/recipes-viewer.html")+": compare a few with their source page and note wrong names, missing steps, odd tags or guessed times."+N("Re-run it whenever you change the links. A link that fails is skipped and named at the end. The recipes file is in .gitignore: the text belongs to the source sites."),
          A("Make the recipes searchable:")+" keyword search (BM25, in "+F("backend/retrieval.py")+") returns the 3 recipes closest to each question.",
-         A("Connect search to the chat")+" so the bot reads those 3 recipes before it answers. Then update "+F("backend/system_prompt.md")+": the persona (in the example, an Algerian chef), answer only from the recipes given, name the recipe used, say you do not have it when no recipe fits, always answer in English."+N("You build points 3 and 4 yourself with Claude Code. The prompt to paste is being tested on the worked example first and will be added here."),
-         A("Write 20 to 30 test questions,")+" each from one recipe you know, of three kinds: "+A("exact")+" (names the dish), "+A("vague")+" (describes it without the name: \"a green wheat soup with lamb\"), and "+A("not in your data")+" (one of the dishes you left out). Fill one row per question in "+T("template-07-search-test.csv")+"."+N("For a not-in-data question the expected recipe is none, and the right answer is \"I don't have that recipe\". Giving a recipe anyway is a fail."),
-         A("Check each answer in three parts")+" (Paweł's Question, Context, Answer): did search return the right recipe in the top 3? Did the answer use only what search returned? Is the answer correct?"+N("Keep the search column and the answer columns apart: they point to different fixes."),
-         A("Fix the weaker part first, then re-run the same questions.")+" Search missed vague questions: try hybrid search (keywords plus meaning) or query rewriting. Answer added things not in the recipe: tighten the prompt."+N("Detailed fix steps come after the test is tried on the worked example.")],
+         SOON+" "+A("Connect search to the chat")+" so the bot reads those 3 recipes before it answers. Then update "+F("backend/system_prompt.md")+": the persona (in the example, an Algerian chef), answer only from the recipes given, name the recipe used, say you do not have it when no recipe fits, always answer in English."+N("You build point 3 yourself with Claude Code. The prompt for point 4 comes in v2."),
+         SOON+" "+A("Write 20 to 30 test questions,")+" each from one recipe you know, of three kinds: "+A("exact")+" (names the dish), "+A("vague")+" (describes it without the name: \"a green wheat soup with lamb\"), and "+A("not in your data")+" (one of the dishes you left out). Fill one row per question in "+T("template-07-search-test.csv")+"."+N("For a not-in-data question the expected recipe is none, and the right answer is \"I don't have that recipe\". Giving a recipe anyway is a fail."),
+         SOON+" "+A("Check each answer in three parts")+" (Paweł's Question, Context, Answer): did search return the right recipe in the top 3? Did the answer use only what search returned? Is the answer correct?"+N("Keep the search column and the answer columns apart: they point to different fixes."),
+         SOON+" "+A("Fix the weaker part first, then re-run the same questions.")+" Search missed vague questions: try hybrid search (keywords plus meaning) or query rewriting. Answer added things not in the recipe: tighten the prompt."+N("Detailed fix steps come after the test is tried on the worked example.")],
     ex:`question,kind,expected_recipe_id,in_top_3,rank,uses_only_found_recipes,correct,notes
 How do I make chorba frik?,exact,(id of chorba frik in my_recipes.json),,,,,
 I want a soup with green cracked wheat and lamb,vague,(id of chorba frik),,,,,
@@ -1310,7 +1317,7 @@ var STAGE_SK = [["def"],["setup"],["setup"],["obs"],["evals"],["evals"],["rag","
 /* Page 2 stages (Recipe Chatbot) */
 function stageCard(i, isOpen){
     var st = STAGES[i], x = EXTRA[i];
-    return '<details class="stage" data-i="'+i+'"'+(isOpen?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+st.t+'</span>'+
+    return '<details class="stage" data-i="'+i+'"'+(isOpen?' open':'')+'><summary><span class="n">'+(i+1)+'</span><span class="t">'+st.t+'</span>'+soonChip(SOON_COURSE,i)+
       STAGE_SK[i].map(function(k){ return '<span class="tag sk-'+k+'">'+SKILL[k]+'</span>'; }).join(" ")+" "+
       (st.hw ? '<span class="tag hw">'+st.hw+'</span>' : '')+'<span class="chev">&#9656;</span></summary><div class="body">'+
       (st.later ? '<div class="col scn" style="grid-column:1/-1"><div class="k">Later</div>'+st.later+'</div>' : '')+

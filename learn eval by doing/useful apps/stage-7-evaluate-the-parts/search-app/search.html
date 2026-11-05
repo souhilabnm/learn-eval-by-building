@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recipe Search Test</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6; color: #333; background: #f5f5f5;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+  .card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+  header.card { padding: 24px; margin-bottom: 16px; }
+  h1 { color: #2c3e50; font-size: 24px; margin-bottom: 4px; }
+  .sub { color: #666; font-size: 14px; }
+  .info { margin-top: 10px; font-size: 13px; color: #555; display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill { background: #ecf0f1; border-radius: 12px; padding: 2px 10px; }
+
+  form { display: flex; gap: 8px; margin-top: 18px; }
+  input[type=text] {
+    flex: 1; min-width: 0; font-size: 16px; padding: 11px 14px;
+    border: 1px solid #ccd3d9; border-radius: 6px; outline: none;
+  }
+  input[type=text]:focus { border-color: #3498db; box-shadow: 0 0 0 3px rgba(52,152,219,0.15); }
+  button.go {
+    background: #3498db; color: white; border: none; border-radius: 6px;
+    padding: 0 22px; font-size: 16px; cursor: pointer;
+  }
+  button.go:hover { background: #2980b9; }
+
+  .examples { margin-top: 12px; font-size: 13px; color: #666; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .examples button {
+    border: 1px solid #d5dbe0; background: #fafbfc; color: #2c3e50; border-radius: 14px;
+    padding: 3px 11px; font-size: 13px; cursor: pointer;
+  }
+  .examples button:hover { border-color: #3498db; color: #2980b9; }
+  .kind { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #95a5a6; margin-right: 4px; }
+
+  #error { display: none; background: #fdecea; color: #c0392b; padding: 14px 18px; border-radius: 8px; margin-bottom: 16px; }
+
+  .words.card { padding: 16px 20px; margin-bottom: 16px; display: none; }
+  .words h2, .results-head h2 { font-size: 15px; color: #2c3e50; }
+  .word-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .word { border-radius: 12px; padding: 2px 10px; font-size: 13px; border: 1px solid transparent; }
+  .word.rare { background: #e8f6ef; color: #1e8449; border-color: #b7e4c7; }
+  .word.common { background: #ecf0f1; color: #555; }
+  .word.none { background: #fdecea; color: #c0392b; border-color: #f5b7b1; text-decoration: line-through; }
+  .word small { opacity: .75; margin-left: 4px; }
+  .legend { font-size: 12px; color: #888; margin-top: 8px; }
+
+  .results-head { display: none; margin: 4px 2px 10px; }
+  .results-head p { font-size: 13px; color: #777; }
+
+  .result { margin-bottom: 12px; overflow: hidden; }
+  .result-top { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; cursor: pointer; }
+  .result-top:hover { background: #fafcfe; }
+  .rank {
+    flex: none; width: 34px; height: 34px; border-radius: 50%; background: #2c3e50; color: white;
+    display: flex; align-items: center; justify-content: center; font-weight: 600;
+  }
+  .result-main { flex: 1; min-width: 0; }
+  .name { font-weight: 600; color: #2c3e50; font-size: 17px; }
+  .meta { font-size: 13px; color: #888; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .bar { flex: 1; height: 8px; background: #ecf0f1; border-radius: 4px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: #3498db; border-radius: 4px; }
+  .score { font-variant-numeric: tabular-nums; font-size: 14px; color: #2c3e50; min-width: 86px; text-align: right; }
+  .matched { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px; font-size: 12px; color: #777; align-items: center; }
+  .matched .word { font-size: 12px; padding: 1px 8px; }
+  .toggle { flex: none; color: #3498db; font-size: 13px; margin-top: 6px; }
+
+  .detail { display: none; border-top: 1px solid #eef1f3; padding: 16px 18px 18px 66px; font-size: 14px; }
+  .result.open .detail { display: block; }
+  .detail h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: #7f8c8d; margin: 14px 0 4px; }
+  .detail h3:first-child { margin-top: 0; }
+  .detail ul, .detail ol { padding-left: 20px; }
+  .detail li { margin-bottom: 3px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tags span { background: #ecf0f1; border-radius: 10px; padding: 1px 8px; font-size: 12px; }
+  mark { background: #fff3b0; padding: 0 1px; border-radius: 2px; }
+  .detail a { color: #2980b9; }
+
+  .empty { padding: 30px; text-align: center; color: #888; }
+
+  .history { margin-top: 24px; font-size: 13px; color: #777; display: none; }
+  .history h2 { font-size: 13px; color: #7f8c8d; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+  .history button { background: none; border: none; color: #2980b9; cursor: pointer; font-size: 13px; padding: 2px 0; display: block; text-align: left; }
+  .history button:hover { text-decoration: underline; }
+
+  @media (max-width: 560px) {
+    .detail { padding-left: 18px; }
+    .score { min-width: 70px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="card">
+    <h1>Recipe Search Test</h1>
+    <p class="sub">Type a question and see which recipes the bot's search would hand over. Search only: the chat is not involved.</p>
+    <div class="info" id="info"><span class="pill">Loading recipes…</span></div>
+
+    <form id="form" autocomplete="off">
+      <input type="text" id="q" placeholder="e.g. How do I make tajine zitoune?" autofocus>
+      <button class="go" type="submit">Search</button>
+    </form>
+
+    <div class="examples">
+      <span>Try:</span>
+      <button type="button" data-q="How do I make tajine zitoune?"><span class="kind">exact</span>tajine zitoune</button>
+      <button type="button" data-q="a soup with cracked wheat and lamb"><span class="kind">vague</span>wheat soup with lamb</button>
+      <button type="button" data-q="Give me a couscous recipe"><span class="kind">not in data</span>couscous</button>
+    </div>
+  </header>
+
+  <div id="error"></div>
+
+  <section class="words card" id="words">
+    <h2>Words searched</h2>
+    <div class="word-list" id="word-list"></div>
+    <p class="legend">Green: in few recipes (worth a lot). Grey: in many recipes (worth little). Red, crossed out: in no recipe (worth nothing). The number is how many recipes contain the word.</p>
+  </section>
+
+  <div class="results-head" id="results-head">
+    <h2 id="results-title"></h2>
+    <p>Scores are BM25 points, not percentages. Compare them within one question only. The bar is each score next to the top one.</p>
+  </div>
+  <div id="results"></div>
+
+  <div class="history" id="history">
+    <h2>This session</h2>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const searchHistory = [];
+let totalRecipes = 0;
+
+function esc(text) {
+  return String(text ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Same cleaning as retrieval.py: lowercase, punctuation becomes a space.
+function tokenize(text) {
+  return String(text ?? '').toLowerCase().replace(/[^\p{L}\p{N}_\s]/gu, ' ').split(/\s+/).filter(Boolean);
+}
+
+// Highlight the searched words that appear in a piece of recipe text.
+function highlight(text, words) {
+  if (!words.size) return esc(text);
+  return String(text ?? '').split(/([\p{L}\p{N}_]+)/u).map((part) =>
+    words.has(part.toLowerCase()) ? `<mark>${esc(part)}</mark>` : esc(part)
+  ).join('');
+}
+
+function showError(message) {
+  $('error').textContent = message;
+  $('error').style.display = message ? 'block' : 'none';
+}
+
+async function loadInfo() {
+  try {
+    const response = await fetch('/api/info');
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Could not load recipes');
+    const s = data.stats;
+    totalRecipes = s.total_recipes;
+    $('info').innerHTML = `
+      <span class="pill">${s.total_recipes} recipes</span>
+      <span class="pill">shows top ${s.results_per_search}</span>
+      <span class="pill">BM25 keyword search: matches words, not meaning</span>`;
+  } catch (error) {
+    $('info').innerHTML = '';
+    showError(error.message.includes('fetch') ? 'Can’t reach the search app. Is search_app.py still running?' : error.message);
+  }
+}
+
+function wordClass(count) {
+  if (count === 0) return 'none';
+  return count <= Math.max(2, Math.floor(totalRecipes / 4)) ? 'rare' : 'common';
+}
+
+function renderWords(words) {
+  $('words').style.display = words.length ? 'block' : 'none';
+  $('word-list').innerHTML = words.map((w) =>
+    `<span class="word ${wordClass(w.in_recipes)}">${esc(w.word)}<small>${w.in_recipes}</small></span>`
+  ).join('');
+}
+
+function recipeDetail(recipe, words) {
+  const list = (items, tag) => (items && items.length)
+    ? `<${tag}>${items.map((i) => `<li>${highlight(i, words)}</li>`).join('')}</${tag}>`
+    : '<p style="color:#c0392b">missing</p>';
+  return `
+    <h3>Description</h3><p>${recipe.description ? highlight(recipe.description, words) : '<span style="color:#c0392b">missing</span>'}</p>
+    <h3>Ingredients</h3>${list(recipe.ingredients, 'ul')}
+    <h3>Steps</h3>${list(recipe.steps, 'ol')}
+    <h3>Tags</h3><div class="tags">${(recipe.tags || []).map((t) => `<span>${highlight(t, words)}</span>`).join('')}</div>
+    ${recipe.source_url ? `<h3>Source</h3><a href="${esc(recipe.source_url)}" target="_blank" rel="noopener">${esc(recipe.source_url)}</a>` : ''}`;
+}
+
+function renderResults(data) {
+  const results = data.results;
+  $('results-head').style.display = 'block';
+  if (!data.question) {
+    $('results-title').textContent = '';
+    $('results').innerHTML = '<div class="card empty">Type a question first.</div>';
+    return;
+  }
+  if (!results.length) {
+    $('results-title').textContent = 'No results';
+    $('results').innerHTML = '<div class="card empty">The question has no searchable words.</div>';
+    return;
+  }
+  $('results-title').textContent = `Top ${results.length} of ${data.total_recipes} recipes for “${data.question}”`;
+  const top = results[0].bm25_score;
+  const searched = new Set(data.words.map((w) => w.word));
+
+  $('results').innerHTML = results.map((r) => {
+    const width = top > 0 ? Math.max(2, (r.bm25_score / top) * 100) : 0;
+    const matched = r.matched_words.length
+      ? r.matched_words.map((w) => {
+          const info = data.words.find((x) => x.word === w);
+          return `<span class="word ${wordClass(info ? info.in_recipes : 1)}">${esc(w)}</span>`;
+        }).join('')
+      : '<span style="color:#c0392b">no words in common</span>';
+    return `
+      <article class="card result">
+        <div class="result-top" role="button" tabindex="0">
+          <div class="rank">${r.rank}</div>
+          <div class="result-main">
+            <div class="name">${esc(r.name)}</div>
+            <div class="meta">id ${esc(r.id)}${r.minutes ? ` · ${esc(r.minutes)} min` : ''}</div>
+            <div class="bar-row">
+              <div class="bar"><span style="width:${width}%"></span></div>
+              <div class="score">score ${r.bm25_score.toFixed(2)}</div>
+            </div>
+            <div class="matched">Matched: ${matched}</div>
+          </div>
+          <div class="toggle">Show recipe</div>
+        </div>
+        <div class="detail">${recipeDetail(r, searched)}</div>
+      </article>`;
+  }).join('');
+
+  document.querySelectorAll('.result-top').forEach((el) => {
+    const toggle = () => {
+      const card = el.parentElement;
+      card.classList.toggle('open');
+      el.querySelector('.toggle').textContent = card.classList.contains('open') ? 'Hide recipe' : 'Show recipe';
+    };
+    el.addEventListener('click', toggle);
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+  });
+}
+
+function renderHistory() {
+  $('history').style.display = searchHistory.length ? 'block' : 'none';
+  $('history-list').innerHTML = searchHistory.map((h) =>
+    `<button type="button" data-q="${esc(h.q)}">${esc(h.q)} → ${esc(h.first)}</button>`
+  ).join('');
+  $('history-list').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => search(b.dataset.q)));
+}
+
+async function search(question) {
+  $('q').value = question;
+  showError('');
+  try {
+    const response = await fetch('/api/search?q=' + encodeURIComponent(question));
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Search failed');
+    if (data.total_recipes) totalRecipes = data.total_recipes;
+    renderWords(data.words);
+    renderResults(data);
+    if (data.question && data.results.length) {
+      const index = searchHistory.findIndex((h) => h.q === data.question);
+      if (index !== -1) searchHistory.splice(index, 1);
+      searchHistory.unshift({ q: data.question, first: data.results[0].name });
+      searchHistory.length = Math.min(searchHistory.length, 12);
+      renderHistory();
+    }
+  } catch (error) {
+    showError(error.message.includes('fetch') ? 'Can’t reach the search app. Is search_app.py still running?' : error.message);
+  }
+}
+
+$('form').addEventListener('submit', (e) => { e.preventDefault(); search($('q').value.trim()); });
+document.querySelectorAll('.examples button').forEach((b) => b.addEventListener('click', () => search(b.dataset.q)));
+loadInfo();
+</script>
+</body>
+</html>

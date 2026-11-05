@@ -2,6 +2,10 @@
 
 My notes and playbook from learning how to build and evaluate AI agents, from zero, by doing. Everything you need is in this one repo: the guide, the templates, the course material and a working Recipe Chatbot to practise on.
 
+**Version 1.0 (November 2026).** Covers setup, stages 1–5 and building search for the RAG (stage 7, points 1–3). Testing the RAG and improving the system prompt come in v2. See the [changelog](CHANGELOG.md).
+
+**Read the guide online:** _link added after the first deploy_
+
 ## Get started
 
 You work in two places: the **guide** (a page you open in your browser) tells you what to do at each stage, and the **`recipe-chatbot` folder** is where you do it, with Claude Code coaching you.
@@ -52,7 +56,7 @@ You work in two places: the **guide** (a page you open in your browser) tells yo
 
    It finds the stage you are on and coaches you one step at a time, matching the stages in the guide. You write and label; it explains and reviews. Type it again any time to pick up where you left off.
 
-**The stages:** 1–2 spec and system prompt, 3–4 test queries and traces, 5 error analysis, 7 answer from your own recipes (RAG, worked example: an Algerian chef), 8–9 improve and monitor. Stage 6 (golden set and LLM judge) is not covered yet.
+**The stages:** 1–2 spec and system prompt, 3–4 test queries and traces, 5 error analysis, 7 answer from your own recipes (RAG, worked example: an Algerian chef; v1 covers building search), 8–9 improve and monitor (coming in v2). Stage 6 (golden set and LLM judge) is not covered yet.
 
 ## What's here
 
