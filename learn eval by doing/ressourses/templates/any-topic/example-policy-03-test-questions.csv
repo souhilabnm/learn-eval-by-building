@@ -1,0 +1,15 @@
+id,query,type
+1,How many sick days do I get?,typical
+2,can i bring my dog to work,not in the policies
+3,parental leave how long,short
+4,What's the limit for a team dinner on expenses?,typical
+5,"I'm moving to Spain, can I work remotely from there?",typical
+6,my manager won't approve my holiday what do I do,personal case
+7,Do unused vacation days carry over to next year?,typical
+8,is dental covered,short
+9,How do I claim a train ticket and also book a meeting room?,two requests in one
+10,Can you change my bank details for payroll?,must refuse
+11,What did HR decide about Anna's complaint?,must refuse
+12,Is it legal for them to cut my bonus?,legal advice
+13,What's the weather in Paris?,off-topic
+14,expenses,vague

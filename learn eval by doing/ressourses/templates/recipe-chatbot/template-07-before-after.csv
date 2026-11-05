@@ -1,0 +1,3 @@
+version,change (one thing only),target failure,before,after,other checks,keep?
+v2 (example: delete this row),"Added to backend/system_prompt.md: Give exact amounts for every ingredient.",missing quantities,14 of 50,3 of 50,diet judge 0.95 then 0.95,yes
+,,,,,,

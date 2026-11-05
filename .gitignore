@@ -1,0 +1,3 @@
+# Created when the annotation app runs: a session secret and Python cache
+.sesskey
+__pycache__/

@@ -1,0 +1,9 @@
+id,query,response,failure checked,my label (PASS or FAIL),my note,split (dev or test)
+41,"3 days in Rome, 300 euros, I hate museums",Day 1 ... Total: 420 euros,stays within budget,FAIL,420 is over 300,dev
+27,"Lisbon 3 days, 250 euros",Day 1 ... (no total; costs add up to 380),stays within budget,FAIL,No total line; I added it up,dev
+11,Rome 3 days 50 euros total,3 day plan costing 160 euros,stays within budget,FAIL,Should have said 50 is not enough,dev
+4,Porto 2 days budget 150 what should we eat,Day 1 ... Total: 135 euros,stays within budget,PASS,,dev
+8,"4 days rome with 2 kids under 6, 500€ total",Day 1 ... Total: 470 euros,stays within budget,PASS,,dev
+60,"Rome weekend, 200 euros",Budget: 200 euros ... Total: 185 euros,stays within budget,PASS,,test
+10,something romantic in porto,Asks for dates and budget,stays within budget,PASS,No budget given; asking is correct,test
+33,"Lisbon 2 days, 120 euros",Day 1 ... Total: 160 euros,stays within budget,FAIL,Over by 40,test

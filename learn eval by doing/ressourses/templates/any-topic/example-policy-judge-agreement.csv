@@ -1,0 +1,9 @@
+id,my label,judge label,agree? (yes or no),judge's reason,who was right?
+2,FAIL,FAIL,yes,No passage mentions pets,
+1,PASS,PASS,yes,10 sick days appears in section 2.1,
+3,PASS,FAIL,no,(v1) Answer is about sick days but the user asked about parental leave,me: that is a search failure; v2 now ignores topic
+4,PASS,PASS,yes,50 euros per person appears in section 4.2,
+31,FAIL,FAIL,yes,Passage says gym memberships are not covered,
+8,PASS,PASS,yes,Dental check-ups appear in section 1.3,
+44,FAIL,FAIL,yes,Passage says three days not five,
+7,PASS,PASS,yes,Carry-over of 5 days appears in section 3.4,

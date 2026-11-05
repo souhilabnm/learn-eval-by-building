@@ -1,0 +1,7 @@
+category,what it means (one sentence),count (of 100 answers read),example id,first target?
+no source,Answer gives no policy name and section,15,7,yes
+wrong policy section,Search found the wrong policy or section,12,3,yes
+answered when the policies are silent,Gives an answer the policies do not support,8,2,
+too long,More than four sentences or explains everything,6,8,
+outdated version,Uses an old version of a policy,3,5,
+legal advice,Says what is legal or illegal,2,6,
