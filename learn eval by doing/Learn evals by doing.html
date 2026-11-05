@@ -5,27 +5,28 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Learn Evals by Doing</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: header with a three-page switch; page 1 is the playbook for any topic, page 2 is the Recipe Chatbot worked example, page 3 the glossary. */
 :root{
   --bg:#F2F5F7; --surface:#FFFFFF; --fg:#13202B; --muted:#51616F; --line:#D5DDE3;
   --accent:#0B7A85; --accent-soft:#DCF0F2; --warn:#A8460C; --warn-soft:#FBE9DC;
   --ok:#1C7A44; --ok-soft:#DDF1E4;
-  --f-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-display:'IBM Plex Mono',Consolas,monospace;
   --f-body:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
   --f-mono:'IBM Plex Mono',Consolas,monospace;
   color-scheme:light;
 }
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font:400 15px/1.55 var(--f-body);
+body{background:var(--bg);color:var(--fg);font:400 14px/1.6 var(--f-body);
   padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
 main{display:flex;flex-direction:column;gap:28px}
 [hidden]{display:none !important}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
-h1{font-size:clamp(28px,5vw,40px);letter-spacing:-.01em}
-h2{font-size:22px}
+h1{font-size:clamp(24px,4.2vw,32px);letter-spacing:-.02em;font-weight:700}
+h2,h3{font-weight:600}
+h2{font-size:18px}
 p{margin:0}
 .lede{color:var(--muted);max-width:65ch;margin-top:10px}
 .eyebrow{font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
@@ -49,7 +50,7 @@ section{display:flex;flex-direction:column;gap:14px}
 .stage summary{cursor:pointer;list-style:none;display:flex;gap:12px;align-items:baseline;padding:14px 16px}
 .stage summary::-webkit-details-marker{display:none}
 .stage .n{font:500 13px var(--f-mono);color:var(--accent);flex:none;width:2.2em}
-.stage .t{font:600 16px var(--f-display);flex:1;min-width:0}
+.stage .t{font:600 14px var(--f-display);flex:1;min-width:0}
 .stage .chev{color:var(--muted);transition:transform .15s}
 .stage[open] .chev{transform:rotate(90deg)}
 .stage .body{padding:0 16px 16px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:12px}
@@ -78,9 +79,9 @@ section{display:flex;flex-direction:column;gap:14px}
 .tplgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:10px}
 .loc code{font-size:12px;overflow-wrap:anywhere}
 .glwrap{display:flex;flex-direction:column;gap:18px}
-.glgroup h3{font-size:16px;margin-bottom:8px}
+.glgroup h3{font-size:15px;margin-bottom:8px}
 .paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:12px}
-.path h3{font-size:17px;margin-bottom:6px}
+.path h3{font-size:15px;margin-bottom:6px}
 .path ol{margin-top:8px}
 .scn{grid-column:1/-1;background:var(--warn-soft);border-radius:6px;padding:10px 12px}
 .scn .k{color:var(--warn)}
@@ -138,8 +139,18 @@ a[data-tpl-file] > code::after,a[data-tpl-file]:not(:has(code))::after{content:"
 .node:focus-visible rect{stroke:var(--accent);stroke-width:3}
 .flowcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:12px}
 .flowcols .k{font:500 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.seq text{font-size:12px}
-.seq .lane text{font-weight:600}
+.seq text{font-size:11px}
+.seq .lane text{font-weight:500}
+/* clean, light diagrams: thinner lines, lighter and smaller text (CSS beats the SVG attributes) */
+.diagram svg text{font-weight:400}
+.diagram svg [font-weight="600"] text{font-weight:500}
+.diagram svg [font-size="14"]{font-size:12.5px}
+.diagram svg [font-size="12"]{font-size:11px}
+.diagram svg [font-size="11"]{font-size:10px}
+.diagram svg [stroke-width="1.5"]{stroke-width:1}
+.diagram svg [stroke-width="1.8"]{stroke-width:1.1}
+.diagram svg [stroke-width="2"]{stroke-width:1.3}
+.diagram svg [stroke-width="2.5"]{stroke-width:1.5}
 .hwgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:10px}
 .mapwrap{overflow-x:auto;margin:8px 0}
 .map{border-collapse:collapse;width:100%;min-width:520px;font-size:13.5px;line-height:1.45}
@@ -160,7 +171,7 @@ a{color:var(--accent);overflow-wrap:anywhere}
 .legend{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
 .legend span.small{margin-left:6px}
 .fgroup{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
-.fgroup h3{font-size:17px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fgroup h3{font-size:15px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .fgroup > p{margin-top:4px;color:var(--muted);font-size:14px}
 .frow{display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr);gap:4px 16px;padding:10px 0 0;margin-top:10px;border-top:1px solid var(--line)}
 .frow .fname{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
@@ -177,7 +188,7 @@ img,svg,pre,table{max-width:100%}
 @media (max-width:640px){
   body{font-size:14.5px;padding-block:20px 40px}
   .wrap,main,section{gap:20px}
-  h2{font-size:19px}
+  h2{font-size:17px}
   .pagenav .tab{flex:1 1 100%}
   .stage summary{padding:12px}
   .stage .body{padding:0 12px 12px}
@@ -254,15 +265,34 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
 .ovgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:16px}
 .ovsteps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:12px}
 .ovgrid .box,.ovsteps .box{line-height:1.6;padding:16px 18px}
-.ovh{font-size:17px;margin-top:8px}
+.ovh{font-size:15px;margin-top:8px}
 #overviewSec{gap:18px}
+/* Landing: the header alone, centered on the screen. Inner pages: a top bar with back link and breadcrumbs instead. */
+body.is-home main,body.is-home .topbar{display:none !important}
+body:not(.is-home) #hero{display:none}
+#hero{min-height:calc(100vh - 140px);min-height:calc(100dvh - 140px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#hero .lede{margin-inline:auto}
+#hero .pagenav{justify-content:center}
+#hero .tab{text-align:center}
+.cta{margin-top:26px;font:600 15px var(--f-body);color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:13px 26px;cursor:pointer}
+.cta:hover{filter:brightness(1.08)}
+.cta:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.topbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.back{font:500 13px var(--f-body);color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.back:hover{text-decoration:underline}
+.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px;font-size:13px;color:var(--muted)}
+.crumbs li+li::before{content:"/";margin-right:4px;color:var(--muted)}
+.crumbs a{text-decoration:none}
+.crumbs a:hover{text-decoration:underline}
+.crumbs [aria-current]{color:var(--fg);font-weight:500}
+#p-recipe > #subnav{margin-top:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 
 <div class="wrap">
-  <header>
+  <header id="hero">
     <div class="eyebrow">Reusable playbook · v1.0 · November 2026</div>
     <h1>Learn evals by doing them</h1>
     <p class="lede">Learn evals, observability, RAG and iteration by working on a real chatbot.</p>
@@ -272,7 +302,13 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
       <button class="tab" type="button" data-page="later" aria-pressed="false">Not covered yet</button>
       <button class="tab soon" type="button" data-page="general" disabled aria-disabled="true" title="Coming soon">Playbook for any topic &middot; Coming soon</button>
     </div>
+    <button class="cta" type="button" data-page="recipe-chatbot">Get started &rarr;</button>
   </header>
+
+  <nav class="topbar" aria-label="Breadcrumb">
+    <a class="back" href="#home" id="backLink">&larr; Back</a>
+    <div class="crumbs"><ol id="crumbs"></ol></div>
+  </nav>
 
   <!-- ============ PAGE 1: ANY TOPIC ============ -->
   <main id="p-general">
@@ -403,6 +439,8 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
             <text x="34" y="331">Evals happen here</text>
             <rect x="230" y="318" width="16" height="16" rx="3" fill="var(--ok-soft)" stroke="var(--ok)" stroke-dasharray="4 3" stroke-width="1.5"/>
             <text x="254" y="331">Eval, optional</text>
+            <rect x="390" y="318" width="16" height="16" rx="3" fill="var(--surface)" stroke="var(--line)" stroke-dasharray="4 3" stroke-width="1.5"/>
+            <text x="414" y="331">Not covered yet</text>
           </g>
         </svg>
       </div>
@@ -441,6 +479,12 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
 
   <!-- ============ PAGE 2: RECIPE CHATBOT ============ -->
   <main id="p-recipe" hidden>
+    <div class="tabs subnav" id="subnav" role="group" aria-label="Section of page 2">
+      <button class="tab" type="button" data-sub="guide" aria-pressed="true">How-to guide</button>
+      <button class="tab" type="button" data-sub="system" aria-pressed="false">How the system works</button>
+      <button class="tab" type="button" data-sub="repo" aria-pressed="false">About the repo</button>
+      <button class="tab" type="button" data-sub="resources" aria-pressed="false">Resources</button>
+    </div>
     <section id="overviewSec">
       <h2>Project overview</h2>
       <div class="box">
@@ -463,19 +507,13 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
       </div>
     </section>
 
-    <div class="tabs subnav" id="subnav" role="group" aria-label="Section of page 2">
-      <button class="tab" type="button" data-sub="guide" aria-pressed="true">How-to guide</button>
-      <button class="tab" type="button" data-sub="system" aria-pressed="false">How the system works</button>
-      <button class="tab" type="button" data-sub="repo" aria-pressed="false">About the repo</button>
-      <button class="tab" type="button" data-sub="resources" aria-pressed="false">Resources</button>
-    </div>
 
     <div class="sub" data-sub="system" hidden>
     <section>
       <h2>The loop for this project, and where the evals happen</h2>
       <p class="small">The loop of this guide, with the real file or tool you use at each step. Green boxes are where you evaluate; orange is where runs are saved, the files every eval reads.</p>
       <div class="diagram">
-        <svg viewBox="0 0 760 370" role="img" aria-label="Recipe Chatbot loop. Setup: spec document, system_prompt.md, my_queries.csv. Recording: bulk run saves results JSON files, which every eval reads. Evals by hand: error analysis in the annotation app. Golden set and LLM judge: not covered yet. Stage 6 RAG test: search and answer checked separately on your own recipes. Stage 7 improve and stage 8 monitor re-run the evals.">
+        <svg viewBox="0 0 760 370" role="img" aria-label="Recipe Chatbot loop. Setup: spec document, system_prompt.md, my_queries.csv. Recording: bulk run saves results JSON files, which every eval reads. Evals by hand: error analysis in the annotation app. Golden set and LLM judge: not covered yet. Stage 6 RAG test, an eval every learner does: search and answer checked separately on your own recipes. Stage 7 improve and stage 8 monitor re-run the evals.">
           <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
           <g stroke-width="1.5">
             <rect x="10" y="30" width="120" height="74" rx="6" fill="var(--surface)" stroke="var(--line)"/>
@@ -487,7 +525,7 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
             <rect x="460" y="166" width="130" height="74" rx="6" fill="var(--surface)" stroke="var(--line)" stroke-dasharray="5 4"/>
             <rect x="310" y="166" width="120" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
             <rect x="160" y="166" width="120" height="74" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
-            <rect x="460" y="270" width="130" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-dasharray="5 4"/>
+            <rect x="460" y="270" width="130" height="66" rx="6" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
           </g>
           <g font-size="14" font-weight="600" text-anchor="middle">
             <text x="70" y="56">1 Define good</text>
@@ -537,8 +575,8 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
             <text x="34" y="313">Recording (observability)</text>
             <rect x="10" y="328" width="16" height="16" rx="3" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="2.5"/>
             <text x="34" y="341">Evals happen here</text>
-            <rect x="230" y="328" width="16" height="16" rx="3" fill="var(--ok-soft)" stroke="var(--ok)" stroke-dasharray="4 3" stroke-width="1.5"/>
-            <text x="254" y="341">Eval, optional</text>
+            <rect x="230" y="328" width="16" height="16" rx="3" fill="var(--surface)" stroke="var(--line)" stroke-dasharray="4 3" stroke-width="1.5"/>
+            <text x="254" y="341">Not covered yet</text>
           </g>
         </svg>
       </div>
@@ -552,7 +590,7 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
         <ol>
           <li><span class="act">Create a course folder</span> (any name, any place).</li>
           <li><span class="act">Clone the course repo.</span> In Claude Code, start a new session and select your course folder. Type:
-            <pre class="ex">Clone the v1.0 branch of https://github.com/souhilabnm/learn-eval-by-building.git into this folder</pre>
+            <pre class="ex">Clone https://github.com/souhilabnm/learn-eval-by-building.git into this folder</pre>
             <span class="note">You get <code class="fp">learn eval by doing</code> (guide, templates, apps) and <code class="fp">recipe-chatbot</code> side by side. Keep them together.</span></li>
           <li><span class="act">Open the guide online:</span> <a href="https://learn-eval-by-building.vercel.app" target="_blank" rel="noopener">learn-eval-by-building.vercel.app</a>. Bookmark it.</li>
           <li><span class="act">Open the chatbot folder.</span> In Claude Code, start a new session and select <code class="fp">learn-eval-by-building/recipe-chatbot</code>.
@@ -1728,16 +1766,43 @@ window.addEventListener("scroll", hideTip, {passive:true});
 
 /* ---------- Three pages (open with #general, #recipe-chatbot or #glossary) ---------- */
 var PAGE_IDS = {"general":"p-general","recipe-chatbot":"p-recipe","glossary":"p-glossary","later":"p-later"};
+var PAGE_NAMES = {"recipe-chatbot":"Recipe Chatbot","glossary":"Glossary","later":"Not covered yet"};
+var SUB_NAMES = {"guide":"How-to guide","system":"How the system works","repo":"About the repo","resources":"Resources"};
+var curPage = "home", curSub = "guide";
+/* Breadcrumbs: Home / page / section; every item but the last is a link */
+function crumb(text, go){
+  var li = document.createElement("li");
+  if(go){ var a = document.createElement("a"); a.href = "#"; a.textContent = text;
+    a.onclick = function(e){ e.preventDefault(); go(); window.scrollTo(0,0); }; li.appendChild(a); }
+  else { var sp = document.createElement("span"); sp.setAttribute("aria-current","page"); sp.textContent = text; li.appendChild(sp); }
+  return li;
+}
+function renderCrumbs(){
+  var ol = document.getElementById("crumbs"); if(!ol) return; ol.textContent = "";
+  ol.appendChild(crumb("Home", function(){ showPage("home"); }));
+  if(curPage === "recipe-chatbot"){
+    ol.appendChild(crumb(PAGE_NAMES[curPage], function(){ showSub("guide"); }));
+    ol.appendChild(crumb(SUB_NAMES[curSub]));
+  } else if(PAGE_NAMES[curPage]) ol.appendChild(crumb(PAGE_NAMES[curPage]));
+}
+/* Back: from a page-2 section to its how-to guide, otherwise to the landing */
+document.getElementById("backLink").onclick = function(e){
+  e.preventDefault();
+  if(curPage === "recipe-chatbot" && curSub !== "guide") showSub("guide"); else showPage("home");
+  window.scrollTo(0,0);
+};
 function showPage(key){
-  if(!PAGE_IDS[key] || key === "general") key = "recipe-chatbot";
+  if(key !== "home" && (!PAGE_IDS[key] || key === "general")) key = "home";
+  curPage = key;
+  document.body.classList.toggle("is-home", key === "home");
   Object.keys(PAGE_IDS).forEach(function(k){ document.getElementById(PAGE_IDS[k]).hidden = (k !== key); });
+  renderCrumbs();
   document.querySelectorAll("#pagenav button").forEach(function(b){
     b.setAttribute("aria-pressed", b.getAttribute("data-page") === key ? "true" : "false");
   });
-  try{ history.replaceState(null, "", "#" + key); }catch(e){}
-  try{ localStorage.setItem("playbook-page", key); }catch(e){}
+  try{ history.replaceState(null, "", key === "home" ? location.pathname + location.search : "#" + key); }catch(e){}
 }
-document.querySelectorAll("#pagenav button").forEach(function(b){
+document.querySelectorAll("#pagenav button, #hero .cta").forEach(function(b){
   b.onclick = function(){ if(b.disabled) return; showPage(b.getAttribute("data-page")); window.scrollTo(0,0); };
 });
 
@@ -1749,6 +1814,7 @@ function showSub(key){
     b.setAttribute("aria-pressed", b.getAttribute("data-sub") === key ? "true" : "false");
   });
   try{ localStorage.setItem("playbook-sub", key); }catch(e){}
+  curSub = key; renderCrumbs();
 }
 document.querySelectorAll("#subnav button").forEach(function(b){
   b.onclick = function(){ showSub(b.getAttribute("data-sub")); };
@@ -1771,7 +1837,7 @@ renderResByStage();
 renderChecks(CHECKS_GEN, "checkG", "progG", "playbook-checks-gen", CHECKS_GEN_OLD);
 decorate();
 var startKey = (location.hash || "").replace("#","");
-if(!PAGE_IDS[startKey]){ try{ startKey = localStorage.getItem("playbook-page") || "recipe-chatbot"; }catch(e){ startKey = "recipe-chatbot"; } }
+if(!PAGE_IDS[startKey]) startKey = "home";
 showPage(startKey);
 </script>
 
