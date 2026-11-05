@@ -449,13 +449,6 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
         <div class="box"><div class="k">7 · Your recipes</div>Your recipe file <code class="fp">data/my_recipes.json</code> and a search over it.</div>
         <div class="box is-soon"><div class="k">7, 8, 9 · v2</div>Search connected to the chat, the RAG test, a better prompt, monitoring. <span class="chip soon">Coming in v2</span></div>
       </div>
-      <h3 class="ovh">Under the hood</h3>
-      <div class="ovgrid">
-        <div class="box"><div class="k">Chat page</div>A web page you open at <code>127.0.0.1:8000</code>.</div>
-        <div class="box"><div class="k">Server</div>A small Python server (FastAPI) that receives each message and adds your system prompt.</div>
-        <div class="box"><div class="k">AI model</div>Gemini, Claude or OpenAI, called through LiteLLM. You choose it in <code class="fp">.env</code>.</div>
-        <div class="box"><div class="k">Search</div>Keyword search (BM25) in <code class="fp">backend/retrieval.py</code> finds the 3 recipes closest to a question.</div>
-      </div>
     </section>
 
     <div class="tabs subnav" id="subnav" role="group" aria-label="Section of page 2">
@@ -546,11 +539,11 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
       <div class="box">
         <ol>
           <li><span class="act">Create a course folder</span> (any name, any place).</li>
-          <li><span class="act">Clone the course repo.</span> In the Claude app: <b>Code</b> tab &gt; new session &gt; select your course folder. Type:
+          <li><span class="act">Clone the course repo.</span> In Claude Code, start a new session and select your course folder. Type:
             <pre class="ex">Clone https://github.com/souhilabnm/learn-eval-by-building.git into this folder</pre>
             <span class="note">You get <code class="fp">learn eval by doing</code> (guide, templates, apps) and <code class="fp">recipe-chatbot</code> side by side. Keep them together.</span></li>
           <li><span class="act">Open the guide online:</span> <a href="https://learn-eval-by-building.vercel.app" target="_blank" rel="noopener">learn-eval-by-building.vercel.app</a>. Bookmark it.</li>
-          <li><span class="act">Open the chatbot folder.</span> <b>Code</b> tab &gt; new session &gt; select <code class="fp">learn-eval-by-building/recipe-chatbot</code>.
+          <li><span class="act">Open the chatbot folder.</span> In Claude Code, start a new session and select <code class="fp">learn-eval-by-building/recipe-chatbot</code>.
             <span class="note">Every step from here runs in this folder.</span></li>
           <li><span class="act">Set it up.</span> Type:
             <pre class="ex">/learner-setup</pre>
