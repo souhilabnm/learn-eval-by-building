@@ -4,6 +4,8 @@ My notes and playbook from learning how to build and evaluate AI agents, from ze
 
 **Version 1.0 (November 2026).** Covers setup, stages 1–5 and building search for the RAG (stage 7, points 1–3). Testing the RAG and improving the system prompt come in v2. See the [changelog](CHANGELOG.md).
 
+**Versions:** each version is frozen as its own tree. [v1.0](https://github.com/souhilabnm/learn-eval-by-building/tree/v1.0) · `main` is the latest work.
+
 **Read the guide online:** https://learn-eval-by-building.vercel.app
 
 ## Get started
