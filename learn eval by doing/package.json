@@ -1,9 +1,0 @@
-{
-  "name": "learn-evals-guide",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Learn Evals by Doing: the guide page and the files it links to. Static site, no build.",
-  "scripts": {
-    "build": "echo \"Static site: nothing to build\""
-  }
-}

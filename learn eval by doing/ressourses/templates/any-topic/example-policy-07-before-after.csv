@@ -1,3 +1,0 @@
-version,change (one thing only),target failure,before,after,other checks,keep?
-v1 to v2,Search passes 5 passages to the model instead of 3,wrong policy section,0.88 pass,0.95 pass,supported by the passages 0.90 to 0.89 (no real change),yes
-v2 to v3,Added "start the source line with Source:. Every answer has one.",no source,0.85 pass,0.98 pass,too long 0.94 to 0.93 (no real change),yes

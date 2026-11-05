@@ -1,3 +1,0 @@
-id,my label,judge label,agree? (yes or no),judge's reason,who was right?
-example (delete this row),FAIL,PASS,no,"The recipe is pasta with vegetables, which suits a vegan","me: it also adds butter and parmesan, so the Question must say to check every ingredient"
-,,,,,

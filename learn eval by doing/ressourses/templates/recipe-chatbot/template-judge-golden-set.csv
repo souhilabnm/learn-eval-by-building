@@ -1,3 +1,0 @@
-id,query,response,label,note,split
-example (delete this row),"I'm vegan, quick pasta for dinner?","(the bot's full answer, copied from the results file) ... toss with butter and parmesan ...",FAIL,"Butter and parmesan are not vegan",dev
-,,,,,

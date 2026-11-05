@@ -1,4 +1,0 @@
-question,kind (exact / vague / not in data),expected_recipe_id,in_results (filled by search_eval.py),rank (filled by search_eval.py),uses_only_found_recipes (yes or no),correct (yes or no),notes
-"(example: delete this row) How do I make chorba frik?",exact,(id of the recipe in data/my_recipes.json),,,,,
-"(example: delete this row) Give me a couscous recipe",not in data,none,,,,,should say it does not have that recipe
-,,,,,,,

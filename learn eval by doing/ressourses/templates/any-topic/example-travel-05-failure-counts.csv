@@ -1,8 +1,0 @@
-category,what it means (one sentence),count (of 100 answers read),example id,first target?
-ignored budget,The plan costs more than the budget the user gave,14,41,yes
-invented fact,States an opening time or price that no guide passage supports,9,7,yes
-did not ask for missing info,Assumes dates or budget instead of asking,7,10,
-ignored a constraint,Ignores a stated need such as limited walking or young children,6,3,
-no day-by-day structure,The plan is not split into days,5,18,
-helped with out-of-scope,Answers about flights or visas,3,13,
-wrong language,Replies in a different language from the user,2,12,

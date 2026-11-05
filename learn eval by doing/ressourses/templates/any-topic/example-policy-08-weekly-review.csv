@@ -1,4 +1,0 @@
-week,sample size,check,pass rate,new failure types,action
-2026-W44,20,supported by the passages,19/20,,none
-2026-W44,20,has a source line,20/20,,none
-2026-W45,20,supported by the passages,16/20,remote work policy updated; 3 answers quote the old version,remove the old file from the documents; add remote work questions to the regression set; back to stage 5
