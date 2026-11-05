@@ -502,8 +502,8 @@ body:not(.is-home) #hero{display:none}
         <div class="box"><div class="k">3 · Test inputs</div>Your test questions in <code class="fp">data/my_queries.csv</code>.</div>
         <div class="box"><div class="k">4 · Capture traces</div>Every answer saved in <code class="fp">results/</code>.</div>
         <div class="box"><div class="k">5 · Error analysis</div>A list of failures with counts.</div>
-        <div class="box"><div class="k">7 · Your recipes</div>Your recipe file <code class="fp">data/my_recipes.json</code> and a search over it.</div>
-        <div class="box is-soon"><div class="k">7, 8, 9 · v2</div>Search connected to the chat, the RAG test, a better prompt, monitoring. <span class="chip soon">Coming in v2</span></div>
+        <div class="box"><div class="k">6 · Your recipes</div>Your recipe file <code class="fp">data/my_recipes.json</code> and a search over it.</div>
+        <div class="box is-soon"><div class="k">6, 7, 8 · v2</div>Search connected to the chat, the RAG test, a better prompt, monitoring. <span class="chip soon">Coming in v2</span></div>
       </div>
     </section>
 
@@ -882,7 +882,7 @@ OPENAI_API_KEY=paste-your-key-here</pre>
     <section>
       <h2>Not covered yet</h2>
       <p class="small">Parts of the course this guide sets aside for now. They come back in a later version.</p>
-      <div class="box"><div class="k">Later · Golden set, code checks and an LLM judge</div>Turning your most important failures into automatic checks you can trust: an answer key you label yourself, simple code checks, and a second AI model that grades each answer PASS or FAIL. For now, go from stage 5 straight to stage 7.</div>
+      <div class="box"><div class="k">Later · Golden set, code checks and an LLM judge</div>Turning your most important failures into automatic checks you can trust: an answer key you label yourself, simple code checks, and a second AI model that grades each answer PASS or FAIL. For now, go from stage 5 straight to stage 6.</div>
     </section>
   </main>
 
@@ -1651,7 +1651,7 @@ var GLOSS = {
   "error analysis": {g:1, n:"Error analysis", d:"Reading 50 to 100 saved answers and writing down what went wrong, so you learn how your bot actually fails (stage 5). The first eval, done by hand.", a:["error analysis"]},
   "open coding": {g:1, n:"Open coding", d:"The first pass of error analysis: one short free-form note per problem, with no categories yet.", a:["open coding"]},
   "axial coding": {g:1, n:"Axial coding", d:"The second pass: grouping your open-coding notes into 4 to 8 named failure types.", a:["axial coding"]},
-  "failure taxonomy": {g:1, n:"Failure taxonomy (failure list)", d:"Your named list of failure types with counts and an example each. The output of stage 5 and the starting point of stage 8.", a:["failure taxonomy","taxonomy","failure list"]},
+  "failure taxonomy": {g:1, n:"Failure taxonomy (failure list)", d:"Your named list of failure types with counts and an example each. The output of stage 5 and the starting point of stage 7.", a:["failure taxonomy","taxonomy","failure list"]},
   "golden set": {g:1, n:"Golden set", d:"About 50 real answers you have labeled PASS or FAIL yourself, with both failures and good answers in it. Your answer key for testing whether a judge can be trusted (not covered yet).", a:["golden set","golden record","golden records"]},
 
   "eval": {g:2, n:"Eval", d:"Short for evaluation. A repeatable test of how well the bot does on one thing. It can be done by hand (you read and label) or automatically (a code check or LLM judge).", a:["evals","eval"]},
@@ -1672,7 +1672,7 @@ var GLOSS = {
   "latency": {g:3, n:"Latency", d:"How long the user waits for an answer.", a:["latency"]},
 
   "RAG": {g:4, n:"RAG", d:"Retrieval-Augmented Generation. The bot first searches your documents, then writes its answer from what it found. Like an open-book exam.", a:["RAG"]},
-  "retrieval": {g:4, n:"Retrieval (search)", d:"The step that finds the passages most relevant to a question. Test it on its own in stage 7.", a:["retrieval","retrieves","retrieved"]},
+  "retrieval": {g:4, n:"Retrieval (search)", d:"The step that finds the passages most relevant to a question. Test it on its own in stage 6.", a:["retrieval","retrieves","retrieved"]},
   "recall@k": {g:4, n:"Recall@k", d:"Did the right document appear in the top k results? For example recall@5 checks the top 5. Averaged over many questions.", a:["recall@k","recall@5"]},
   "MRR": {g:4, n:"MRR", d:"Mean Reciprocal Rank. How high the right document sits in the results: first place scores 1, second 0.5, third 0.33.", a:["MRR"]},
   "faithfulness": {g:4, n:"Faithfulness", d:"Whether every claim in the answer is supported by the passages search found, with nothing made up.", a:["faithfulness","supported by"]},
