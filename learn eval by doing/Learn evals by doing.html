@@ -239,6 +239,11 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
 .wnav{padding-top:20px}
 .skills{gap:16px}
 .skills .box{padding:16px 18px;line-height:1.6}
+.ovgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:16px}
+.ovsteps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:12px}
+.ovgrid .box,.ovsteps .box{line-height:1.6;padding:16px 18px}
+.ovh{font-size:17px;margin-top:8px}
+#overviewSec{gap:18px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -427,15 +432,29 @@ ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
     <section id="overviewSec">
       <h2>Project overview</h2>
       <div class="box">
-        <p>The Recipe Chatbot is a small AI agent from your AI evaluations course. A person types what they want to cook and it replies with a recipe. It is a good practice project because it is simple enough to understand fully and still fails in interesting ways.</p>
-        <p style="margin-top:8px">Under the hood: a web page for chatting (frontend), a Python server that receives each message (FastAPI), and a library that calls the AI model (LiteLLM). The course has five homeworks that follow the nine stages of this guide.</p>
+        <p>You work on the <b>Recipe Chatbot</b> from the AI Evals course: a person asks what to cook and it replies with a recipe. You turn it into an <b>Algerian chef</b> that answers from 15 Algerian recipes you chose (chorba frik, mderbel, tchouktchouka and more), always in English. Along the way you learn to check its answers yourself.</p>
       </div>
-      <div class="hwgrid">
-        <div class="box"><div class="k">HW1</div>Prompt engineering</div>
-        <div class="box"><div class="k">HW2</div>Error analysis and failure taxonomy</div>
-        <div class="box"><div class="k">HW3</div>LLM-as-judge evaluation <span class="small">(not covered yet)</span></div>
-        <div class="box"><div class="k">HW4</div>Search (retrieval) evaluation</div>
-        <div class="box"><div class="k">HW5</div>Agent failure analysis</div>
+      <div class="ovgrid">
+        <div class="box"><div class="k">Where you start</div>A general recipe assistant. It answers from what the AI model already knows, so it can invent recipes, miss your diet or skip steps.</div>
+        <div class="box"><div class="k">Where you go</div>An Algerian chef that searches your recipe file first and answers only from what it finds. Ask for a dish you left out (couscous) and it says it does not have it.</div>
+        <div class="box"><div class="k">How you know it works</div>You read its real answers, name what went wrong, count each failure, then test the search and the answer separately.</div>
+      </div>
+      <h3 class="ovh">What you build, stage by stage</h3>
+      <div class="ovsteps">
+        <div class="box"><div class="k">1 · Define the job</div>A short spec: who it serves, what a good answer is, what it refuses.</div>
+        <div class="box"><div class="k">2 · Version 0</div>Your system prompt in <code class="fp">backend/system_prompt.md</code>.</div>
+        <div class="box"><div class="k">3 · Test inputs</div>Your test questions in <code class="fp">data/my_queries.csv</code>.</div>
+        <div class="box"><div class="k">4 · Capture traces</div>Every answer saved in <code class="fp">results/</code>.</div>
+        <div class="box"><div class="k">5 · Error analysis</div>A list of failures with counts.</div>
+        <div class="box"><div class="k">7 · Your recipes</div>Your recipe file <code class="fp">data/my_recipes.json</code> and a search over it.</div>
+        <div class="box is-soon"><div class="k">7, 8, 9 · v2</div>Search connected to the chat, the RAG test, a better prompt, monitoring. <span class="chip soon">Coming in v2</span></div>
+      </div>
+      <h3 class="ovh">Under the hood</h3>
+      <div class="ovgrid">
+        <div class="box"><div class="k">Chat page</div>A web page you open at <code>127.0.0.1:8000</code>.</div>
+        <div class="box"><div class="k">Server</div>A small Python server (FastAPI) that receives each message and adds your system prompt.</div>
+        <div class="box"><div class="k">AI model</div>Gemini, Claude or OpenAI, called through LiteLLM. You choose it in <code class="fp">.env</code>.</div>
+        <div class="box"><div class="k">Search</div>Keyword search (BM25) in <code class="fp">backend/retrieval.py</code> finds the 3 recipes closest to a question.</div>
       </div>
     </section>
 
