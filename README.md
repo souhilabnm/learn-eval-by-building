@@ -4,7 +4,7 @@ My notes and playbook from learning how to build and evaluate AI agents, from ze
 
 **Version 1.0 (November 2026).** Covers setup, stages 1–5 and building search for the RAG (stage 7, points 1–3). Testing the RAG and improving the system prompt come in v2. See the [changelog](CHANGELOG.md).
 
-**Read the guide online:** _link added after the first deploy_
+**Read the guide online:** https://learn-eval-by-building.vercel.app
 
 ## Get started
 
@@ -18,7 +18,7 @@ You work in two places: the **guide** (a page you open in your browser) tells yo
 
    You get a `learn-eval-by-building` folder with `learn eval by doing/` and `recipe-chatbot/` side by side. Keep them that way: the annotation app and the coach skills point from one to the other.
 
-2. **Open the guide.** In `learn-eval-by-building`, double-click `index.html`. It opens the Learn Evals by Doing page in your browser. Page 2, "Real use case: Recipe Chatbot", is the one you follow. (GitHub shows the HTML as code, so open it from your computer, not from GitHub.)
+2. **Open the guide:** https://learn-eval-by-building.vercel.app. Bookmark it.
 
 3. **Open the chatbot folder in Claude Code.** **Code** tab > new session > select `learn-eval-by-building/recipe-chatbot`. Every command and coaching session from here on runs in this folder.
 

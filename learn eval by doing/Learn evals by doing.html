@@ -221,6 +221,24 @@ ol.steps li.step{display:grid;grid-template-columns:22px 1.6em minmax(0,1fr);gap
 .tab.primary:disabled{background:var(--surface);color:var(--muted);border-color:var(--line);opacity:.6}
 .tab:disabled{cursor:not-allowed}
 @media (max-width:640px){ ol.steps li.step{grid-template-columns:22px minmax(0,1fr)} .step .sn{display:none} .wnav .tab{flex:1 1 40%} .wnav #wpos{order:3;flex:1 1 100%;text-align:center} }
+/* Readability: more room between and inside blocks */
+.os{display:block;font:600 11.5px var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--accent);margin:14px 0 4px}
+#wizard{gap:24px}
+.wtop{padding:18px 20px;gap:14px}
+.stepper{gap:8px}
+.spanel{gap:24px}
+.shead{gap:8px}
+.sgrid{gap:18px}
+.sgrid .col{padding:16px 18px;line-height:1.6}
+.sbox{padding:18px 20px}
+.sgrid .k,.sbox .k{margin-bottom:12px}
+ol.steps{gap:14px}
+ol.steps li.step{padding:16px 18px;gap:10px;line-height:1.65}
+.step .note{margin-top:8px}
+.step .ex{margin:12px 0}
+.wnav{padding-top:20px}
+.skills{gap:16px}
+.skills .box{padding:16px 18px;line-height:1.6}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -511,32 +529,38 @@ ol.steps li.step{display:grid;grid-template-columns:22px 1.6em minmax(0,1fr);gap
           <li><span class="act">Create a course folder</span> (any name, any place).</li>
           <li><span class="act">Clone the course repo.</span> In the Claude app: <b>Code</b> tab &gt; new session &gt; select your course folder. Type:
             <pre class="ex">Clone https://github.com/souhilabnm/learn-eval-by-building.git into this folder</pre>
-            You get a <code class="fp">learn-eval-by-building</code> folder with <code class="fp">learn eval by doing</code> (this guide, templates, apps) and <code class="fp">recipe-chatbot</code> (the chatbot you work on) side by side. Keep them together: the annotation app and the coach point from one to the other.</li>
-          <li><span class="act">Open this guide from your copy.</span> In <code class="fp">learn-eval-by-building</code>, double-click <code class="fp">index.html</code>. Template and course-material links then open your local files.</li>
-          <li><span class="act">Open the chatbot folder.</span> <b>Code</b> tab &gt; new session &gt; select <code class="fp">learn-eval-by-building/recipe-chatbot</code>. Every step below runs in this folder.</li>
+            <span class="note">You get <code class="fp">learn eval by doing</code> (guide, templates, apps) and <code class="fp">recipe-chatbot</code> side by side. Keep them together.</span></li>
+          <li><span class="act">Open the guide online:</span> <a href="https://learn-eval-by-building.vercel.app" target="_blank" rel="noopener">learn-eval-by-building.vercel.app</a>. Bookmark it.</li>
+          <li><span class="act">Open the chatbot folder.</span> <b>Code</b> tab &gt; new session &gt; select <code class="fp">learn-eval-by-building/recipe-chatbot</code>.
+            <span class="note">Every step from here runs in this folder.</span></li>
           <li><span class="act">Set it up.</span> Type:
             <pre class="ex">/learner-setup</pre>
-            It installs everything and creates <code class="fp">.env</code>. Done when you see <code>Setup OK</code>.</li>
-          <li><span class="act">Add your model and API key</span> to <code class="fp">recipe-chatbot/.env</code>.
-            <br>Windows: right-click <code class="fp">.env</code> &gt; <b>Open with</b> &gt; <b>Notepad</b>.
-            <br>Mac: in Finder press Cmd+Shift+. (period) to show hidden files, then right-click <code class="fp">.env</code> &gt; <b>Open With</b> &gt; <b>TextEdit</b>.
-            <br>Fill in these three lines (Anthropic):
+            <span class="note">Done when you see <code>Setup OK</code>.</span></li>
+          <li><span class="act">Add your model and API key</span> to <code class="fp">recipe-chatbot/.env</code>. Pick one option and replace the <code>MODEL_NAME</code> lines with its three lines.
+            <span class="os">Windows</span>Right-click <code class="fp">.env</code> &gt; <b>Open with</b> &gt; <b>Notepad</b>.
+            <span class="os">Mac</span>In Finder, press Cmd+Shift+. (period) to show hidden files, then right-click <code class="fp">.env</code> &gt; <b>Open With</b> &gt; <b>TextEdit</b>.
+            <span class="os">Free: Google Gemini</span>Create a free key at <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener">aistudio.google.com/api-keys</a> (Google account, no card). Use Gemini 3.5 Flash-Lite: fast, and it worked in testing.
+            <pre class="ex">MODEL_NAME=gemini/gemini-3.5-flash-lite
+MODEL_NAME_JUDGE=gemini/gemini-3.5-flash-lite
+GEMINI_API_KEY=paste-your-key-here</pre>
+            <span class="note">The free tier limits requests per minute and per day. If a run stops with a 429 error, wait a minute and run it again.</span>
+            <span class="os">Paid: Claude (Anthropic)</span>Key from <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.
             <pre class="ex">MODEL_NAME=anthropic/claude-sonnet-5-5
 MODEL_NAME_JUDGE=anthropic/claude-haiku-5-5
 ANTHROPIC_API_KEY=paste-your-key-here</pre>
-            Using OpenAI instead:
+            <span class="os">Paid: OpenAI</span>Key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com</a>.
             <pre class="ex">MODEL_NAME=openai/gpt-4.1-mini
 MODEL_NAME_JUDGE=openai/gpt-4.1-nano
 OPENAI_API_KEY=paste-your-key-here</pre>
-            No spaces around <code>=</code>, no quotes. <span class="act">Save</span> (Ctrl+S on Windows, Cmd+S on Mac). Never paste your key into chats or screenshots.</li>
-          <li><span class="act">Start the chatbot.</span> In Claude Code, type:
+            <span class="note">No spaces around <code>=</code>, no quotes. Save: Ctrl+S (Windows), Cmd+S (Mac). Never paste your key into chats or screenshots.</span></li>
+          <li><span class="act">Start the chatbot.</span> Type:
             <pre class="ex">Start the chatbot with: uv run uvicorn backend.main:app --reload --reload-include '*.md'</pre>
-            Then <span class="act">open</span> <code>http://127.0.0.1:8000</code> in your browser.
-            <br>Seeing <code>Got unexpected extra argument (README.md)</code>? (common on Windows) Use this instead. After each system prompt edit you then restart the server yourself: Ctrl+C, then start it again.
+            Then open <code>http://127.0.0.1:8000</code>.
+            <span class="os">Windows</span>Seeing <code>Got unexpected extra argument (README.md)</code>? Use this instead, and restart the server (Ctrl+C, then start again) after each system prompt edit:
             <pre class="ex">Start the chatbot with: uv run uvicorn backend.main:app --reload</pre></li>
-          <li><span class="act">Get coached, stage by stage.</span> In Claude Code, type:
+          <li><span class="act">Get coached, stage by stage.</span> Type:
             <pre class="ex">/evals-coach</pre>
-            It finds the stage you are on below and coaches you one step at a time. You write and label; it explains and reviews. Type it again any time to pick up where you left off.</li>
+            <span class="note">It finds your stage and coaches you one step at a time. Type it again any time to pick up where you left off.</span></li>
         </ol>
       </div>
     </section>
@@ -1187,7 +1211,7 @@ Out of scope: (for example, ordering groceries)`,
   { loc:["local","host","stage","prod"], course:["local"],
     f:"A Python app. The agent's instructions live in "+F("backend/system_prompt.md")+" and your keys in "+F(".env")+".",
     how:[N("The system prompt is the hidden instruction the AI reads before every chat: its role, tone and rules."),
-         A("Open")+" "+F("recipe-chatbot/backend/system_prompt.md")+". Windows: right-click &gt; <b>Open with</b> &gt; <b>Notepad</b> (or VS Code). Mac: right-click &gt; <b>Open With</b> &gt; <b>TextEdit</b> (or VS Code). It already holds a short default prompt.",
+         A("Open")+" "+F("recipe-chatbot/backend/system_prompt.md")+". It already holds a short default prompt."+'<span class="os">Windows</span>Right-click &gt; <b>Open with</b> &gt; <b>Notepad</b> (or VS Code).<span class="os">Mac</span>Right-click &gt; <b>Open With</b> &gt; <b>TextEdit</b> (or VS Code).',
          A("Replace the default text")+" with five headings: Role, Task, Rules, Format, Defaults (full example below, and the same five headings ready to fill in: "+T("template-02-system-prompt.md")+"). Each one is a heading of your stage 1 spec, reworded as an instruction to the AI:" +
            '<div class="mapwrap"><table class="map"><thead><tr><th>Your spec (stage 1) says</th><th>Example in the spec</th><th>Becomes in the system prompt</th></tr></thead><tbody>' +
            '<tr><td>Who uses it</td><td>Busy parents cooking on weekdays</td><td><b>Role:</b> You are an expert chef helping busy parents cook on weekdays.</td></tr>' +
