@@ -1,8 +1,8 @@
 # Learn eval by building
 
-My notes and playbook from learning how to build and evaluate AI agents, from zero, by doing. Everything you need is in this one repo: the guide, the templates, the course material and a working Recipe Chatbot to practise on.
+My notes and playbook from learning how to build and evaluate AI agents, from zero, by doing. Everything you need is in this one repo: the guide, its templates and apps, and a working Recipe Chatbot to practise on.
 
-**Version 1.0 (November 2026).** Covers setup, stages 1–5 and building search for the RAG (stage 7, points 1–3). Testing the RAG and improving the system prompt come in v2. See the [changelog](CHANGELOG.md).
+**Version 1.0 (November 2026).** Covers setup, stages 1–5 and building search for the RAG (stage 6, points 1–3). Testing the RAG and improving the system prompt come in v2. See the [changelog](CHANGELOG.md).
 
 **Versions:** each version is frozen as its own tree. [v1.0](https://github.com/souhilabnm/learn-eval-by-building/tree/v1.0) · `main` is the latest work.
 
@@ -40,7 +40,7 @@ You work in two places: the **guide** (a page you open in your browser) tells yo
    ANTHROPIC_API_KEY=paste-your-key-here
    ```
 
-   No spaces around `=`, no quotes. Save. Never paste your key into chats, screenshots or commits (`.env` is already in `.gitignore`).
+   Save the file.
 
 6. **Start the chatbot.** In Claude Code, type:
 
@@ -58,21 +58,39 @@ You work in two places: the **guide** (a page you open in your browser) tells yo
 
    It finds the stage you are on and coaches you one step at a time, matching the stages in the guide. You write and label; it explains and reviews. Type it again any time to pick up where you left off.
 
-**The stages:** 1–2 spec and system prompt, 3–4 test queries and traces, 5 error analysis, 7 answer from your own recipes (RAG, worked example: an Algerian chef; v1 covers building search), 8–9 improve and monitor (coming in v2). Stage 6 (golden set and LLM judge) is not covered yet.
+**The stages:** 1–2 spec and system prompt, 3–4 test queries and traces, 5 error analysis, 6 answer from your own recipes (RAG, worked example: an Algerian chef; v1 covers building search), 7–8 improve and monitor (coming in v2). The golden set and LLM judge are not covered yet.
 
 ## What's here
 
+```
+learn-eval-by-building/
+├── learn eval by doing/         the guide and everything it links to
+│   ├── Learn evals by doing.html    the guide (same as the online one)
+│   ├── ressourses/templates/        one template per stage
+│   │   ├── recipe-chatbot/              for this chatbot (the guide's page 2)
+│   │   └── any-topic/                   for any bot, with two filled-in examples
+│   └── useful apps/                 one folder per stage, each with a README
+│       ├── stage-4-capture-traces/      results viewer
+│       ├── stage-5-error-analysis/      annotation app (http://localhost:5001)
+│       └── stage-6-evaluate-the-parts/  recipes viewer, search page (http://localhost:5002)
+├── recipe-chatbot/              the chatbot you work on; open this folder in Claude Code
+│   ├── backend/  frontend/  data/  scripts/  annotation/
+│   └── .claude/skills/, CLAUDE.md   the coach skills
+└── notes/                       how the coach skills are routed
+```
+
 | Path | What it is |
 |---|---|
-| [index.html](index.html) | Opens the guide. |
-| [learn eval by doing/](<learn eval by doing/>) | The guide (`Learn evals by doing.html`) and the files it links to, kept together so the links work: `templates/any-topic/` (blank templates plus filled-in `example-policy-*` and `example-travel-*` versions), `templates/recipe-chatbot/` (the same templates made for the chatbot), `ressourses/` (a copy of the course homeworks and lessons). |
-| [learn eval by doing/useful apps/](<learn eval by doing/useful apps/>) | The course's small apps, one folder per stage, each with a README: viewers for results, traces and your recipe file, and a light-theme copy of the annotation app for open and axial coding. The annotation app reads `recipe-chatbot/annotation/traces`. |
-| [recipe-chatbot/](recipe-chatbot/) | The chatbot you work on: the course code plus my changes (system prompt, bulk test that also saves trace files, `scripts/build_recipes.py` that turns recipe links into `data/my_recipes.json`, the Algerian recipe links, test queries, the coach skills in `.claude/skills/` and `CLAUDE.md`). Your own runs (`results/`, `annotation/traces/`), `.env`, `.venv` and the scraped recipe text are not in the repo. |
-| [skills/](skills/) | A copy of the coach skills, to read on GitHub. The ones Claude Code uses are in `recipe-chatbot/.claude/skills/`. **[How to use the skills →](skills/README.md)** |
+| [learn eval by doing/](<learn eval by doing/>) | The guide (`Learn evals by doing.html`) and the files it links to, kept together so the links work. `ressourses/templates/` holds one template per stage: `recipe-chatbot/` for this chatbot, `any-topic/` for any bot (with filled-in `example-policy-*` and `example-travel-*` versions). |
+| [learn eval by doing/useful apps/](<learn eval by doing/useful apps/>) | Small apps, one folder per stage, each with a README: a viewer for your results, the annotation app for open and axial coding, a viewer for your recipe file and a page to try the search. |
+| [recipe-chatbot/](recipe-chatbot/) | The chatbot you work on: the course code plus my changes (system prompt, bulk test that also saves trace files, `scripts/build_recipes.py` that turns recipe links into `data/my_recipes.json`, `scripts/search_eval.py`, the Algerian recipe links, the coach skills in `.claude/skills/` and `CLAUDE.md`). Your own runs (`results/`, `annotation/traces/`), `.env`, `.venv` and your recipe file stay on your computer. |
 | [notes/01-how-skills-are-mapped.md](notes/01-how-skills-are-mapped.md) | How Claude Code skills are found, routed and chained together in the course project. |
+| [index.html](index.html) | Opens the guide. |
+
+**Not in this repo:** the course's homeworks, lessons and solution notebooks. They stay in the [original repository](https://github.com/ai-evals-course/recipe-chatbot); the guide links their walkthrough videos in its Resources tab.
 
 ## Credits and ownership
 
-- **Original project:** the chatbot in `recipe-chatbot/` comes from **[ai-evals-course/recipe-chatbot](https://github.com/ai-evals-course/recipe-chatbot)**, the course repo for the AI Evals course. The chatbot, homeworks, datasets and course material belong to the ai-evals-course authors and are licensed under [GPL-3.0](https://github.com/ai-evals-course/recipe-chatbot/blob/main/LICENSE).
+- **Original project:** the chatbot in `recipe-chatbot/` comes from **[ai-evals-course/recipe-chatbot](https://github.com/ai-evals-course/recipe-chatbot)**, the course repo for the AI Evals course. The chatbot, its datasets and the course material belong to the ai-evals-course authors and are licensed under [GPL-3.0](https://github.com/ai-evals-course/recipe-chatbot/blob/main/LICENSE).
 - **Added by me:** the guide, the templates, the useful apps folder, the Claude Code skills and `CLAUDE.md`, and the changes to the chatbot listed above. The changed chatbot stays under GPL-3.0, as the original.
 - **Older fork:** [souhilabnm/recipe-chatbot](https://github.com/souhilabnm/recipe-chatbot) is my earlier fork and does not have these changes. Use the `recipe-chatbot/` folder in this repo instead.

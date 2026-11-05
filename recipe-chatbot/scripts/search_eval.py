@@ -1,6 +1,6 @@
-"""Score your recipe search with Recall@k and MRR (stage 7).
+"""Score your recipe search with Recall@k and MRR (stage 6).
 
-Reads your search test sheet (your copy of template-07-search-test.csv),
+Reads your search test sheet (your copy of template-06-search-test.csv),
 runs every question through the real search in backend/retrieval.py,
 fills the in_results and rank columns, and prints:
 
@@ -116,7 +116,7 @@ def main() -> None:
 
     if not sheet.exists():
         print(f"Test sheet not found: {sheet}")
-        print("Copy learn eval by doing/templates/recipe-chatbot/template-07-search-test.csv")
+        print("Copy learn eval by doing/templates/recipe-chatbot/template-06-search-test.csv")
         print(f"to {DEFAULT_SHEET} and write your questions in it (or pass --sheet).")
         sys.exit(1)
     if not DEFAULT_RECIPES_PATH.exists():
@@ -133,7 +133,7 @@ def main() -> None:
                               ("expected_recipe_id", col_expected), ("in_results", col_in), ("rank", col_rank)] if not c]
     if missing:
         print(f"The sheet is missing these columns: {', '.join(missing)}")
-        print("Start from learn eval by doing/templates/recipe-chatbot/template-07-search-test.csv")
+        print("Start from learn eval by doing/templates/recipe-chatbot/template-06-search-test.csv")
         sys.exit(1)
 
     retriever = create_retriever(DEFAULT_RECIPES_PATH, verbose=False)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-BM25 recipe search (stage 7, step 3).
+BM25 recipe search (stage 6, step 3).
 
 Searches your own recipes in data/my_recipes.json with BM25 keyword search
 and returns the best matches, best first.
@@ -17,7 +17,7 @@ Try it on its own (search only, the chat is not involved):
     uv run python backend/retrieval.py            (runs a few example questions)
 
 Or use the search test page:
-    learn eval by doing/useful apps/stage-7-evaluate-the-parts/search-app/
+    learn eval by doing/useful apps/stage-6-evaluate-the-parts/search-app/
 
 Adapted from the course's HW4 retrieval engine (same BM25, same text cleaning).
 It can still search the HW4 recipes: create_retriever(<path to processed_recipes.json>).

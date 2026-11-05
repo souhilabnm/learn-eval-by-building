@@ -1,17 +1,17 @@
 ---
 name: evals-improve-and-monitor
-description: Stages 8-9 of the evals playbook. Coaches the learner to fix one failure at a time with a before/after comparison, keep a regression set, and set a weekly monitoring routine that feeds new failures back into error analysis. Use when the learner asks how to improve the bot, compare prompt versions, build a regression set, or monitor it over time.
+description: Stages 7-8 of the evals playbook. Coaches the learner to fix one failure at a time with a before/after comparison, keep a regression set, and set a weekly monitoring routine that feeds new failures back into error analysis. Use when the learner asks how to improve the bot, compare prompt versions, build a regression set, or monitor it over time.
 ---
 
-# Stages 8-9: improve and monitor
+# Stages 7-8: improve and monitor
 
 Read `.claude/skills/evals-coach/coaching-rules.md` first.
 
 ## Before you start
 
-The learner needs failure counts (stage 5) and their stage 7 test sheet. If either is missing, say so and invoke `evals-error-analysis` or `evals-component-checks`. Stage 6 (LLM judge) is not covered yet, so they measure by reading and counting, not with a judge.
+The learner needs failure counts (stage 5) and their stage 6 test sheet. If either is missing, say so and invoke `evals-error-analysis` or `evals-component-checks`. The LLM judge stage is not covered yet, so they measure by reading and counting, not with a judge.
 
-## Step 1: Pick one target (stage 8)
+## Step 1: Pick one target (stage 7)
 
 Why: fixing one thing at a time is the only way to know what worked.
 
@@ -28,7 +28,7 @@ One edit to `backend/system_prompt.md` that targets the failure, such as a clear
 ## Step 4: Re-run and compare
 
 1. They run the same query file again: `uv run python scripts/bulk_test.py --csv data/my_queries.csv`.
-2. They check the new answers the same way as before: read and count the target failure, and re-run their stage 7 test questions if they changed the recipes, search or the parts of the prompt about recipes.
+2. They check the new answers the same way as before: read and count the target failure, and re-run their stage 6 test questions if they changed the recipes, search or the parts of the prompt about recipes.
 3. They fill a before/after table: version, rate for the target failure, rates for the other failures.
 4. To compare the answers themselves, they open the old and the new results file in `useful apps/stage-4-capture-traces/results-viewer.html`, in two browser tabs.
 
@@ -40,7 +40,7 @@ Why: a fixed failure can quietly come back after the next change.
 
 Have them add the queries that now pass to `data/regression_queries.csv` (same `id,query` format) and run it after every future change.
 
-## Step 6: Monitoring routine (stage 9)
+## Step 6: Monitoring routine (stage 8)
 
 Why: real users find failures your tests missed.
 

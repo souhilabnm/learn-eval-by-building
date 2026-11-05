@@ -8,8 +8,6 @@ Reads a bulk test results file one question and answer at a time, easier than No
 2. Click the file button and pick a file from `recipe-chatbot\results`, for example `results_20261024_222451.json`.
 3. Use Previous and Next, or the arrow keys.
 
-Also opens the course's 250 ready-made pairs: `recipe-chatbot\homeworks\hw2\reference_files\query_response.jsonl`.
+Read-only: to write notes, use the stage 5 annotation app. Also used in stage 7 to compare two runs.
 
-Read-only: to write notes, use the stage 5 annotation app.
-
-Copy of `recipe-chatbot/homeworks/hw2/reference_files/viewer.html`.
+Copy of the course's `viewer.html` (HW2) from [ai-evals-course/recipe-chatbot](https://github.com/ai-evals-course/recipe-chatbot).

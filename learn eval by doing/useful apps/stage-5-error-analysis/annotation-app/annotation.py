@@ -8,8 +8,10 @@ import glob
 # recipe-chatbot/annotation/traces (next to this guide's folder), not a traces folder beside this file,
 # and it always uses the light theme.
 DATASET_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "recipe-chatbot", "annotation", "traces"))
-if not os.path.isdir(DATASET_DIR):
-    raise SystemExit(f"Traces folder not found: {DATASET_DIR}\nKeep 'learn eval by doing' and 'recipe-chatbot' in the same folder.")
+CHATBOT_DIR = os.path.dirname(os.path.dirname(DATASET_DIR))
+if not os.path.isdir(CHATBOT_DIR):
+    raise SystemExit(f"recipe-chatbot folder not found: {CHATBOT_DIR}\nKeep 'learn eval by doing' and 'recipe-chatbot' in the same folder.")
+os.makedirs(DATASET_DIR, exist_ok=True)  # a fresh clone has no traces folder until the first chat or bulk test
 
 app, rt = mui.fast_app(hdrs=mui.Theme.blue.headers(mode='light'))  # always light, even when Windows is in dark mode
 

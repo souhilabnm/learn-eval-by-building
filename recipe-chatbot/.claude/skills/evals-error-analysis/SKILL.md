@@ -7,7 +7,7 @@ description: Stage 5 of the evals playbook (HW2 Part 2). Coaches the learner thr
 
 Read `.claude/skills/evals-coach/coaching-rules.md` first.
 
-This stage follows the course: HW2 Part 2 in `homeworks/hw2/README.md`, the open and axial coding video, and the annotation app in `annotation/` (see `annotation/README.md`).
+This stage follows the course's HW2 Part 2, the open and axial coding video, and the annotation app in `learn eval by doing/useful apps/stage-5-error-analysis/annotation-app` (its `README.md` has the start command).
 
 ## Before you start
 
@@ -15,13 +15,12 @@ The learner needs traces from a bulk run: `annotation/traces/trace_bulk_<time>_*
 
 Point them to the course help before they start:
 - **Watch it done first:** Isaac and Hamel doing open and axial coding in the annotation app, https://youtu.be/AKg27L4E0M8. The full HW2 video is https://youtu.be/h9oAAAYnGx4.
-- **Official steps:** HW2 Part 2 in `homeworks/hw2/README.md`.
 
 ## Step 1: Open their traces in the annotation app
 
 Why: the course reads and labels traces in a small app, one chat at a time, with a box for the note and one for the category. Notes are saved inside each trace file, so nothing gets lost. Isaac made the bot save every chat as its own file for exactly this; the bulk test does the same for each query.
 
-Results and traces are separate on purpose: `results/` holds one file per run for the before/after comparison in stage 8; `annotation/traces/` holds one file per chat for labeling. Never convert one into the other, and never edit the results files.
+Results and traces are separate on purpose: `results/` holds one file per run for the before/after comparison in stage 7; `annotation/traces/` holds one file per chat for labeling. Never convert one into the other, and never edit the results files.
 
 They start the app in `useful apps/stage-5-error-analysis/annotation-app` (command in the coaching rules) and open http://localhost:5001. The home page lists files by name: their browser chats (2026...), then their bulk runs, shown as `bulk <date>` with the question. They click the first trace of the run they're coding. Save (or Ctrl+Enter) moves to the next file.
 
@@ -58,7 +57,7 @@ When they ask, read the `open_coding` fields of their `trace_bulk_<time>_*.json`
 Then the decisions are theirs. Have them:
 - open the example traces of each group and check the group fits,
 - rename unclear names (in the video "prescriptive issues" became "ambiguous instruction"), merge or split, until they have 4-8 failure modes,
-- write each one in their own copy of `homeworks/hw2/reference_files/failure_mode_taxonomy.md` (it already holds sample modes to replace): **Title**, a one-sentence **Definition**, and 1-2 real **Examples**.
+- write each one in their own copy of `../learn eval by doing/ressourses/templates/recipe-chatbot/template-05-failure-taxonomy.md` (it already holds sample modes to replace): **Title**, a one-sentence **Definition**, and 1-2 real **Examples**.
 
 Check that each definition is sharp enough that two people would label the same trace the same way.
 
@@ -72,12 +71,11 @@ When they ask, count the `axial_coding_code` values across their `trace_bulk_<ti
 
 ## Step 6: Compare with the solution (after their own attempt)
 
-`homeworks/hw2/hw2_walkthrough.ipynb` is the course's solution. Suggest it only once their taxonomy and counts exist, to compare categories, not to copy them. Command: `uv run --with jupyter jupyter notebook homeworks/hw2/hw2_walkthrough.ipynb`.
+The course's solution notebook is in the original repository (not in this repo): https://github.com/ai-evals-course/recipe-chatbot/tree/main/homeworks/hw2. Suggest it only once their taxonomy and counts exist, to compare categories, not to copy them.
 
 ## Other data and tools
 
-- **More data:** the course's 250 sample chats (`trace_2024-01-15_...`, ids like `SYN025`) are in `annotation/course_samples_extra/`; they move some into `annotation/traces/` to open them in the app. Their system prompt is a placeholder, so they can't be checked against the learner's spec. Browse the same pairs in `useful apps/stage-4-capture-traces/results-viewer.html` with `homeworks/hw2/reference_files/query_response.jsonl`; the course's viewers read both `.jsonl` and `.json` files. To read a whole bulk run outside the app, `useful apps/stage-6-golden-set-and-judge/labeled-traces-viewer.html` (or `stage-7-evaluate-the-parts/agent-traces-viewer.html`) can open all its `trace_bulk_<time>_*.json` files at once: select them together in the file picker.
-- **Several categories per chat:** `lesson-7/labeling-tool` (the course's Lesson 6) has a multi-select. It loads `lesson-7/data/traces.csv`, 118 agent chats with tool calls; that file has no label columns.
+- **More data:** the course's 250 sample chats (`trace_2024-01-15_...`, ids like `SYN025`) are in `annotation/course_samples_extra/`; they move some into `annotation/traces/` to open them in the app. Their system prompt is a placeholder, so they can't be checked against the learner's spec.
 - **Multi-step chats (HW5):** note only the first failure in each trace; later failures are often caused by it.
 
 ## Done when
@@ -90,4 +88,4 @@ These match "Read 100 traces and wrote notes" and "Failure taxonomy with counts"
 
 ## Next
 
-Invoke `evals-component-checks` (stage 7). Stage 6, the LLM judge, is not covered yet.
+Invoke `evals-component-checks` (stage 6). The LLM judge stage is not covered yet.
