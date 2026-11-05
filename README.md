@@ -4,7 +4,7 @@ My notes and playbook from learning how to build and evaluate AI agents, from ze
 
 **Version 1.0 (November 2026).** Covers setup, stages 1–5 and building search for the RAG (stage 6, points 1–3). Testing the RAG and improving the system prompt come in v2. See the [changelog](CHANGELOG.md).
 
-**Versions:** each version is frozen as its own tree. [v1.0](https://github.com/souhilabnm/learn-eval-by-building/tree/v1.0) · `main` is the latest work.
+**Versions:** each version is its own branch. You are on [v1.0](https://github.com/souhilabnm/learn-eval-by-building/tree/v1.0). `main` holds only the README that lists the versions.
 
 **Read the guide online:** https://learn-eval-by-building.vercel.app
 
@@ -15,7 +15,7 @@ You work in two places: the **guide** (a page you open in your browser) tells yo
 1. **Clone this repo.** In the Claude app: **Code** tab > new session > select a course folder (any name, any place). Type:
 
    ```
-   Clone https://github.com/souhilabnm/learn-eval-by-building.git into this folder
+   Clone the v1.0 branch of https://github.com/souhilabnm/learn-eval-by-building.git into this folder
    ```
 
    You get a `learn-eval-by-building` folder with `learn eval by doing/` and `recipe-chatbot/` side by side. Keep them that way: the annotation app and the coach skills point from one to the other.
