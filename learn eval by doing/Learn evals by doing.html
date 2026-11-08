@@ -277,6 +277,9 @@ body:not(.is-home) #hero{display:none}
 .cta{margin-top:26px;font:600 15px var(--f-body);color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:13px 26px;cursor:pointer}
 .cta:hover{filter:brightness(1.08)}
 .cta:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.ctarow{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.ctarow .cta{margin-top:0}
+.cta.ghost{background:transparent;color:var(--accent)}
 .topbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .back{font:500 13px var(--f-body);color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .back:hover{text-decoration:underline}
@@ -302,7 +305,10 @@ body:not(.is-home) #hero{display:none}
       <button class="tab" type="button" data-page="later" aria-pressed="false">Not covered yet</button>
       <button class="tab soon" type="button" data-page="general" disabled aria-disabled="true" title="Coming soon">Playbook for any topic &middot; Coming soon</button>
     </div>
-    <button class="cta" type="button" data-page="recipe-chatbot">Get started &rarr;</button>
+    <div class="ctarow">
+      <button class="cta" type="button" id="ctaResume" hidden>Resume &rarr;</button>
+      <button class="cta" type="button" id="ctaStart">Get started &rarr;</button>
+    </div>
   </header>
 
   <nav class="topbar" aria-label="Breadcrumb">
@@ -1801,10 +1807,45 @@ function showPage(key){
     b.setAttribute("aria-pressed", b.getAttribute("data-page") === key ? "true" : "false");
   });
   try{ history.replaceState(null, "", key === "home" ? location.pathname + location.search : "#" + key); }catch(e){}
+  if(key === "home") updateCta();
 }
-document.querySelectorAll("#pagenav button, #hero .cta").forEach(function(b){
+document.querySelectorAll("#pagenav button").forEach(function(b){
   b.onclick = function(){ if(b.disabled) return; showPage(b.getAttribute("data-page")); window.scrollTo(0,0); };
 });
+
+/* Landing buttons: with saved progress, "Resume" (back to the last stage) next to "Start over"; otherwise just "Get started" */
+function savedPanel(){ var k = 0; try { k = +(localStorage.getItem(PANEL_KEY) || 0) || 0; } catch(e){} return PANELS[k] && !PANELS[k].soon ? k : 0; }
+function hasProgress(){
+  return savedPanel() > 0 || Object.keys(stepsDone).some(function(s){ return stepsDone[s]; });
+}
+function updateCta(){
+  var r = document.getElementById("ctaResume"), s = document.getElementById("ctaStart");
+  if(hasProgress()){
+    var p = PANELS[savedPanel()];
+    r.innerHTML = "Resume: " + (p.i >= 0 ? "Stage " + p.num + " &middot; " : "") + p.label + " &rarr;";
+    r.hidden = false;
+    s.textContent = "Start over"; s.classList.add("ghost");
+  } else {
+    r.hidden = true;
+    s.innerHTML = "Get started &rarr;"; s.classList.remove("ghost");
+  }
+}
+function openGuide(k){
+  showPage("recipe-chatbot"); showSub("guide"); showPanel(k, false);
+  if(k > 0){ var w = document.getElementById("wizard"); if(w && w.scrollIntoView) w.scrollIntoView({block:"start"}); else window.scrollTo(0,0); }
+  else window.scrollTo(0,0);
+}
+document.getElementById("ctaResume").onclick = function(){ openGuide(savedPanel()); };
+document.getElementById("ctaStart").onclick = function(){
+  if(hasProgress()){
+    if(!confirm("Start over? This clears every ticked action and your place in the guide, in this browser.")) return;
+    stepsDone = {};
+    try{ localStorage.removeItem(STEP_KEY); localStorage.removeItem(PANEL_KEY); }catch(e){}
+    document.querySelectorAll("#wpanels input[data-step]").forEach(function(cb){ cb.checked = false; cb.closest(".step").classList.remove("done"); });
+    updateProgress();
+  }
+  openGuide(0);
+};
 
 /* Page 2 sub-tabs: how-to guide, how the system works, about the repo, resources (several wrappers can share one data-sub) */
 function showSub(key){
